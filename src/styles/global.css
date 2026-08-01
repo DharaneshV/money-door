@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Self-hosted brand fonts — no external font requests, so nothing to slow
+   the site down or leak visitor data to a third-party font CDN. */
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/poppins/800.css";
+@import "@fontsource-variable/inter";
+
+@theme {
+  /* Gold — sampled directly from the real logo file, not guessed. */
+  --color-gold-50: #fbf3de;
+  --color-gold-200: #f5de8e;
+  --color-gold-300: #f2d06b;
+  --color-gold-400: #e6b53a; /* accent text on dark backgrounds */
+  --color-gold-500: #d6a31e; /* primary brand gold — logo's measured average tone */
+  --color-gold-600: #b8850f; /* hover / pressed state */
+  --color-gold-700: #8d6206; /* darkest measured tone — the only gold that passes AA as text on white */
+
+  /* Black/ink — the logo's flattened background is true #000000. */
+  --color-ink-950: #000000;
+  --color-ink-900: #0a0a0c; /* large surfaces (page background) — softer than pure black */
+  --color-ink-800: #15161b; /* card surfaces */
+  --color-ink-700: #212228; /* borders / dividers on dark */
+  --color-ink-500: #5c5f6b; /* muted text on light backgrounds */
+  --color-paper: #faf9f7; /* off-white text — matches the logo's white ink tone */
+
+  /* Reserved strictly for price/ticker contexts — never decorative. */
+  --color-market-up: #16a34a;
+  --color-market-down: #dc2626;
+
+  --font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-paper);
+    font-family: var(--font-body);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+  }
+  /* Keep ticker/price digits aligned in a column regardless of digit shape. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}

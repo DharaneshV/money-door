@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const sessionFlow = [
+  {
+    title: "Pre-Market Preparation",
+    description:
+      "Reviewing the higher-timeframe structure, marking the levels that matter, and checking the economic calendar for scheduled high-impact releases.",
+  },
+  {
+    title: "Session Analysis",
+    description:
+      "Reading how price behaves at those levels as the London and New York sessions open — where it reacts, where it doesn't, and what that reveals.",
+  },
+  {
+    title: "Applying PR & PC",
+    description:
+      "Working through whether current conditions favor a Point of Reversal or Point of Continuation read, using the same rule-based criteria every time.",
+  },
+  {
+    title: "Post-Session Review",
+    description:
+      "Reviewing what actually happened versus what was expected — the step most traders skip, and the one that produces the most improvement.",
+  },
+];
+---
+
+<BaseLayout
+  title="Daily Market Analysis"
+  description="How Money Door FX Academy approaches daily Gold and Forex market analysis — a structured, educational process, not buy/sell signals."
+>
+  <PageHero
+    eyebrow="Daily Analysis"
+    title="Daily Market Analysis"
+    subtitle="Structured, educational market analysis taught live to our students — teaching you to read the market, not telling you what to buy."
+  />
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+      <h2 class="font-heading text-3xl font-bold text-ink-950">Analysis, Not Signals</h2>
+      <p class="text-base leading-relaxed text-ink-700">
+        We don't publish buy/sell calls or price predictions. What we do — in live sessions with
+        enrolled students — is walk through the market as it moves: which levels matter today,
+        what the structure suggests, where a setup would and wouldn't be valid, and how risk
+        would be managed around it.
+      </p>
+      <p class="text-base leading-relaxed text-ink-700">
+        The goal is that you eventually do this analysis yourself, without needing us.
+      </p>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Our Process" title="How a Live Analysis Session Works" />
+      <div class="grid gap-6 sm:grid-cols-2">
+        {
+          sessionFlow.map((s, i) => (
+            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-7">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/40 font-heading text-sm font-bold text-gold-400">
+                {i + 1}
+              </span>
+              <h3 class="font-heading text-lg font-bold text-paper">{s.title}</h3>
+              <p class="text-sm leading-relaxed text-paper/65">{s.description}</p>
+            </div>
+          ))
+        }
+      </div>
+      <RiskDisclaimer />
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Included in Your Program" title="Monthly Live Learning Schedule" />
+      <div class="grid gap-6 sm:grid-cols-3">
+        {
+          [
+            {
+              icon: "video" as const,
+              title: "Live Classes & Analysis",
+              description: "8 interactive live classes plus 4 live market analysis sessions per month.",
+            },
+            {
+              icon: "book-open" as const,
+              title: "Psychology & Risk Workshops",
+              description: "2 trading psychology sessions plus 1 risk management workshop monthly.",
+            },
+            {
+              icon: "users" as const,
+              title: "Review, Q&A & Accountability",
+              description: "Monthly performance review plus live Q&A and doubt-clearing sessions.",
+            },
+          ].map((item) => (
+            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-950 p-7">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+                <Icon name={item.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="font-heading text-lg font-bold text-paper">{item.title}</h3>
+              <p class="text-sm text-paper/65">{item.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Join a Live Session</h2>
+      <p class="max-w-xl text-base text-paper/70">
+        Live market analysis sessions are included in MDC2 and MDC3. Book a free consultation to
+        find out how they work.
+      </p>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <Button href="/courses/" arrow>Explore Courses</Button>
+        <Button href="/economic-calendar/" variant="secondary">View Economic Calendar</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

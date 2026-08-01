@@ -1,0 +1,71 @@
+---
+import { primaryNav, whatsappHref } from "../../data/site";
+import Button from "../ui/Button.astro";
+---
+
+<div id="mobile-menu-panel" class="hidden border-t border-ink-700 bg-ink-950 px-4 py-4 lg:hidden">
+  <nav class="flex flex-col gap-1">
+    {
+      primaryNav.map((item) => (
+        <div>
+          <a
+            href={item.href}
+            class="block rounded-lg px-3 py-3 text-base font-medium text-paper/90 hover:bg-ink-800 hover:text-gold-300"
+          >
+            {item.label}
+          </a>
+          {item.children && (
+            <div class="ml-3 flex flex-col gap-1 border-l border-ink-700 pl-3">
+              {item.children.slice(1).map((child) => (
+                <a
+                  href={child.href}
+                  class="block rounded-lg px-3 py-2 text-sm text-paper/70 hover:text-gold-300"
+                >
+                  {child.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </nav>
+  <div class="mt-4 flex flex-col gap-2">
+    <Button href="/contact/" class="w-full">Join Now</Button>
+    <Button href={whatsappHref} target="_blank" variant="secondary" class="w-full">
+      Chat on WhatsApp
+    </Button>
+  </div>
+</div>
+
+<script>
+  const toggle = document.getElementById("mobile-menu-toggle");
+  const panel = document.getElementById("mobile-menu-panel");
+  const openIcon = document.getElementById("menu-icon-open");
+  const closeIcon = document.getElementById("menu-icon-close");
+
+  function closeMenu() {
+    panel?.classList.add("hidden");
+    toggle?.setAttribute("aria-expanded", "false");
+    openIcon?.classList.remove("hidden");
+    closeIcon?.classList.add("hidden");
+  }
+  function openMenu() {
+    panel?.classList.remove("hidden");
+    toggle?.setAttribute("aria-expanded", "true");
+    openIcon?.classList.add("hidden");
+    closeIcon?.classList.remove("hidden");
+  }
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    if (isOpen) closeMenu();
+    else openMenu();
+  });
+
+  panel?.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+</script>

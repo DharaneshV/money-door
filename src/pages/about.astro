@@ -1,0 +1,268 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const values = [
+  { title: "Integrity", description: "We believe honest education creates successful traders." },
+  { title: "Discipline", description: "Every successful trader follows a structured process." },
+  { title: "Consistency", description: "Long-term consistency is more important than short-term profits." },
+  { title: "Continuous Learning", description: "Financial markets evolve every day. Traders should evolve too." },
+  { title: "Professionalism", description: "We maintain the highest standards in education, communication, and student support." },
+];
+
+const beliefs = [
+  "Trading is a skill that can be learned.",
+  "Discipline matters more than emotions.",
+  "Risk management is more important than chasing profits.",
+  "Consistency is built through preparation and practice.",
+  "Continuous learning leads to continuous improvement.",
+  "Knowledge creates confidence.",
+  "Professional traders follow processes — not impulses.",
+];
+
+const expertise = [
+  { icon: "target" as const, title: "Gold Trading (XAU/USD)", description: "Specialized education focused on Gold price action, market structure, and intraday trading techniques." },
+  { icon: "trending-up" as const, title: "Forex Trading", description: "Comprehensive understanding of major currency pairs and market dynamics." },
+  { icon: "shield-check" as const, title: "Risk Management", description: "Capital preservation through disciplined position sizing and structured risk control." },
+  { icon: "chart-bar" as const, title: "Technical Analysis", description: "Price action, trend analysis, market structure, and practical chart reading." },
+  { icon: "video" as const, title: "Live Market Learning", description: "Applying concepts in real-time market conditions through guided sessions." },
+];
+
+const teachingSteps = [
+  { title: "Learn", description: "Understand the fundamentals before entering the markets." },
+  { title: "Observe", description: "Watch real market analysis and decision-making." },
+  { title: "Practice", description: "Apply concepts using structured exercises and chart analysis." },
+  { title: "Improve", description: "Review trades, identify mistakes, and refine your approach." },
+  { title: "Grow", description: "Build the consistency and confidence of an independent trader." },
+];
+
+const audiences = [
+  { title: "Beginner Traders", description: "People who want to learn trading from scratch." },
+  { title: "Working Professionals", description: "Individuals looking for an additional skill or income opportunity." },
+  { title: "Existing Traders", description: "Traders struggling with consistency and risk management." },
+  { title: "Funded Traders", description: "Individuals preparing for prop firm evaluations and professional trading." },
+  { title: "Serious Investors", description: "People who want to understand Gold and Forex markets before participating." },
+];
+
+const whyUs = [
+  "Structured Learning Roadmap",
+  "Gold Trading Specialization",
+  "Live Market Sessions",
+  "Practical Trading Education",
+  "Focus on Risk Management",
+  "One-on-One Mentorship",
+  "Supportive Learning Community",
+  "Continuous Skill Development",
+];
+---
+
+<BaseLayout
+  title="About Us"
+  description="Money Door FX Academy is a premium Gold (XAU/USD) & Forex trading education company. Learn about our story, mission, values, and teaching approach."
+>
+  <section class="border-b border-ink-700 bg-ink-950 py-16 text-center sm:py-24">
+    <Container class="flex flex-col items-center gap-4">
+      <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">
+        About Money Door FX Academy
+      </span>
+      <h1 class="max-w-3xl font-heading text-4xl font-bold sm:text-5xl">Learn Trading the Right Way</h1>
+      <p class="max-w-2xl text-lg text-paper/70">
+        At Money Door FX Academy, we believe successful trading is built on education, discipline,
+        consistency, and continuous learning — not shortcuts or false promises.
+      </p>
+    </Container>
+  </section>
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="mx-auto flex max-w-3xl flex-col gap-5 text-center">
+      <span class="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold-700">
+        Our Story
+      </span>
+      <h2 class="font-heading text-3xl font-bold text-ink-950 sm:text-4xl">A Journey Built on Experience</h2>
+      <div class="flex flex-col gap-4 text-left text-base leading-relaxed text-ink-700">
+        <p>
+          Money Door FX Academy was founded with a simple purpose: to help aspiring traders develop
+          the knowledge, discipline, and confidence needed to navigate the financial markets
+          responsibly.
+        </p>
+        <p>
+          After spending more than 18 years studying and trading across Forex, Commodities,
+          Equities, and other financial markets, we recognized that many aspiring traders struggled
+          — not because they lacked potential, but because they lacked structured education and
+          proper guidance.
+        </p>
+        <p>
+          Many beginners enter the markets with unrealistic expectations, relying on random tips,
+          social media, or unverified trading signals. While some experience short-term success,
+          many struggle to achieve consistency.
+        </p>
+        <p>
+          Money Door FX Academy was created to bridge that gap by providing a structured learning
+          experience that emphasizes market understanding, disciplined execution, and continuous
+          improvement. Our goal is not simply to teach trading strategies but to help students
+          develop the mindset and habits of professional traders.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="grid gap-8 lg:grid-cols-2">
+      <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-8">
+        <h2 class="font-heading text-2xl font-bold text-gold-400">Our Vision</h2>
+        <p class="text-base leading-relaxed text-paper/70">
+          To become India's most trusted Gold Trading Academy and one of the world's leading
+          trading education brands — empowering traders through knowledge, discipline, and
+          practical experience, and helping them make informed decisions with confidence.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-8">
+        <h2 class="font-heading text-2xl font-bold text-gold-400">Our Mission</h2>
+        <p class="text-base leading-relaxed text-paper/70">
+          To provide world-class trading education that combines professional market knowledge,
+          proven trading strategies, practical live market training, risk management, and trading
+          psychology. We aim to build traders — not followers.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Our Philosophy" title="We Believe..." light />
+      <div class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
+        {
+          beliefs.map((b) => (
+            <div class="flex items-start gap-3 rounded-xl border border-ink-950/10 bg-white p-4 shadow-sm">
+              <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-600" />
+              <span class="text-sm text-ink-800">{b}</span>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="What We Teach" title="Our Areas of Expertise" />
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          expertise.map((e) => (
+            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-6">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+                <Icon name={e.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="font-heading text-base font-bold text-paper">{e.title}</h3>
+              <p class="text-sm text-paper/60">{e.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="How We Teach" title="Our Teaching Approach" />
+      <div class="grid gap-6 sm:grid-cols-5">
+        {
+          teachingSteps.map((step, i) => (
+            <div class="flex flex-col items-center gap-3 text-center">
+              <span class="flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/40 font-heading text-lg font-bold text-gold-400">
+                {i + 1}
+              </span>
+              <h3 class="font-heading text-base font-bold text-paper">{step.title}</h3>
+              <p class="text-sm text-paper/60">{step.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Our Core Values" title="What Guides Everything We Do" light />
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          values.map((v) => (
+            <div class="rounded-2xl border border-ink-950/10 bg-white p-6 shadow-sm">
+              <h3 class="font-heading text-base font-bold text-ink-950">{v.title}</h3>
+              <p class="mt-2 text-sm text-ink-700">{v.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <span class="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">
+        Brand Promise
+      </span>
+      <p class="max-w-2xl font-heading text-2xl font-semibold leading-snug text-paper sm:text-3xl">
+        "We don't promise profits. We promise to teach a professional trading process that helps
+        traders improve their decision-making through education, discipline, and consistent
+        practice."
+      </p>
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Who We Help" title="Who Money Door FX Academy Is For" />
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          audiences.map((a) => (
+            <div class="flex flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-950 p-6">
+              <h3 class="font-heading text-base font-bold text-gold-400">{a.title}</h3>
+              <p class="text-sm text-paper/60">{a.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Why Students Choose Us" title="What You Get as a Student" />
+      <div class="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
+        {
+          whyUs.map((w) => (
+            <div class="flex items-start gap-2 rounded-xl border border-ink-700 bg-ink-900 p-4">
+              <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+              <span class="text-sm text-paper/75">{w}</span>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="relative overflow-hidden bg-ink-900 py-16 sm:py-20">
+    <div
+      class="pointer-events-none absolute left-1/2 top-0 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-gold-500/10 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+    <Container class="relative flex flex-col items-center gap-6 text-center">
+      <h2 class="max-w-2xl font-heading text-3xl font-bold sm:text-4xl">Start Your Learning Journey</h2>
+      <p class="max-w-xl text-base text-paper/70">
+        Whether you are taking your first steps in trading or looking to refine your existing
+        skills, Money Door FX Academy is here to support your journey with structured education,
+        practical guidance, and a commitment to long-term growth. Your journey toward disciplined
+        trading starts here.
+      </p>
+      <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+        <Button href="/courses/" size="lg" arrow>Explore Our Courses</Button>
+        <Button href="/contact/" size="lg" variant="secondary">Book a Free Consultation</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

@@ -1,0 +1,126 @@
+---
+import { web3FormsAccessKey, siteConfig, contact, whatsappHref } from "../../data/site";
+import Button from "../ui/Button.astro";
+
+interface Props {
+  variant?: "contact" | "consultation";
+}
+const { variant = "contact" } = Astro.props;
+
+// Until the Web3Forms key is set, a submitted form would fail silently — so show
+// working contact routes instead of a form that looks functional but isn't.
+const isConfigured = web3FormsAccessKey.length > 0;
+
+const isConsultation = variant === "consultation";
+const subject = isConsultation
+  ? "New Free Consultation Request — Money Door FX Academy"
+  : "New Contact Form Submission — Money Door FX Academy";
+const formId = `form-${variant}`;
+---
+
+{
+  !isConfigured && (
+    <div class="flex flex-col gap-4 rounded-2xl border border-gold-500/30 bg-gold-500/5 p-6">
+      <p class="font-heading text-base font-bold text-paper">Reach us directly</p>
+      <p class="text-sm leading-relaxed text-paper/70">
+        The quickest way to reach us right now is WhatsApp, phone, or email — we reply personally
+        to every enquiry.
+      </p>
+      <div class="flex flex-col gap-2 text-sm">
+        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="text-gold-400 hover:text-gold-300">
+          WhatsApp: {contact.primaryPhoneDisplay}
+        </a>
+        <a href={`tel:+${contact.primaryPhoneE164}`} class="text-gold-400 hover:text-gold-300">
+          Call: {contact.primaryPhoneDisplay}
+        </a>
+        <a href={`mailto:${contact.email}`} class="text-gold-400 hover:text-gold-300">
+          Email: {contact.email}
+        </a>
+      </div>
+    </div>
+  )
+}
+
+<form
+  id={formId}
+  action="https://api.web3forms.com/submit"
+  method="POST"
+  class:list={["flex flex-col gap-5", !isConfigured && "hidden"]}
+>
+  <input type="hidden" name="access_key" value={web3FormsAccessKey} />
+  <input type="hidden" name="subject" value={subject} />
+  <input type="hidden" name="from_name" value={siteConfig.name} />
+  <input type="hidden" name="redirect" value="/thank-you/" />
+  {/* Honeypot — bots fill every field; humans never see this one. */}
+  <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class="flex flex-col gap-2 text-sm">
+      <span class="font-medium text-paper/80">Full Name *</span>
+      <input
+        type="text"
+        name="name"
+        required
+        class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+        placeholder="Your name"
+      />
+    </label>
+    <label class="flex flex-col gap-2 text-sm">
+      <span class="font-medium text-paper/80">Email *</span>
+      <input
+        type="email"
+        name="email"
+        required
+        class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+        placeholder="you@example.com"
+      />
+    </label>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class="flex flex-col gap-2 text-sm">
+      <span class="font-medium text-paper/80">Phone / WhatsApp</span>
+      <input
+        type="tel"
+        name="phone"
+        class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+        placeholder="+91 XXXXX XXXXX"
+      />
+    </label>
+    {
+      isConsultation && (
+        <label class="flex flex-col gap-2 text-sm">
+          <span class="font-medium text-paper/80">Program of Interest</span>
+          <select
+            name="program_interest"
+            class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+          >
+            <option value="Not sure yet">Not sure yet</option>
+            <option value="MDC1 - Foundation Trader">MDC1 — Foundation Trader (Free)</option>
+            <option value="MDC2 - Professional Trader">MDC2 — Professional Trader</option>
+            <option value="MDC3 - Elite Master Trader">MDC3 — Elite Master Trader</option>
+          </select>
+        </label>
+      )
+    }
+  </div>
+
+  <label class="flex flex-col gap-2 text-sm">
+    <span class="font-medium text-paper/80">Message *</span>
+    <textarea
+      name="message"
+      required
+      rows="5"
+      class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+      placeholder={
+        isConsultation
+          ? "Tell us a little about your trading experience and goals..."
+          : "How can we help?"
+      }
+    ></textarea>
+  </label>
+
+  <Button type="submit" size="lg" class="w-full sm:w-fit">
+    {isConsultation ? "Book Free Consultation" : "Send Message"}
+  </Button>
+</form>

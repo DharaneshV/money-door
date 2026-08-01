@@ -1,0 +1,29 @@
+---
+import Container from "./Container.astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}
+const { eyebrow, title, subtitle } = Astro.props;
+---
+
+<section class="relative overflow-hidden border-b border-ink-700 bg-ink-950">
+  <div
+    class="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-gold-500/10 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+  <Container class="relative flex flex-col items-center gap-4 py-16 text-center sm:py-20">
+    {
+      eyebrow && (
+        <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">
+          {eyebrow}
+        </span>
+      )
+    }
+    <h1 class="max-w-3xl font-heading text-4xl font-bold sm:text-5xl">{title}</h1>
+    {subtitle && <p class="max-w-2xl text-lg text-paper/70">{subtitle}</p>}
+  </Container>
+</section>

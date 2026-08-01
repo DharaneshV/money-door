@@ -1,0 +1,94 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const methodology = [
+  {
+    icon: "trending-up" as const,
+    title: "PR — Point of Reversal",
+    description:
+      "A structured framework for identifying areas where price is more likely to reverse direction, based on market structure and confirmation — not guesswork.",
+  },
+  {
+    icon: "chart-bar" as const,
+    title: "PC — Point of Continuation",
+    description:
+      "A framework for identifying where an existing trend is more likely to continue, helping students avoid entering against strong momentum.",
+  },
+  {
+    icon: "target" as const,
+    title: "EMA 24 Methodology",
+    description:
+      "Using the 24-period Exponential Moving Average as a structured reference for trend direction and dynamic support/resistance.",
+  },
+  {
+    icon: "shield-check" as const,
+    title: "Price Action & Risk Management",
+    description:
+      "Reading raw price behavior — candles, structure, key levels — paired with disciplined position sizing so no single trade risks more than a small, defined share of capital.",
+  },
+];
+---
+
+<BaseLayout
+  title="Gold (XAU/USD) Trading Education"
+  description="Learn Money Door FX Academy's structured approach to Gold (XAU/USD) trading — the PR & PC methodology, EMA 24 trend reading, price action, and risk management."
+>
+  <PageHero
+    eyebrow="Gold Trading"
+    title="Gold (XAU/USD) Trading Education"
+    subtitle="Learn to read one of the world's most actively traded markets with a structured, rule-based approach — not guesswork, not signals."
+  />
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+      <h2 class="font-heading text-3xl font-bold text-ink-950">Why We Focus on Gold</h2>
+      <p class="text-base leading-relaxed text-ink-700">
+        Gold (XAU/USD) is one of the most actively traded instruments in the world — highly
+        liquid, driven by clear macro and sentiment-based catalysts, and tradable nearly around
+        the clock. These characteristics make it a valuable market for learning structured price
+        analysis. The same volatility that creates opportunity also creates risk, which is why
+        every strategy we teach is paired with disciplined risk management from day one.
+      </p>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="Our Methodology" title="How We Teach Gold Trading" />
+      <div class="grid gap-6 sm:grid-cols-2">
+        {
+          methodology.map((m) => (
+            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-7">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+                <Icon name={m.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="font-heading text-lg font-bold text-paper">{m.title}</h3>
+              <p class="text-sm leading-relaxed text-paper/65">{m.description}</p>
+            </div>
+          ))
+        }
+      </div>
+      <RiskDisclaimer />
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Learn PR &amp; PC in Depth</h2>
+      <p class="max-w-xl text-base text-paper/70">
+        The full PR &amp; PC methodology — with live market training and weekly analysis sessions
+        — is taught in depth inside MDC2: Professional Trader.
+      </p>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <Button href="/courses/mdc2/" arrow>View MDC2 — Professional Trader</Button>
+        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

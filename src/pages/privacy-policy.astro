@@ -1,0 +1,64 @@
+---
+import LegalLayout from "../layouts/LegalLayout.astro";
+import { contact } from "../data/site";
+---
+
+<LegalLayout
+  title="Privacy Policy"
+  description="How Money Door FX Academy collects, uses, and protects your personal information."
+  lastUpdated="August 1, 2026"
+>
+  <p>
+    This Privacy Policy explains how Money Door FX Academy ("we", "us") collects, uses, and
+    protects information when you visit our website or contact us.
+  </p>
+
+  <h2>Information We Collect</h2>
+  <ul>
+    <li>Information you submit through our contact or consultation forms — name, email address, phone number, and your message.</li>
+    <li>Information you share with us directly via WhatsApp, email, or phone.</li>
+    <li>Basic, aggregated website analytics (pages visited, general location, device type) used to understand site usage.</li>
+  </ul>
+
+  <h2>How We Use Your Information</h2>
+  <ul>
+    <li>To respond to your enquiries and provide the information or services you've requested.</li>
+    <li>To communicate with you about our programs, if you've asked to be contacted.</li>
+    <li>To improve our website and the content we provide.</li>
+  </ul>
+  <p>We do not sell your personal information to third parties.</p>
+
+  <h2>Third-Party Services</h2>
+  <p>
+    Our contact forms are processed by a third-party form-delivery service, which forwards your
+    submission to our email inbox. Our website may also use privacy-focused analytics to
+    understand aggregate visitor trends. These providers only process the minimum data needed to
+    perform their function.
+  </p>
+
+  <h2>Data Retention</h2>
+  <p>
+    We retain enquiry information for as long as reasonably needed to respond to you and maintain
+    a record of our communication, after which it may be deleted.
+  </p>
+
+  <h2>Your Rights</h2>
+  <p>
+    You may ask us to access, correct, or delete the personal information we hold about you at
+    any time by contacting us at{" "}
+    <a class="text-gold-400 underline" href={`mailto:${contact.email}`}>{contact.email}</a>.
+  </p>
+
+  <h2>Changes to This Policy</h2>
+  <p>
+    We may update this Privacy Policy from time to time. Changes will be posted on this page with
+    an updated "Last updated" date.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about this policy can be sent to{" "}
+    <a class="text-gold-400 underline" href={`mailto:${contact.email}`}>{contact.email}</a> or via
+    our <a class="text-gold-400 underline" href="/contact/">contact page</a>.
+  </p>
+</LegalLayout>

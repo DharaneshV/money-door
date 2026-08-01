@@ -1,0 +1,44 @@
+---
+import { siteConfig, contact, socials } from "../../data/site";
+
+interface Props {
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  includeOrganization?: boolean;
+}
+const { schema, includeOrganization = false } = Astro.props;
+
+const organization = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: new URL("/android-chrome-512x512.png", siteConfig.url).href,
+  description: siteConfig.description,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Chennai",
+    addressRegion: "Tamil Nadu",
+    addressCountry: "IN",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: `+${contact.primaryPhoneE164}`,
+    contactType: "customer service",
+    email: contact.email,
+    areaServed: "IN",
+    availableLanguage: ["en"],
+  },
+  ...(socials.some((s) => s.url) && { sameAs: socials.filter((s) => s.url).map((s) => s.url) }),
+};
+
+const graphs = [
+  ...(includeOrganization ? [organization] : []),
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : []),
+];
+---
+
+{
+  graphs.map((g) => (
+    <script type="application/ld+json" set:html={JSON.stringify(g)} />
+  ))
+}

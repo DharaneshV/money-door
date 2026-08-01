@@ -1,0 +1,54 @@
+---
+import Container from "../ui/Container.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Icon from "../ui/Icon.astro";
+
+const paths = [
+  {
+    icon: "graduation-cap" as const,
+    title: "Trading Courses",
+    description: "From beginner to advanced — step-by-step learning with practical strategies.",
+    href: "/courses/",
+  },
+  {
+    icon: "copy" as const,
+    title: "Copy Trading",
+    description: "Understand how copy trading works and what to evaluate before following any strategy.",
+    href: "/copy-trading/",
+  },
+  {
+    icon: "chart-bar" as const,
+    title: "Daily Analysis",
+    description: "Educational Gold & Forex market breakdowns — levels, structure, and reasoning explained.",
+    href: "/daily-market-analysis/",
+  },
+];
+---
+
+<section class="bg-paper py-16 sm:py-20">
+  <Container class="flex flex-col gap-10">
+    <SectionHeading eyebrow="Our Programs" title="Choose Your Path" light />
+    <div class="grid gap-6 sm:grid-cols-3">
+      {
+        paths.map((p) => (
+          <a
+            href={p.href}
+            class="group flex flex-col gap-4 rounded-2xl border border-ink-950/10 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+          >
+            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-ink-950 text-gold-500">
+              <Icon name={p.icon} class="h-6 w-6" />
+            </span>
+            <h3 class="font-heading text-xl font-bold text-ink-950">{p.title}</h3>
+            <p class="text-sm leading-relaxed text-ink-700">{p.description}</p>
+            <span class="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-gold-700">
+              Learn More
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="transition-transform group-hover:translate-x-1" aria-hidden="true">
+                <path d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </Container>
+</section>

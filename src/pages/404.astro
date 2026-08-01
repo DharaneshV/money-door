@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import Button from "../components/ui/Button.astro";
+---
+
+<BaseLayout title="Page Not Found" description="The page you're looking for doesn't exist." noindex>
+  <section class="flex min-h-[70vh] items-center justify-center bg-ink-950 py-20">
+    <Container class="mx-auto flex max-w-lg flex-col items-center gap-5 text-center">
+      <span class="font-heading text-6xl font-bold text-gold-500">404</span>
+      <h1 class="font-heading text-3xl font-bold">Page Not Found</h1>
+      <p class="text-base text-paper/70">
+        The page you're looking for doesn't exist or may have moved.
+      </p>
+      <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+        <Button href="/" arrow>Back to Home</Button>
+        <Button href="/contact/" variant="secondary">Contact Us</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

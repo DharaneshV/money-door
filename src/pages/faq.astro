@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import FaqAccordion from "../components/sections/FaqAccordion.astro";
+import Button from "../components/ui/Button.astro";
+
+const faqs = (await getCollection("faq"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((f) => ({ question: f.data.question, answer: f.body?.trim() ?? "" }));
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: { "@type": "Answer", text: f.answer },
+  })),
+};
+---
+
+<BaseLayout
+  title="Frequently Asked Questions"
+  description="Answers to common questions about Money Door FX Academy's courses, fees, class format, and trading education approach."
+  schema={faqSchema}
+>
+  <PageHero
+    eyebrow="FAQ"
+    title="Frequently Asked Questions"
+    subtitle="Everything you need to know before joining Money Door FX Academy."
+  />
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container>
+      <FaqAccordion items={faqs} />
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <h2 class="font-heading text-2xl font-bold sm:text-3xl">Still have questions?</h2>
+      <p class="max-w-lg text-base text-paper/70">
+        Reach out and we'll get back to you — no pressure, no obligation.
+      </p>
+      <Button href="/contact/" arrow>Contact Us</Button>
+    </Container>
+  </section>
+</BaseLayout>

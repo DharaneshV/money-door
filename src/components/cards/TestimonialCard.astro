@@ -1,0 +1,29 @@
+---
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  studentName: string;
+  quote: string;
+  rating: number;
+}
+const { studentName, quote, rating } = Astro.props;
+const initials = studentName
+  .split(" ")
+  .map((p) => p[0])
+  .slice(0, 2)
+  .join("")
+  .toUpperCase();
+---
+
+<figure class="flex h-full flex-col gap-4 rounded-2xl border border-ink-700 bg-ink-900 p-6">
+  <div class="flex gap-0.5 text-gold-500">
+    {Array.from({ length: 5 }).map((_, i) => <Icon name="star" class={`h-4 w-4 ${i < rating ? "" : "opacity-20"}`} />)}
+  </div>
+  <blockquote class="flex-1 text-sm leading-relaxed text-paper/80">"{quote}"</blockquote>
+  <figcaption class="flex items-center gap-3">
+    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gold-500/15 font-heading text-xs font-bold text-gold-400">
+      {initials}
+    </span>
+    <span class="text-sm font-medium text-paper">{studentName}</span>
+  </figcaption>
+</figure>

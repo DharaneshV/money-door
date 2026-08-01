@@ -1,0 +1,75 @@
+---
+interface Props {
+  href?: string;
+  variant?: "primary" | "secondary" | "ghost" | "secondary-light" | "ghost-light";
+  size?: "md" | "lg";
+  class?: string;
+  arrow?: boolean;
+  target?: "_blank";
+  type?: "button" | "submit";
+}
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  class: className = "",
+  arrow = false,
+  target,
+  type = "button",
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 rounded-full font-heading font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-500";
+
+// The -light variants exist because gold-300/paper text fails WCAG contrast on
+// the light `bg-paper` sections — use them for any button on a light background.
+const variants = {
+  primary: "bg-gold-500 text-ink-950 hover:bg-gold-300",
+  secondary: "border border-paper/30 text-paper hover:border-gold-500 hover:text-gold-300",
+  ghost: "text-gold-300 hover:text-gold-200",
+  "secondary-light": "border border-ink-950/25 text-ink-950 hover:border-gold-600 hover:text-gold-700",
+  "ghost-light": "text-gold-700 hover:text-gold-600",
+};
+
+const sizes = {
+  md: "px-6 py-3 text-sm",
+  lg: "px-8 py-4 text-base",
+};
+
+const classes = [base, variants[variant], sizes[size], className].join(" ");
+const rel = target === "_blank" ? "noopener noreferrer" : undefined;
+---
+
+{
+  href ? (
+    <a href={href} class={classes} target={target} rel={rel}>
+      <slot />
+      {arrow && (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      )}
+    </a>
+  ) : (
+    <button type={type} class={classes}>
+      <slot />
+      {arrow && (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      )}
+    </button>
+  )
+}

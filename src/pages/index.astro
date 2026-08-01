@@ -1,17 +1,33 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import TrustBar from "../components/sections/TrustBar.astro";
+import PathCards from "../components/sections/PathCards.astro";
+import WhyChooseUs from "../components/sections/WhyChooseUs.astro";
+import AboutTeaser from "../components/sections/AboutTeaser.astro";
+import ChiefTrainerTeaser from "../components/sections/ChiefTrainerTeaser.astro";
+import ProgramsSection from "../components/sections/ProgramsSection.astro";
+import StudentJourney from "../components/sections/StudentJourney.astro";
+import ComparisonSection from "../components/sections/ComparisonSection.astro";
+import TestimonialsSection from "../components/sections/TestimonialsSection.astro";
+import BlogTeaser from "../components/sections/BlogTeaser.astro";
+import CtaBanner from "../components/sections/CtaBanner.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Money Door FX Academy — Master Gold Trading with Confidence"
+  description="India's trusted Gold (XAU/USD) & Forex trading academy. Structured courses, live market mentorship, and disciplined risk management from a Chief Trainer with 18+ years of experience."
+>
+  <Hero />
+  <TrustBar />
+  <PathCards />
+  <WhyChooseUs />
+  <AboutTeaser />
+  <ChiefTrainerTeaser />
+  <ProgramsSection />
+  <StudentJourney />
+  <ComparisonSection />
+  <TestimonialsSection />
+  <BlogTeaser />
+  <CtaBanner />
+</BaseLayout>

@@ -1,0 +1,75 @@
+---
+import LegalLayout from "../layouts/LegalLayout.astro";
+import { contact } from "../data/site";
+---
+
+<LegalLayout
+  title="Terms & Conditions"
+  description="Terms and conditions for using the Money Door FX Academy website and enrolling in our programs."
+  lastUpdated="August 1, 2026"
+>
+  <p>
+    These Terms &amp; Conditions govern your use of the Money Door FX Academy website and
+    enrollment in any of our programs. By using this website or enrolling in a program, you agree
+    to these terms.
+  </p>
+
+  <h2>Our Services</h2>
+  <p>
+    Money Door FX Academy provides trading education services only — including structured
+    courses, live market sessions, and mentorship. We do not provide investment advice, portfolio
+    management, brokerage services, or any guaranteed-return scheme. See our{" "}
+    <a class="text-gold-400 underline" href="/risk-disclaimer/">Risk Disclaimer</a> for more detail.
+  </p>
+
+  <h2>Enrollment</h2>
+  <p>
+    Enrollment in MDC2 and MDC3 is confirmed after direct communication with our team and receipt
+    of the applicable program fee. Program fees, duration, and inclusions are as described on
+    this website at the time of enrollment, or as otherwise confirmed with you in writing.
+  </p>
+
+  <h2>Payments &amp; Refunds</h2>
+  <p>
+    Specific payment methods and any applicable refund terms will be communicated to you directly
+    at the time of enrollment. Please review these carefully before making payment, as trading
+    education access — once delivered — may not be refundable except as expressly agreed.
+  </p>
+
+  <h2>Your Responsibilities</h2>
+  <ul>
+    <li>Provide accurate information when enrolling or contacting us.</li>
+    <li>Use course materials for your own personal learning only.</li>
+    <li>Make your own independent trading decisions — we do not execute trades on your behalf.</li>
+  </ul>
+
+  <h2>Intellectual Property</h2>
+  <p>
+    All course materials, strategies (including the PR &amp; PC methodology), branding, and
+    content on this website are the property of Money Door FX Academy and may not be
+    reproduced, resold, or redistributed without our written permission.
+  </p>
+
+  <h2>Limitation of Liability</h2>
+  <p>
+    To the maximum extent permitted by law, Money Door FX Academy is not liable for any trading
+    losses, indirect damages, or losses arising from your use of the information or strategies
+    taught in our programs. Trading is inherently risky, and outcomes depend on your own
+    decisions and market conditions outside of our control.
+  </p>
+
+  <h2>Governing Law</h2>
+  <p>These terms are governed by the laws of India, with courts in Tamil Nadu having jurisdiction.</p>
+
+  <h2>Changes to These Terms</h2>
+  <p>
+    We may update these terms from time to time. Continued use of our website or programs after
+    changes are posted constitutes acceptance of the updated terms.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about these terms can be sent to{" "}
+    <a class="text-gold-400 underline" href={`mailto:${contact.email}`}>{contact.email}</a>.
+  </p>
+</LegalLayout>

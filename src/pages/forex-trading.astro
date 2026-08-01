@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const pairs = [
+  { pair: "EUR/USD", note: "The world's most traded currency pair — a common starting point for structure and trend reading." },
+  { pair: "GBP/USD", note: "Known for sharper intraday moves, useful for practicing volatility-aware risk sizing." },
+  { pair: "USD/JPY", note: "Often reacts strongly to macro and rate-driven catalysts." },
+  { pair: "XAU/USD", note: "Gold, priced in US Dollars — our primary specialization, taught alongside the majors." },
+];
+---
+
+<BaseLayout
+  title="Forex Trading Education"
+  description="Structured Forex trading education from Money Door FX Academy — major currency pairs, market structure, and the same disciplined risk management taught across every program."
+>
+  <PageHero
+    eyebrow="Forex Trading"
+    title="Forex Trading Education"
+    subtitle="The same structured, rule-based approach we teach for Gold — applied to the major currency pairs."
+  />
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+      <h2 class="font-heading text-3xl font-bold text-ink-950">A Shared Foundation</h2>
+      <p class="text-base leading-relaxed text-ink-700">
+        Forex and Gold are read using the same underlying skills: market structure, price action,
+        and disciplined risk control. Students who complete MDC1 and MDC2 apply Money Door's PR
+        (Point of Reversal) and PC (Point of Continuation) framework across major currency pairs,
+        not just Gold — building a versatile, repeatable process rather than a single
+        market-specific trick.
+      </p>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="What You'll Study" title="Major Pairs We Cover" />
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          pairs.map((p) => (
+            <div class="flex flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-6">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+                <Icon name="chart-bar" class="h-5 w-5" />
+              </span>
+              <h3 class="font-heading text-lg font-bold text-paper">{p.pair}</h3>
+              <p class="text-sm text-paper/60">{p.note}</p>
+            </div>
+          ))
+        }
+      </div>
+      <RiskDisclaimer />
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Start With the Fundamentals</h2>
+      <p class="max-w-xl text-base text-paper/70">
+        MDC1 — Foundation Trader is a free, one-week introduction to Forex &amp; Gold market
+        basics, platform setup, and risk management fundamentals.
+      </p>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <Button href="/courses/mdc1/" arrow>Start with MDC1 (Free)</Button>
+        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

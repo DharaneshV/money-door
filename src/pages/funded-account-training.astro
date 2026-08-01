@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+
+const preparation = [
+  {
+    icon: "shield-check" as const,
+    title: "Drawdown Discipline",
+    description:
+      "Most evaluations fail on maximum drawdown rules, not profit targets. We focus on position sizing and daily loss limits first.",
+  },
+  {
+    icon: "target" as const,
+    title: "Consistency Rules",
+    description:
+      "Many firms require steady results rather than one large winning trade. We train a repeatable process that produces consistent behavior.",
+  },
+  {
+    icon: "chart-bar" as const,
+    title: "Strategy Application",
+    description:
+      "Applying the PR & PC methodology within the specific constraints an evaluation imposes — time limits, lot sizes, and permitted instruments.",
+  },
+  {
+    icon: "users" as const,
+    title: "One-to-One Review",
+    description:
+      "Personal performance reviews to identify the specific habits costing you the evaluation, before they cost you the account.",
+  },
+];
+---
+
+<BaseLayout
+  title="Funded Account Training"
+  description="Prop firm evaluation preparation from Money Door FX Academy — drawdown discipline, consistency rules, and one-to-one performance review as part of MDC3."
+>
+  <PageHero
+    eyebrow="Funded Accounts"
+    title="Funded Account (Prop Firm) Training"
+    subtitle="Preparation for proprietary trading firm evaluations — taught as part of our MDC3 Elite Master Trader mentorship."
+  />
+
+  <section class="bg-paper py-16 sm:py-20">
+    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+      <h2 class="font-heading text-3xl font-bold text-ink-950">What Is a Funded Account?</h2>
+      <p class="text-base leading-relaxed text-ink-700">
+        Proprietary trading firms ("prop firms") let traders demonstrate their skill through a
+        paid evaluation. Traders who pass are given access to trade firm capital and share in the
+        profits. Evaluations typically impose strict rules — maximum daily loss, maximum overall
+        drawdown, and minimum trading days — and most candidates fail on those risk rules rather
+        than on the profit target.
+      </p>
+      <p class="text-base leading-relaxed text-ink-700">
+        We prepare students for that reality. We are an education provider — we do not operate a
+        prop firm, guarantee that you will pass any evaluation, or provide funding ourselves.
+      </p>
+    </Container>
+  </section>
+
+  <section class="bg-ink-950 py-16 sm:py-20">
+    <Container class="flex flex-col gap-10">
+      <SectionHeading eyebrow="How We Prepare You" title="What Funded Account Training Covers" />
+      <div class="grid gap-6 sm:grid-cols-2">
+        {
+          preparation.map((p) => (
+            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-7">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+                <Icon name={p.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="font-heading text-lg font-bold text-paper">{p.title}</h3>
+              <p class="text-sm leading-relaxed text-paper/65">{p.description}</p>
+            </div>
+          ))
+        }
+      </div>
+      <RiskDisclaimer />
+    </Container>
+  </section>
+
+  <section class="bg-ink-900 py-16 sm:py-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Included in MDC3</h2>
+      <p class="max-w-xl text-base text-paper/70">
+        Funded-account preparation is delivered as part of MDC3 — Elite Master Trader, our
+        12-month one-to-one mentorship program.
+      </p>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <Button href="/courses/mdc3/" arrow>View MDC3 — Elite Master Trader</Button>
+        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

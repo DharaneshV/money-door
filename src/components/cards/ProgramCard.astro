@@ -1,0 +1,56 @@
+---
+import Icon from "../ui/Icon.astro";
+import Button from "../ui/Button.astro";
+
+interface Props {
+  code: string;
+  name: string;
+  tagline: string;
+  duration: string;
+  price: number;
+  currency: string;
+  priceLabel?: string;
+  highlights: string[];
+  featured?: boolean;
+}
+const { code, name, tagline, duration, price, currency, priceLabel, highlights, featured = false } =
+  Astro.props;
+
+const priceDisplay = priceLabel ?? `${currency} ${price.toLocaleString("en-US")}`;
+const href = `/courses/${code.toLowerCase()}/`;
+---
+
+<div
+  class:list={[
+    "flex flex-col gap-5 rounded-2xl border p-8",
+    featured ? "border-gold-500 bg-ink-900 shadow-xl shadow-gold-500/10" : "border-ink-700 bg-ink-900",
+  ]}
+>
+  <div>
+    <span class="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">
+      {code}
+    </span>
+    <h3 class="mt-1 font-heading text-2xl font-bold text-paper">{name}</h3>
+    <p class="mt-1 text-sm text-paper/60">{tagline}</p>
+  </div>
+
+  <div class="flex items-baseline gap-2">
+    <span class="font-heading text-3xl font-bold text-gold-400">{priceDisplay}</span>
+    <span class="text-sm text-paper/50">/ {duration}</span>
+  </div>
+
+  <ul class="flex flex-col gap-2.5">
+    {
+      highlights.map((h) => (
+        <li class="flex items-start gap-2 text-sm text-paper/75">
+          <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+          <span>{h}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <Button href={href} class="mt-auto w-full" variant={featured ? "primary" : "secondary"}>
+    Learn More
+  </Button>
+</div>

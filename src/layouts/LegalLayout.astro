@@ -1,0 +1,29 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  lastUpdated: string;
+}
+const { title, description, lastUpdated } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="border-b border-ink-700 bg-ink-950 py-14 text-center">
+    <Container>
+      <h1 class="font-heading text-3xl font-bold sm:text-4xl">{title}</h1>
+      <p class="mt-2 text-sm text-paper/50">Last updated: {lastUpdated}</p>
+    </Container>
+  </section>
+  <section class="bg-ink-950 py-16">
+    <Container class="mx-auto max-w-3xl">
+      <div
+        class="flex flex-col gap-5 text-sm leading-relaxed text-paper/75 [&_h2]:mt-6 [&_h2]:font-heading [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-paper [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-2"
+      >
+        <slot />
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

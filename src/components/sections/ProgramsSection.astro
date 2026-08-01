@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import Container from "../ui/Container.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import ProgramCard from "../cards/ProgramCard.astro";
+
+const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="bg-ink-900 py-16 sm:py-20">
+  <Container class="flex flex-col gap-10">
+    <SectionHeading
+      eyebrow="Our Learning Programs"
+      title="Choose the Learning Path That Fits Your Goals"
+    />
+    <div class="grid gap-6 lg:grid-cols-3">
+      {
+        programs.map((program) => (
+          <ProgramCard {...program.data} featured={program.data.code === "MDC2"} />
+        ))
+      }
+    </div>
+  </Container>
+</section>
