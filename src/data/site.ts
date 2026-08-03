@@ -30,6 +30,10 @@ export const whatsappHref = `https://wa.me/${contact.primaryPhoneE164}?text=${en
   contact.whatsappMessage
 )}`;
 
+// Broadcast-only WhatsApp Channel (separate from the 1:1 chat number above) —
+// for market updates/announcements rather than direct conversation.
+export const whatsappChannelUrl = "https://whatsapp.com/channel/0029VbAlxyC1NCrL77kXNR30";
+
 // TODO: every URL here is a placeholder (null) until the client provides real handles —
 // components must skip rendering any social link whose url is null rather than linking to "#".
 export const socials = [

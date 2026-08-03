@@ -1,51 +1,73 @@
 ---
 import Container from "../ui/Container.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
-import Icon from "../ui/Icon.astro";
 
 const paths = [
   {
-    icon: "graduation-cap" as const,
+    index: "01",
     title: "Trading Courses",
     description: "From beginner to advanced — step-by-step learning with practical strategies.",
+    meta: "MDC1 · MDC2 · MDC3",
     href: "/courses/",
   },
   {
-    icon: "copy" as const,
+    index: "02",
     title: "Copy Trading",
-    description: "Understand how copy trading works and what to evaluate before following any strategy.",
+    description:
+      "Understand how copy trading works and what to evaluate before following any strategy.",
+    meta: "Education, not signals",
     href: "/copy-trading/",
   },
   {
-    icon: "chart-bar" as const,
+    index: "03",
     title: "Daily Analysis",
-    description: "Educational Gold & Forex market breakdowns — levels, structure, and reasoning explained.",
+    description:
+      "Educational Gold & Forex market breakdowns — levels, structure, and reasoning explained.",
+    meta: "XAU/USD focus",
     href: "/daily-market-analysis/",
   },
 ];
 ---
 
-<section class="bg-paper py-16 sm:py-20">
-  <Container class="flex flex-col gap-10">
-    <SectionHeading eyebrow="Our Programs" title="Choose Your Path" light />
-    <div class="grid gap-6 sm:grid-cols-3">
+<section class="bg-paper py-section">
+  <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+    <SectionHeading eyebrow="Our Programs" index="01" title="Choose Your Path" align="left" light />
+
+    <div class="flex flex-col" data-reveal-stagger>
       {
         paths.map((p) => (
-          <a
-            href={p.href}
-            class="group flex flex-col gap-4 rounded-2xl border border-ink-950/10 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
-          >
-            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-ink-950 text-gold-500">
-              <Icon name={p.icon} class="h-6 w-6" />
-            </span>
-            <h3 class="font-heading text-xl font-bold text-ink-950">{p.title}</h3>
-            <p class="text-sm leading-relaxed text-ink-700">{p.description}</p>
-            <span class="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-gold-700">
-              Learn More
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="transition-transform group-hover:translate-x-1" aria-hidden="true">
-                <path d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
+          <a href={p.href} class="edit-row edit-row-light group block py-[clamp(1.75rem,3.5vw,3rem)]">
+            <div class="grid items-baseline gap-x-8 gap-y-3 md:grid-cols-[auto_1fr_auto] md:gap-x-12">
+              <span class="section-index text-gold-700 md:pt-2">{p.index}</span>
+              <div class="flex flex-col gap-3 md:flex-row md:items-baseline md:gap-12">
+                <h3 class="w-full max-w-xs font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.6rem)] font-medium leading-tight text-ink-950 transition-colors duration-500 group-hover:text-gold-700">
+                  {p.title}
+                </h3>
+                <div class="flex flex-1 flex-col gap-2">
+                  <p class="max-w-md text-base leading-relaxed text-ink-700">{p.description}</p>
+                  <span class="eyebrow text-ink-500">{p.meta}</span>
+                </div>
+              </div>
+              <span class="mt-2 inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-ink-950 md:mt-0 md:pt-2">
+                <span class="link-underline">View</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="transition-transform duration-500 group-hover:translate-x-1.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
           </a>
         ))
       }

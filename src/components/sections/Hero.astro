@@ -1,109 +1,177 @@
 ---
 import Container from "../ui/Container.astro";
-import Button from "../ui/Button.astro";
-import Icon from "../ui/Icon.astro";
 
-const features = [
-  { icon: "graduation-cap" as const, label: "Expert Training" },
-  { icon: "chart-bar" as const, label: "Proven Strategies" },
-  { icon: "video" as const, label: "Live Market Analysis" },
-  { icon: "shield-check" as const, label: "Risk Management" },
-];
-
-// Candlestick bars for the decorative chart graphic — hand-set, not real data.
+// Decorative candlesticks for the background chart — hand-set heights, not
+// real market data (see /daily-market-analysis/ for the real, sourced figures).
 const candles = [
-  { h: 38, up: false },
-  { h: 58, up: true },
-  { h: 46, up: false },
-  { h: 72, up: true },
+  { h: 30, up: false },
+  { h: 52, up: true },
+  { h: 41, up: false },
   { h: 64, up: true },
-  { h: 88, up: true },
-  { h: 76, up: true },
+  { h: 55, up: true },
+  { h: 78, up: true },
+  { h: 68, up: false },
+  { h: 86, up: true },
+  { h: 74, up: true },
+  { h: 95, up: true },
 ];
 ---
 
-<section class="relative overflow-hidden border-b border-ink-700">
-  <div
-    class="pointer-events-none absolute -right-40 -top-40 h-[36rem] w-[36rem] rounded-full bg-gold-500/10 blur-3xl"
-    aria-hidden="true"
-  >
+<section
+  class="relative isolate flex min-h-[92svh] flex-col justify-between overflow-hidden border-b border-paper/12 pb-10 pt-[clamp(3rem,8vh,6rem)]"
+>
+  {/* Background: an oversized, very low-contrast chart that reads as texture
+      rather than data — the "full-bleed image" role in the reference layouts. */}
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="absolute inset-x-0 bottom-0 flex h-[52%] items-end justify-center gap-[1.2vw] px-[4vw] opacity-[0.08]">
+      {
+        candles.map((c, i) => (
+          <div
+            class:list={[
+              "hero-candle w-full max-w-[5rem] flex-1",
+              c.up ? "bg-market-up" : "bg-market-down",
+            ]}
+            style={`height:${c.h}%; --candle-delay:${i * 70}ms`}
+          />
+        ))
+      }
+    </div>
+    <svg
+      class="absolute inset-x-[4vw] bottom-[8%] top-[52%] w-[92vw]"
+      viewBox="0 0 300 160"
+      preserveAspectRatio="none"
+    >
+      <path
+        class="hero-trendline"
+        d="M0 140 L33 120 L66 128 L100 88 L133 98 L166 58 L200 70 L233 34 L266 44 L300 10"
+        fill="none"
+        stroke="var(--color-gold-500)"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0.3"
+      />
+    </svg>
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_10%,var(--color-ink-950)_72%)]"
+    >
+    </div>
   </div>
 
-  <Container class="relative grid gap-14 py-16 lg:grid-cols-2 lg:items-center lg:py-24">
-    <div class="flex flex-col gap-6">
-      <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">
-        India's Trusted Gold &amp; Forex Trading Academy
-      </span>
-      <h1 class="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-        Master Gold Trading with <span class="text-gold-500">Confidence</span>
-      </h1>
-      <p class="max-w-xl text-lg text-paper/70">
-        Professional Gold (XAU/USD) &amp; Forex trading education designed to help traders develop
-        discipline, manage risk, and build long-term consistency through structured learning and
-        live market mentorship.
-      </p>
+  <Container width="wide" class="relative">
+    <p class="eyebrow text-gold-500" data-reveal>India's Trusted Gold &amp; Forex Trading Academy</p>
+  </Container>
 
-      <div class="grid grid-cols-2 gap-4 pt-2 sm:grid-cols-4">
-        {
-          features.map((f) => (
-            <div class="flex flex-col items-start gap-2">
-              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
-                <Icon name={f.icon} class="h-5 w-5" />
-              </span>
-              <span class="text-xs font-medium text-paper/70">{f.label}</span>
-            </div>
-          ))
-        }
-      </div>
+  <Container width="wide" class="relative flex flex-col items-center py-[clamp(2rem,5vh,4rem)] text-center">
+    <h1 class="display-mega display-tracked text-paper" data-reveal-lines>
+      <span class="reveal-line"><span>MONEY DOOR</span></span>
+    </h1>
+    <p
+      class="mt-[clamp(1rem,2.5vh,2rem)] max-w-2xl text-balance font-heading text-sm font-medium uppercase tracking-[0.22em] text-paper/60 sm:text-base"
+      data-reveal
+    >
+      Master Gold Trading with Confidence
+    </p>
+    <p class="mt-6 max-w-xl text-base leading-relaxed text-paper/55" data-reveal>
+      Professional Gold (XAU/USD) &amp; Forex trading education built on structured learning,
+      live market mentorship, and disciplined risk management.
+    </p>
 
-      <div class="flex flex-col gap-3 pt-4 sm:flex-row">
-        <Button href="/courses/" size="lg" arrow>Explore Courses</Button>
-        <Button href="/contact/" size="lg" variant="secondary">Book Free Consultation</Button>
-      </div>
-    </div>
-
-    <div class="relative">
-      <div
-        class="relative flex h-72 items-end justify-center gap-3 rounded-3xl border border-ink-700 bg-ink-900 px-8 pb-8 pt-12 sm:h-96"
+    <div class="mt-[clamp(2rem,4vh,3rem)] flex flex-wrap items-center justify-center gap-x-10 gap-y-4" data-reveal>
+      <a
+        href="/courses/"
+        class="group inline-flex items-center gap-3 font-heading text-sm font-semibold uppercase tracking-[0.18em] text-paper transition-colors hover:text-gold-400"
       >
-        <span
-          class="absolute left-6 top-6 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-paper/40"
-        >
-          XAU/USD · Gold
-        </span>
-        {
-          candles.map((c) => (
-            <div
-              class:list={[
-                "w-6 rounded-sm sm:w-8",
-                c.up ? "bg-market-up/80" : "bg-market-down/70",
-              ]}
-              style={`height: ${c.h}%`}
-            />
-          ))
-        }
+        <span class="link-underline">Explore Courses</span>
         <svg
-          class="pointer-events-none absolute inset-x-6 bottom-10 top-14 h-auto w-[calc(100%-3rem)]"
-          viewBox="0 0 300 160"
-          preserveAspectRatio="none"
+          width="18"
+          height="18"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="transition-transform duration-500 group-hover:translate-x-1.5"
           aria-hidden="true"
         >
           <path
-            d="M0 130 L45 108 L90 118 L135 70 L180 82 L225 34 L270 18"
-            fill="none"
-            stroke="#D6A31E"
-            stroke-width="2.5"
+            d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+            stroke="currentColor"
+            stroke-width="1.4"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-      </div>
-      <div
-        class="absolute -bottom-6 -left-6 rounded-2xl border border-gold-500/30 bg-ink-950 px-5 py-4 shadow-xl shadow-black/40"
+      </a>
+      <a
+        href="/contact/"
+        class="group inline-flex items-center gap-3 font-heading text-sm font-semibold uppercase tracking-[0.18em] text-gold-400 transition-colors hover:text-gold-300"
       >
-        <p class="font-heading text-2xl font-bold text-gold-400">18+ Yrs</p>
-        <p class="text-xs text-paper/60">Chief Trainer's Market Experience</p>
+        <span class="link-underline">Book Free Consultation</span>
+      </a>
+    </div>
+  </Container>
+
+  <Container width="wide" class="relative">
+    <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-8">
+      <div class="hidden items-center gap-4 sm:flex" data-reveal>
+        <span class="scroll-cue__line" aria-hidden="true"></span>
+        <span class="eyebrow text-paper/40">Scroll to explore</span>
       </div>
+      {/* pr-* keeps the last stat clear of the floating WhatsApp button, which
+          sits fixed in the bottom-right corner across the whole site. */}
+      <dl
+        class="flex w-full items-end justify-between gap-x-[clamp(1rem,3vw,3rem)] sm:w-auto sm:justify-end sm:pr-20"
+        data-reveal-stagger
+      >
+        {
+          [
+            { to: 18, suffix: "+", label: "Years" },
+            { to: 2500, suffix: "+", label: "Students" },
+            { to: 3, suffix: "", label: "Programs" },
+          ].map((s) => (
+            <div class="sm:text-right">
+              <dt class="font-display text-[clamp(1.4rem,1rem+1.5vw,2.25rem)] font-medium leading-none tabular-nums text-gold-400">
+                <span data-count-to={s.to} data-count-suffix={s.suffix}>
+                  0
+                </span>
+              </dt>
+              <dd class="eyebrow mt-2 whitespace-nowrap text-paper/40">{s.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
     </div>
   </Container>
 </section>
+
+<style>
+  /* Candles grow up from the baseline, then the trend line draws itself across
+     them — a single one-off flourish on load, not a looping animation. */
+  .js .hero-candle {
+    transform-origin: bottom;
+    animation: candle-grow 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--candle-delay, 0ms);
+  }
+  @keyframes candle-grow {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  .js .hero-trendline {
+    stroke-dasharray: 460;
+    stroke-dashoffset: 460;
+    animation: trend-draw 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  }
+  @keyframes trend-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js .hero-candle,
+    .js .hero-trendline {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

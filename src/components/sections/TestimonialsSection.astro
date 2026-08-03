@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import Container from "../ui/Container.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
-import Button from "../ui/Button.astro";
 import TestimonialCard from "../cards/TestimonialCard.astro";
 
 // Gated on `published: true` — see the plan's "Open items" #2. Until real
@@ -11,21 +10,29 @@ import TestimonialCard from "../cards/TestimonialCard.astro";
 const testimonials = (await getCollection("testimonials", ({ data }) => data.published)).slice(0, 6);
 ---
 
-<section class="bg-paper py-16 sm:py-20">
-  <Container class="flex flex-col gap-10">
-    <SectionHeading eyebrow="Student Success Stories" title="Hear From Our Students" light />
+<section class="bg-paper py-section">
+  <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+    <SectionHeading
+      eyebrow="Student Success Stories"
+      index="07"
+      title="Hear From Our Students"
+      align="left"
+      light
+    />
 
     {
       testimonials.length > 0 ? (
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-x-[clamp(2rem,5vw,4rem)] gap-y-12 md:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
           {testimonials.map((t) => (
             <TestimonialCard {...t.data} />
           ))}
         </div>
       ) : (
-        <div class="mx-auto flex max-w-xl flex-col items-center gap-3 rounded-2xl border border-dashed border-ink-950/20 px-8 py-14 text-center">
-          <p class="font-heading text-lg font-semibold text-ink-950">Student stories, coming soon</p>
-          <p class="text-sm text-ink-700">
+        <div class="border-t border-ink-950/12 py-16 text-center" data-reveal>
+          <p class="font-display text-[clamp(1.35rem,1.1rem+1vw,2rem)] font-medium text-ink-950">
+            Student stories, coming soon
+          </p>
+          <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-700">
             We're collecting real feedback from our students. Rather than publish invented
             reviews, we'll add genuine stories here as they come in.
           </p>
@@ -33,8 +40,27 @@ const testimonials = (await getCollection("testimonials", ({ data }) => data.pub
       )
     }
 
-    <div class="text-center">
-      <Button href="/student-reviews/" variant="ghost-light" arrow>View All Testimonials</Button>
-    </div>
+    <a
+      href="/student-reviews/"
+      class="group inline-flex w-fit items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-ink-950 transition-colors hover:text-gold-700"
+    >
+      <span class="link-underline">View all testimonials</span>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        class="transition-transform duration-500 group-hover:translate-x-1.5"
+        aria-hidden="true"
+      >
+        <path
+          d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </a>
   </Container>
 </section>

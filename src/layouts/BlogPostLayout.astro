@@ -31,7 +31,7 @@ const articleSchema = {
 
 <BaseLayout title={title} description={description} schema={articleSchema}>
   <article>
-    <header class="border-b border-ink-700 bg-ink-950 py-14">
+    <header class="border-b border-paper/12 bg-ink-950 py-14">
       <Container class="mx-auto flex max-w-3xl flex-col gap-4">
         <a href="/blog/" class="text-sm text-gold-400 hover:text-gold-300">&larr; Back to Blog</a>
         <span class="w-fit rounded-full bg-gold-500/10 px-3 py-1 text-xs font-semibold text-gold-400">
@@ -46,7 +46,7 @@ const articleSchema = {
     <div class="bg-ink-950 py-14">
       <Container class="mx-auto max-w-3xl">
         <div
-          class="flex flex-col gap-5 text-base leading-relaxed text-paper/75 [&_h2]:mt-8 [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-paper [&_h3]:mt-6 [&_h3]:font-heading [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-paper [&_strong]:text-paper [&_ul]:flex [&_ul]:list-disc [&_ul]:flex-col [&_ul]:gap-2 [&_ul]:pl-5 [&_ol]:flex [&_ol]:list-decimal [&_ol]:flex-col [&_ol]:gap-2 [&_ol]:pl-5 [&_hr]:my-4 [&_hr]:border-ink-700 [&_em]:text-paper/50 [&_a]:text-gold-400 [&_a]:underline"
+          class="flex flex-col gap-5 text-base leading-relaxed text-paper/75 [&_h2]:mt-8 [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-paper [&_h3]:mt-6 [&_h3]:font-heading [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-paper [&_strong]:text-paper [&_ul]:flex [&_ul]:list-disc [&_ul]:flex-col [&_ul]:gap-2 [&_ul]:pl-5 [&_ol]:flex [&_ol]:list-decimal [&_ol]:flex-col [&_ol]:gap-2 [&_ol]:pl-5 [&_hr]:my-4 [&_hr]:border-paper/12 [&_em]:text-paper/50 [&_a]:text-gold-400 [&_a]:underline"
         >
           <slot />
         </div>

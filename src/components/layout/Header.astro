@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
 import Container from "../ui/Container.astro";
-import Button from "../ui/Button.astro";
 import MobileNav from "./MobileNav.astro";
 import logoMark from "../../assets/brand/logo-mark.jpg";
 import { primaryNav } from "../../data/site";
@@ -11,21 +10,30 @@ const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 ---
 
-<header class="sticky top-0 z-50 border-b border-ink-700 bg-ink-950/95 backdrop-blur">
-  <Container class="flex h-20 items-center justify-between gap-4">
-    <a href="/" class="flex flex-none items-center gap-3">
-      <Image src={logoMark} alt="Money Door FX Academy" width={44} height={44} class="rounded-full" />
-      <span class="font-heading leading-tight">
-        <span class="block text-sm font-bold tracking-wide sm:text-base">
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-paper/10 bg-ink-950/80 backdrop-blur-xl"
+>
+  <Container width="wide" class="flex h-[72px] items-center gap-6 lg:gap-12">
+    <a href="/" class="group flex flex-none items-center gap-3">
+      <Image
+        src={logoMark}
+        alt="Money Door FX Academy"
+        width={38}
+        height={38}
+        class="rounded-full transition-transform duration-500 group-hover:scale-105"
+      />
+      <span class="leading-none">
+        <span class="block font-display text-base font-medium tracking-[0.12em] text-paper">
           MONEY <span class="text-gold-500">DOOR</span>
         </span>
-        <span class="block text-[10px] font-medium tracking-[0.25em] text-paper/55 sm:text-xs">
-          FX ACADEMY
+        <span class="eyebrow mt-1.5 block text-[0.5rem] text-paper/40 sm:text-[0.55rem]">
+          FX Academy
         </span>
       </span>
     </a>
 
-    <nav class="hidden items-center gap-1 lg:flex">
+    <nav class="hidden items-center gap-6 lg:flex xl:gap-8">
       {
         primaryNav.map((item) =>
           item.children ? (
@@ -33,31 +41,40 @@ const isActive = (href: string) =>
               <button
                 type="button"
                 class:list={[
-                  "flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                  isActive(item.href) ? "text-gold-400" : "text-paper/85 hover:text-gold-300",
+                  "eyebrow flex items-center gap-1.5 whitespace-nowrap py-2 transition-colors",
+                  isActive(item.href) ? "text-gold-400" : "text-paper/70 hover:text-paper",
                 ]}
                 aria-haspopup="true"
               >
                 {item.label}
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  class="transition-transform duration-300 group-hover:rotate-180"
+                  aria-hidden="true"
+                >
                   <path
                     d="m2.5 4.5 3.5 3 3.5-3"
                     stroke="currentColor"
-                    stroke-width="1.4"
+                    stroke-width="1.6"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
               </button>
-              <div class="invisible absolute left-0 top-full z-10 w-64 rounded-xl border border-ink-700 bg-ink-900 p-2 opacity-0 shadow-xl shadow-black/40 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+              <div class="invisible absolute left-1/2 top-full z-10 w-72 -translate-x-1/2 -translate-y-1 border border-paper/10 bg-ink-950/95 p-2 opacity-0 backdrop-blur-xl transition-all duration-300 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                 {item.children.map((child) => (
                   <a
                     href={child.href}
-                    class="block rounded-lg px-3 py-2 text-sm text-paper/85 hover:bg-ink-800 hover:text-gold-300"
+                    class="block px-4 py-3 transition-colors hover:bg-gold-500/8"
                   >
-                    <span class="block font-medium">{child.label}</span>
+                    <span class="block font-heading text-sm font-medium text-paper/90">
+                      {child.label}
+                    </span>
                     {child.description && (
-                      <span class="block text-xs text-paper/50">{child.description}</span>
+                      <span class="eyebrow mt-1.5 block text-paper/35">{child.description}</span>
                     )}
                   </a>
                 ))}
@@ -67,8 +84,8 @@ const isActive = (href: string) =>
             <a
               href={item.href}
               class:list={[
-                "rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                isActive(item.href) ? "text-gold-400" : "text-paper/85 hover:text-gold-300",
+                "eyebrow whitespace-nowrap py-2 transition-colors",
+                isActive(item.href) ? "text-gold-400" : "text-paper/70 hover:text-paper",
               ]}
             >
               {item.label}
@@ -78,33 +95,38 @@ const isActive = (href: string) =>
       }
     </nav>
 
-    <div class="hidden flex-none lg:block">
-      <Button href="/contact/">Join Now</Button>
-    </div>
-
-    <button
-      id="mobile-menu-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-menu-panel"
-      aria-label="Toggle menu"
-      class="flex h-10 w-10 flex-none items-center justify-center rounded-lg text-paper lg:hidden"
-    >
-      <svg id="menu-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-      </svg>
-      <svg
-        id="menu-icon-close"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        class="hidden"
-        aria-hidden="true"
+    <div class="ml-auto flex flex-none items-center gap-5">
+      <a
+        href="/contact/"
+        class="eyebrow hidden whitespace-nowrap border border-gold-500/50 px-6 py-3 text-gold-400 transition-colors duration-300 hover:bg-gold-500 hover:text-ink-950 lg:inline-block"
       >
-        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-      </svg>
-    </button>
+        Join Now
+      </a>
+
+      <button
+        id="mobile-menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu-panel"
+        aria-label="Toggle menu"
+        class="flex h-10 w-10 flex-none items-center justify-center text-paper lg:hidden"
+      >
+        <svg id="menu-icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        <svg
+          id="menu-icon-close"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          class="hidden"
+          aria-hidden="true"
+        >
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
   </Container>
   <MobileNav />
 </header>

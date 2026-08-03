@@ -1,29 +1,18 @@
 ---
-import Icon from "../ui/Icon.astro";
-
 interface Props {
   studentName: string;
   quote: string;
   rating: number;
 }
 const { studentName, quote, rating } = Astro.props;
-const initials = studentName
-  .split(" ")
-  .map((p) => p[0])
-  .slice(0, 2)
-  .join("")
-  .toUpperCase();
 ---
 
-<figure class="flex h-full flex-col gap-4 rounded-2xl border border-ink-700 bg-ink-900 p-6">
-  <div class="flex gap-0.5 text-gold-500">
-    {Array.from({ length: 5 }).map((_, i) => <Icon name="star" class={`h-4 w-4 ${i < rating ? "" : "opacity-20"}`} />)}
+<figure class="flex h-full flex-col border-t border-ink-950/12 pt-8">
+  <div class="eyebrow text-gold-700" aria-label={`${rating} out of 5`}>
+    {"★".repeat(rating)}<span class="text-ink-950/20">{"★".repeat(5 - rating)}</span>
   </div>
-  <blockquote class="flex-1 text-sm leading-relaxed text-paper/80">"{quote}"</blockquote>
-  <figcaption class="flex items-center gap-3">
-    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gold-500/15 font-heading text-xs font-bold text-gold-400">
-      {initials}
-    </span>
-    <span class="text-sm font-medium text-paper">{studentName}</span>
-  </figcaption>
+  <blockquote class="mt-6 flex-1 font-display text-lg italic leading-relaxed text-ink-950 sm:text-xl">
+    "{quote}"
+  </blockquote>
+  <figcaption class="eyebrow mt-8 text-ink-500">{studentName}</figcaption>
 </figure>

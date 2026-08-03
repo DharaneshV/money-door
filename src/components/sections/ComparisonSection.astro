@@ -1,7 +1,6 @@
 ---
 import Container from "../ui/Container.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
-import Icon from "../ui/Icon.astro";
 
 const rows = [
   ["Signal Dependency", "Independent Learning"],
@@ -13,40 +12,39 @@ const rows = [
 ];
 ---
 
-<section class="bg-ink-950 py-16 sm:py-20">
-  <Container class="flex flex-col gap-10">
-    <SectionHeading eyebrow="What Makes Us Different" title="Others vs. Money Door FX Academy" />
+<section class="bg-ink-950 py-section">
+  <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+    <SectionHeading
+      eyebrow="What Makes Us Different"
+      index="06"
+      title="Others vs. Money Door FX Academy"
+      align="left"
+    />
 
-    <div class="mx-auto grid w-full max-w-3xl overflow-hidden rounded-2xl border border-ink-700">
-      <div class="grid grid-cols-2 bg-ink-900">
-        <div class="px-6 py-4 text-center font-heading text-sm font-semibold text-paper/50">
-          Others
-        </div>
-        <div class="px-6 py-4 text-center font-heading text-sm font-semibold text-gold-400">
-          Money Door FX Academy
-        </div>
+    <div class="flex flex-col" data-reveal-stagger>
+      <div class="flex items-baseline justify-between gap-6 pb-4">
+        <span class="eyebrow text-paper/35">Elsewhere</span>
+        <span class="eyebrow text-gold-500">Money Door FX Academy</span>
       </div>
       {
-        rows.map((row, i) => (
-          <div class:list={["grid grid-cols-2", i % 2 === 1 && "bg-ink-900/40"]}>
-            <div class="flex items-center justify-center gap-2 px-6 py-4 text-center text-sm text-paper/50">
-              <Icon name="x-circle" class="h-4 w-4 flex-none text-paper/30" />
+        rows.map((row) => (
+          <div class="edit-row group flex items-baseline justify-between gap-6 py-[clamp(1.1rem,2.2vw,1.75rem)]">
+            <span class="font-display text-[clamp(1rem,0.9rem+0.6vw,1.4rem)] font-medium leading-tight text-paper/35 line-through decoration-paper/20">
               {row[0]}
-            </div>
-            <div class="flex items-center justify-center gap-2 border-l border-ink-700 px-6 py-4 text-center text-sm font-medium text-paper">
-              <Icon name="check-circle" class="h-4 w-4 flex-none text-gold-500" />
+            </span>
+            <span class="text-right font-display text-[clamp(1.1rem,0.95rem+0.8vw,1.65rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
               {row[1]}
-            </div>
+            </span>
           </div>
         ))
       }
     </div>
 
-    <p class="mx-auto max-w-2xl text-center text-base leading-relaxed text-paper/60">
+    <p class="max-w-2xl text-base leading-relaxed text-paper/60" data-reveal>
       Unlike platforms that focus primarily on signals or short-term opportunities, we focus on
-      helping students understand why markets move, how to identify quality trading
-      opportunities, how to manage risk responsibly, and how to develop a consistent trading
-      process — so they can analyze markets with confidence, independently.
+      helping students understand why markets move, how to identify quality trading opportunities,
+      how to manage risk responsibly, and how to develop a consistent trading process — so they
+      can analyze markets with confidence, independently.
     </p>
   </Container>
 </section>

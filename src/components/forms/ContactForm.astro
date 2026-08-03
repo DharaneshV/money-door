@@ -20,7 +20,7 @@ const formId = `form-${variant}`;
 
 {
   !isConfigured && (
-    <div class="flex flex-col gap-4 rounded-2xl border border-gold-500/30 bg-gold-500/5 p-6">
+    <div class="flex flex-col gap-4  border border-gold-500/30 bg-gold-500/5 p-6">
       <p class="font-heading text-base font-bold text-paper">Reach us directly</p>
       <p class="text-sm leading-relaxed text-paper/70">
         The quickest way to reach us right now is WhatsApp, phone, or email — we reply personally
@@ -61,7 +61,7 @@ const formId = `form-${variant}`;
         type="text"
         name="name"
         required
-        class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+        class=" border border-paper/12 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
         placeholder="Your name"
       />
     </label>
@@ -71,7 +71,7 @@ const formId = `form-${variant}`;
         type="email"
         name="email"
         required
-        class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+        class=" border border-paper/12 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
         placeholder="you@example.com"
       />
     </label>
@@ -83,7 +83,7 @@ const formId = `form-${variant}`;
       <input
         type="tel"
         name="phone"
-        class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+        class=" border border-paper/12 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
         placeholder="+91 XXXXX XXXXX"
       />
     </label>
@@ -93,7 +93,7 @@ const formId = `form-${variant}`;
           <span class="font-medium text-paper/80">Program of Interest</span>
           <select
             name="program_interest"
-            class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+            class=" border border-paper/12 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
           >
             <option value="Not sure yet">Not sure yet</option>
             <option value="MDC1 - Foundation Trader">MDC1 — Foundation Trader (Free)</option>
@@ -111,7 +111,7 @@ const formId = `form-${variant}`;
       name="message"
       required
       rows="5"
-      class="rounded-xl border border-ink-700 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
+      class=" border border-paper/12 bg-ink-950 px-4 py-3 text-paper outline-none focus:border-gold-500"
       placeholder={
         isConsultation
           ? "Tell us a little about your trading experience and goals..."

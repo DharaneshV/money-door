@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
@@ -30,13 +31,137 @@ const isHome = Astro.url.pathname === "/";
     <meta name="generator" content={Astro.generator} />
     <SeoHead title={title} description={description} ogImage={ogImage} noindex={noindex} />
     <StructuredData schema={schema} includeOrganization={isHome} />
+    <ClientRouter />
+    {/* Marks that JS is available, before first paint. The scroll-reveal styles
+        are scoped to `.js`, so with JS off nothing is ever hidden. */}
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
   </head>
   <body class="flex min-h-screen flex-col">
-    <Header />
+    <div id="route-progress" aria-hidden="true"></div>
+    <Header transition:persist />
     <main class="flex-1">
       <slot />
     </main>
-    <Footer />
-    <WhatsAppButton />
+    <Footer transition:persist />
+    <WhatsAppButton transition:persist />
+
+    <script>
+      // Scroll-reveal + route-progress bar. Kept deliberately small and
+      // dependency-free — the whole site otherwise ships almost no JavaScript.
+      //
+      // Runs once on first load, then again after every ClientRouter page
+      // transition (astro:page-load fires on both), since transitioned-in
+      // content is new DOM the original observer never saw.
+      function initReveal() {
+        var els = document.querySelectorAll(
+          "[data-reveal], [data-reveal-stagger], [data-reveal-lines]"
+        );
+        if (!els.length) return;
+
+        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduced || !("IntersectionObserver" in window)) {
+          for (var i = 0; i < els.length; i++) els[i].classList.add("is-visible");
+          return;
+        }
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            });
+          },
+          { rootMargin: "0px 0px -10% 0px", threshold: 0.05 }
+        );
+
+        els.forEach(function (el) {
+          if (el.classList.contains("is-visible")) return;
+          if (el.getBoundingClientRect().top < window.innerHeight) {
+            el.classList.add("is-visible");
+          } else {
+            observer.observe(el);
+          }
+        });
+      }
+
+      // Header persists across transitions (transition:persist), so this
+      // listener only needs attaching once — guarded so re-running the init
+      // on every page-load doesn't stack up duplicate scroll listeners.
+      var headerScrollBound = false;
+      function initHeaderScrollState() {
+        var header = document.getElementById("site-header");
+        if (!header || headerScrollBound) return;
+        headerScrollBound = true;
+        function update() {
+          header.classList.toggle("is-scrolled", window.scrollY > 8);
+        }
+        update();
+        window.addEventListener("scroll", update, { passive: true });
+      }
+
+      // Animated count-up for stat numbers (e.g. "18+", "2,500+"). Starts once
+      // the number actually scrolls into view, not on page load.
+      function initCountUp() {
+        var els = document.querySelectorAll("[data-count-to]:not([data-counted])");
+        if (!els.length) return;
+        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function animate(el) {
+          el.setAttribute("data-counted", "1");
+          var target = parseFloat(el.getAttribute("data-count-to") || "0");
+          var suffix = el.getAttribute("data-count-suffix") || "";
+          if (reduced) {
+            el.textContent = target.toLocaleString("en-US") + suffix;
+            return;
+          }
+          var duration = 1300;
+          var start = null;
+          function step(ts) {
+            if (start === null) start = ts;
+            var progress = Math.min((ts - start) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(target * eased).toLocaleString("en-US") + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+
+        if (!("IntersectionObserver" in window)) {
+          els.forEach(animate);
+          return;
+        }
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              animate(entry.target);
+              observer.unobserve(entry.target);
+            });
+          },
+          { threshold: 0.6 }
+        );
+        els.forEach(function (el) {
+          observer.observe(el);
+        });
+      }
+
+      initReveal();
+      initHeaderScrollState();
+      initCountUp();
+      document.addEventListener("astro:page-load", function () {
+        initReveal();
+        initHeaderScrollState();
+        initCountUp();
+        var bar = document.getElementById("route-progress");
+        if (bar) bar.classList.remove("is-loading");
+      });
+      document.addEventListener("astro:before-preparation", function () {
+        var bar = document.getElementById("route-progress");
+        if (bar) bar.classList.add("is-loading");
+      });
+    </script>
   </body>
 </html>

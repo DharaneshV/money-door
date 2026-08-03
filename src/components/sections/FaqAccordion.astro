@@ -5,23 +5,55 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="mx-auto flex max-w-3xl flex-col gap-3">
+<div class="mx-auto flex max-w-3xl flex-col gap-3" data-faq>
   {
-    items.map((item) => (
-      <details class="group rounded-2xl border border-ink-700 bg-ink-900 open:border-gold-500/40">
-        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 font-heading text-base font-semibold text-paper marker:content-none">
+    items.map((item, i) => (
+      <div class="faq-item overflow-hidden  border border-paper/12 bg-ink-900 transition-colors duration-300 [&.is-open]:border-gold-500/40">
+        <button
+          type="button"
+          class="faq-toggle flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-heading text-base font-semibold text-paper transition-colors hover:text-gold-300"
+          aria-expanded="false"
+          aria-controls={`faq-panel-${i}`}
+        >
           {item.question}
           <svg
-            class="h-4 w-4 flex-none text-gold-500 transition-transform duration-200 group-open:rotate-45"
+            class="accordion-chevron h-4 w-4 flex-none text-gold-500"
             viewBox="0 0 16 16"
             fill="none"
             aria-hidden="true"
           >
             <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
           </svg>
-        </summary>
-        <div class="px-6 pb-5 text-sm leading-relaxed text-paper/65">{item.answer}</div>
-      </details>
+        </button>
+        <div id={`faq-panel-${i}`} class="accordion-panel">
+          <div>
+            <p class="px-6 pb-5 text-sm leading-relaxed text-paper/65">{item.answer}</p>
+          </div>
+        </div>
+      </div>
     ))
   }
 </div>
+
+<script>
+  function initFaq() {
+    document.querySelectorAll("[data-faq]").forEach((container) => {
+      if (container.hasAttribute("data-faq-bound")) return;
+      container.setAttribute("data-faq-bound", "1");
+      container.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const btn = target.closest(".faq-toggle");
+        if (!btn) return;
+        const wrapper = btn.closest(".faq-item");
+        const panel = wrapper?.querySelector(".accordion-panel");
+        const expanded = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!expanded));
+        panel?.classList.toggle("is-open", !expanded);
+        wrapper?.classList.toggle("is-open", !expanded);
+      });
+    });
+  }
+  initFaq();
+  document.addEventListener("astro:page-load", initFaq);
+</script>

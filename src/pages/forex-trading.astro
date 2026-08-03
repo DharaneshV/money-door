@@ -25,8 +25,8 @@ const pairs = [
     subtitle="The same structured, rule-based approach we teach for Gold — applied to the major currency pairs."
   />
 
-  <section class="bg-paper py-16 sm:py-20">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+  <section class="bg-paper py-section">
+    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center" data-reveal>
       <h2 class="font-heading text-3xl font-bold text-ink-950">A Shared Foundation</h2>
       <p class="text-base leading-relaxed text-ink-700">
         Forex and Gold are read using the same underlying skills: market structure, price action,
@@ -38,14 +38,16 @@ const pairs = [
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-16 sm:py-20">
+  <section class="bg-ink-950 py-section">
     <Container class="flex flex-col gap-10">
-      <SectionHeading eyebrow="What You'll Study" title="Major Pairs We Cover" />
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div data-reveal>
+        <SectionHeading eyebrow="What You'll Study" title="Major Pairs We Cover" />
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-stagger>
         {
           pairs.map((p) => (
-            <div class="flex flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-6">
-              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+            <div class="card-lift flex flex-col gap-2  border border-paper/12 bg-ink-900 p-6 hover:border-gold-500/40">
+              <span class="icon-pop flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
                 <Icon name="chart-bar" class="h-5 w-5" />
               </span>
               <h3 class="font-heading text-lg font-bold text-paper">{p.pair}</h3>
@@ -58,8 +60,8 @@ const pairs = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-16 sm:py-20">
-    <Container class="flex flex-col items-center gap-6 text-center">
+  <section class="bg-ink-900 py-section">
+    <Container class="flex flex-col items-center gap-6 text-center" data-reveal>
       <h2 class="font-heading text-3xl font-bold sm:text-4xl">Start With the Fundamentals</h2>
       <p class="max-w-xl text-base text-paper/70">
         MDC1 — Foundation Trader is a free, one-week introduction to Forex &amp; Gold market

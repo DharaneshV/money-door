@@ -2,10 +2,25 @@
 interface Props {
   class?: string;
   as?: "div" | "section";
+  /** `wide` lets a section breathe further out on large screens (hero, galleries). */
+  width?: "default" | "wide" | "narrow";
 }
-const { class: className = "", as: Tag = "div" } = Astro.props;
+const { class: className = "", as: Tag = "div", width = "default" } = Astro.props;
+
+// Fluid max-widths: the container keeps growing on large monitors instead of
+// stopping dead at a fixed rectangle, while inner prose blocks keep their own
+// narrower max-widths so line length stays readable.
+const widths = {
+  narrow: "max-w-[min(100%,64rem)]",
+  default: "max-w-[min(100%,88rem)]",
+  wide: "max-w-[min(100%,104rem)]",
+};
+
+// Gutters scale with the viewport too, so content never hugs the screen edge
+// on a phone or float in a thin column on a desktop.
+const gutter = "px-[clamp(1rem,3.2vw,3.5rem)]";
 ---
 
-<Tag class:list={["mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8", className]}>
+<Tag class:list={["mx-auto w-full", widths[width], gutter, className]}>
   <slot />
 </Tag>

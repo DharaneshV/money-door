@@ -1,0 +1,46 @@
+---
+interface Props {
+  items?: string[];
+  variant?: "dark" | "gold";
+}
+const {
+  items = ["Learn", "Practice", "Trade", "Grow"],
+  variant = "dark",
+} = Astro.props;
+
+// Duplicated once so the track can translate a full -100% and loop seamlessly.
+const sequence = [...items, ...items, ...items, ...items];
+---
+
+<div
+  class:list={[
+    "border-y py-5",
+    variant === "gold"
+      ? "border-gold-500/30 bg-gold-500 text-ink-950"
+      : "border-paper/10 bg-ink-950 text-paper/70",
+  ]}
+>
+  <div class="marquee" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <div class="marquee__track">
+          {sequence.map((item) => (
+            <span class="flex flex-shrink-0 items-center gap-[clamp(1.5rem,4vw,4rem)]">
+              <span class="font-display text-[clamp(1.1rem,0.9rem+0.8vw,1.9rem)] font-medium tracking-[0.18em] uppercase">
+                {item}
+              </span>
+              <span
+                class:list={[
+                  "inline-block h-1 w-1 rounded-full",
+                  variant === "gold" ? "bg-ink-950/50" : "bg-gold-500",
+                ]}
+              />
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+  {/* Screen readers get the phrase once, without the visual duplication. */}
+  <span class="sr-only">{items.join(" · ")}</span>
+</div>

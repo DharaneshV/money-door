@@ -6,17 +6,17 @@ import Container from "../../components/ui/Container.astro";
 import SectionHeading from "../../components/ui/SectionHeading.astro";
 import ProgramCard from "../../components/cards/ProgramCard.astro";
 import RiskDisclaimer from "../../components/ui/RiskDisclaimer.astro";
-import Icon from "../../components/ui/Icon.astro";
+import Button from "../../components/ui/Button.astro";
 
 const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
 
 const journey = [
-  "Learn the Basics",
-  "Understand Market Structure",
-  "Master Gold Trading",
-  "Practice in Live Markets",
-  "Develop Consistency",
-  "Trade with Confidence",
+  { title: "Learn the Basics", note: "Markets, platforms, terminology" },
+  { title: "Understand Market Structure", note: "How and why price moves" },
+  { title: "Master Gold Trading", note: "PR & PC methodology, EMA 24" },
+  { title: "Practice in Live Markets", note: "Guided sessions, real conditions" },
+  { title: "Develop Consistency", note: "Trade reviews and refinement" },
+  { title: "Trade with Confidence", note: "Independent, disciplined execution" },
 ];
 ---
 
@@ -30,26 +30,39 @@ const journey = [
     subtitle="Three structured levels — from your first week in the markets to one-to-one mentorship for serious, long-term traders."
   />
 
-  <section class="bg-ink-950 py-16 sm:py-20">
-    <Container class="flex flex-col gap-10">
-      <div class="grid gap-6 lg:grid-cols-3">
+  <section class="bg-ink-950 py-section">
+    <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+      <div class="grid gap-x-[clamp(2rem,5vw,4rem)] gap-y-14 lg:grid-cols-3" data-reveal-stagger>
         {programs.map((program) => <ProgramCard {...program.data} featured={program.data.code === "MDC2"} />)}
       </div>
       <RiskDisclaimer />
     </Container>
   </section>
 
-  <section class="bg-paper py-16 sm:py-20">
-    <Container class="flex flex-col gap-10">
-      <SectionHeading eyebrow="Our Learning Process" title="Your Journey to Becoming a Professional Trader" light />
-      <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <section class="bg-paper py-section">
+    <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+      <SectionHeading
+        eyebrow="Our Learning Process"
+        index="01"
+        title="Your Journey to Becoming a Professional Trader"
+        align="left"
+        light
+      />
+      <ol class="flex flex-col" data-reveal-stagger>
         {
           journey.map((step, i) => (
-            <li class="flex items-center gap-4 rounded-2xl border border-ink-950/10 bg-white p-5 shadow-sm">
-              <span class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-ink-950 font-heading text-sm font-bold text-gold-400">
-                {i + 1}
-              </span>
-              <span class="font-heading text-base font-semibold text-ink-950">{step}</span>
+            <li class="edit-row edit-row-light group py-[clamp(1.5rem,3vw,2.5rem)]">
+              <div class="flex items-baseline gap-6 sm:gap-10">
+                <span class="section-index w-8 flex-none text-gold-700">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div class="flex flex-1 flex-col gap-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
+                  <h3 class="font-display text-[clamp(1.35rem,1.1rem+1.1vw,2.1rem)] font-medium leading-tight text-ink-950 transition-colors duration-500 group-hover:text-gold-700">
+                    {step.title}
+                  </h3>
+                  <span class="eyebrow text-ink-500 sm:text-right">{step.note}</span>
+                </div>
+              </div>
             </li>
           ))
         }
@@ -57,20 +70,19 @@ const journey = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-16 sm:py-20">
-    <Container class="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
-      <Icon name="message-circle" class="h-9 w-9 text-gold-500" />
-      <h2 class="font-heading text-2xl font-bold sm:text-3xl">Not sure which program is right for you?</h2>
-      <p class="text-base text-paper/70">
-        Book a free consultation and we'll help you find the right starting point based on your
-        experience and goals.
+  <section class="border-t border-paper/10 bg-ink-950 py-section">
+    <Container class="flex flex-col items-center text-center" data-reveal>
+      <span class="eyebrow text-gold-500">Not sure where to start?</span>
+      <h2 class="display mt-8 max-w-3xl text-balance text-paper">
+        We'll help you find the right starting point
+      </h2>
+      <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/60">
+        Book a free consultation and we'll recommend a program based on your experience and goals
+        — no pressure, no obligation.
       </p>
-      <a
-        href="/contact/"
-        class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-gold-500 px-6 py-3 text-sm font-semibold text-ink-950 hover:bg-gold-300"
-      >
-        Book Free Consultation
-      </a>
+      <div class="mt-12">
+        <Button href="/contact/" size="lg" arrow>Book Free Consultation</Button>
+      </div>
     </Container>
   </section>
 </BaseLayout>

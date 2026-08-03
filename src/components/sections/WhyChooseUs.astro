@@ -1,54 +1,43 @@
 ---
 import Container from "../ui/Container.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
-import Icon from "../ui/Icon.astro";
 
 const items = [
+  { n: "01", title: "Gold Trading Specialist", description: "Focused education on XAU/USD market behavior." },
+  { n: "02", title: "Live Market Sessions", description: "Learn while the market is moving." },
+  { n: "03", title: "Structured Learning", description: "A clear beginner-to-professional roadmap." },
+  { n: "04", title: "Practical Education", description: "Real chart analysis instead of theory." },
+  { n: "05", title: "Risk Management", description: "Protecting capital is our first priority." },
   {
-    icon: "target" as const,
-    title: "Gold Trading Specialist",
-    description: "Focused education on XAU/USD market behavior.",
-  },
-  {
-    icon: "video" as const,
-    title: "Live Market Sessions",
-    description: "Learn while the market is moving.",
-  },
-  {
-    icon: "book-open" as const,
-    title: "Structured Learning",
-    description: "A clear beginner-to-professional roadmap.",
-  },
-  {
-    icon: "chart-bar" as const,
-    title: "Practical Education",
-    description: "Real chart analysis instead of theory.",
-  },
-  {
-    icon: "shield-check" as const,
-    title: "Risk Management",
-    description: "Protecting capital is our first priority.",
-  },
-  {
-    icon: "refresh" as const,
+    n: "06",
     title: "Lifetime Learning Mindset",
     description: "Markets evolve. Successful traders evolve too.",
   },
 ];
 ---
 
-<section class="bg-ink-950 py-16 sm:py-20">
-  <Container class="flex flex-col gap-10">
-    <SectionHeading eyebrow="Why Choose Us" title="Why Thousands of Traders Choose Us" />
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+<section class="bg-ink-950 py-section">
+  <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+    <SectionHeading
+      eyebrow="Why Choose Us"
+      index="03"
+      title="Why Thousands of Traders Choose Us"
+      align="left"
+    />
+
+    <div class="grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2" data-reveal-stagger>
       {
         items.map((item) => (
-          <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-6 transition-colors hover:border-gold-500/40">
-            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
-              <Icon name={item.icon} class="h-5 w-5" />
-            </span>
-            <h3 class="font-heading text-lg font-bold text-paper">{item.title}</h3>
-            <p class="text-sm text-paper/60">{item.description}</p>
+          <div class="edit-row group py-[clamp(1.5rem,3vw,2.5rem)]">
+            <div class="flex items-baseline gap-6">
+              <span class="section-index text-gold-500">{item.n}</span>
+              <div class="flex flex-col gap-2">
+                <h3 class="font-display text-[clamp(1.25rem,1rem+0.9vw,1.75rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                  {item.title}
+                </h3>
+                <p class="max-w-sm text-sm leading-relaxed text-paper/55">{item.description}</p>
+              </div>
+            </div>
           </div>
         ))
       }

@@ -2,9 +2,19 @@
 import { Image } from "astro:assets";
 import Container from "../ui/Container.astro";
 import logoMark from "../../assets/brand/logo-mark.jpg";
-import { siteConfig, contact, socials, footerColumns, riskDisclaimerShort } from "../../data/site";
+import {
+  siteConfig,
+  contact,
+  socials,
+  footerColumns,
+  riskDisclaimerShort,
+  whatsappChannelUrl,
+} from "../../data/site";
 
 const year = new Date().getFullYear();
+
+const whatsappIconPath =
+  "M16.004 3C9.377 3 4 8.373 4 15c0 2.34.653 4.527 1.785 6.392L4 29l7.81-1.75A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3Zm6.98 17.02c-.298.837-1.47 1.54-2.415 1.744-.643.137-1.482.246-4.31-.926-3.617-1.498-5.945-5.156-6.128-5.395-.176-.238-1.463-1.948-1.463-3.716 0-1.768.914-2.635 1.24-2.997.298-.33.65-.412.867-.412.216 0 .434.002.624.012.2.01.468-.076.732.558.298.716.99 2.484 1.076 2.665.087.18.145.393.028.632-.116.238-.174.386-.348.594-.174.207-.365.462-.522.622-.174.176-.356.366-.153.72.203.354.906 1.494 1.947 2.42 1.338 1.193 2.466 1.563 2.82 1.74.354.176.56.148.767-.09.207-.24.877-1.022 1.11-1.373.232-.35.464-.29.783-.174.319.116 2.02.953 2.366 1.126.348.174.58.26.665.404.087.146.087.844-.211 1.68Z";
 
 // Simple, dependency-free social glyphs — swap in real ones once real handles exist.
 const socialIcon: Record<string, string> = {
@@ -20,7 +30,7 @@ const socialIcon: Record<string, string> = {
 };
 ---
 
-<footer class="border-t border-ink-700 bg-ink-950">
+<footer class="border-t border-paper/12 bg-ink-950">
   <Container class="grid grid-cols-2 gap-x-8 gap-y-10 py-16 lg:grid-cols-6">
     <div class="col-span-2 flex flex-col gap-4 lg:col-span-2">
       <a href="/" class="flex items-center gap-3">
@@ -34,6 +44,17 @@ const socialIcon: Record<string, string> = {
         Empowering traders through knowledge, discipline, and practical experience.
       </p>
       <div class="flex gap-3 pt-1">
+        <a
+          href={whatsappChannelUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Join our WhatsApp Channel"
+          class="flex h-9 w-9 items-center justify-center rounded-full border border-paper/12 text-paper/70 transition-colors hover:border-gold-500 hover:text-gold-400"
+        >
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+            <path d={whatsappIconPath} />
+          </svg>
+        </a>
         {
           socials
             .filter((s) => s.url)
@@ -43,7 +64,7 @@ const socialIcon: Record<string, string> = {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.name}
-                class="flex h-9 w-9 items-center justify-center rounded-full border border-ink-700 text-paper/70 transition-colors hover:border-gold-500 hover:text-gold-400"
+                class="flex h-9 w-9 items-center justify-center rounded-full border border-paper/12 text-paper/70 transition-colors hover:border-gold-500 hover:text-gold-400"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d={socialIcon[s.name]} />
@@ -76,20 +97,33 @@ const socialIcon: Record<string, string> = {
       <a href={`tel:+${contact.primaryPhoneE164}`} class="text-sm text-paper/60 hover:text-gold-300">
         {contact.primaryPhoneDisplay}
       </a>
-      <a href={`mailto:${contact.email}`} class="text-sm text-paper/60 hover:text-gold-300">
+      {/* break-all so the long address wraps inside the narrow footer column
+          instead of being clipped at the edge. */}
+      <a
+        href={`mailto:${contact.email}`}
+        class="break-all text-sm text-paper/60 transition-colors hover:text-gold-300"
+      >
         {contact.email}
       </a>
       <p class="text-sm text-paper/60">{contact.addressLine}</p>
+      <a
+        href={whatsappChannelUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm font-medium text-gold-400 transition-colors hover:text-gold-300"
+      >
+        Join our WhatsApp Channel →
+      </a>
     </div>
   </Container>
 
-  <div class="border-t border-ink-700">
+  <div class="border-t border-paper/12">
     <Container class="py-6">
       <p class="text-xs leading-relaxed text-paper/45">{riskDisclaimerShort}</p>
     </Container>
   </div>
 
-  <div class="border-t border-ink-700">
+  <div class="border-t border-paper/12">
     <Container class="flex flex-col items-center justify-between gap-2 py-5 text-xs text-paper/45 sm:flex-row">
       <p>© {year} {siteConfig.name}. All Rights Reserved.</p>
       <p>Educational purposes only. No investment advice.</p>

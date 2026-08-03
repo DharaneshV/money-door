@@ -7,13 +7,15 @@ import ProgramCard from "../cards/ProgramCard.astro";
 const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section class="bg-ink-900 py-16 sm:py-20">
-  <Container class="flex flex-col gap-10">
+<section class="bg-ink-900 py-section">
+  <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
     <SectionHeading
       eyebrow="Our Learning Programs"
+      index="04"
       title="Choose the Learning Path That Fits Your Goals"
+      align="left"
     />
-    <div class="grid gap-6 lg:grid-cols-3">
+    <div class="grid gap-x-[clamp(2rem,5vw,4rem)] gap-y-14 lg:grid-cols-3" data-reveal-stagger>
       {
         programs.map((program) => (
           <ProgramCard {...program.data} featured={program.data.code === "MDC2"} />

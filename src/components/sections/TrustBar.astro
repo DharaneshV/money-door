@@ -3,24 +3,35 @@ import Container from "../ui/Container.astro";
 import Icon from "../ui/Icon.astro";
 
 const stats = [
-  { icon: "graduation-cap" as const, value: "18+ Years", label: "Trading Experience" },
-  { icon: "users" as const, value: "2,500+", label: "Students Trained" },
+  { icon: "graduation-cap" as const, countTo: 18, suffix: "+ Years", label: "Trading Experience" },
+  { icon: "users" as const, countTo: 2500, suffix: "+", label: "Students Trained" },
   { icon: "video" as const, value: "Live", label: "Market Learning" },
   { icon: "target" as const, value: "Gold", label: "Trading Specialist" },
   { icon: "shield-check" as const, value: "Risk", label: "Management Focused" },
 ];
 ---
 
-<section class="border-b border-ink-700 bg-ink-900">
-  <Container class="grid grid-cols-2 gap-6 py-8 sm:grid-cols-3 lg:grid-cols-5">
+<section class="border-b border-paper/12 bg-ink-900">
+  <Container
+    class="grid grid-cols-2 gap-x-6 gap-y-7 py-8 sm:grid-cols-3 lg:grid-cols-5"
+    data-reveal-stagger
+  >
     {
       stats.map((s) => (
-        <div class="flex items-center gap-3">
-          <span class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+        <div class="group flex items-center gap-3">
+          <span class="icon-pop flex h-10 w-10 flex-none items-center justify-center rounded-full bg-gold-500/10 text-gold-500 transition-colors duration-300 group-hover:bg-gold-500/20">
             <Icon name={s.icon} class="h-5 w-5" />
           </span>
           <div class="leading-tight">
-            <p class="font-heading text-sm font-bold text-paper sm:text-base">{s.value}</p>
+            {"countTo" in s ? (
+              <p class="font-heading text-sm font-bold tabular-nums text-paper sm:text-base">
+                <span data-count-to={s.countTo} data-count-suffix={s.suffix}>
+                  0
+                </span>
+              </p>
+            ) : (
+              <p class="font-heading text-sm font-bold text-paper sm:text-base">{s.value}</p>
+            )}
             <p class="text-xs text-paper/55">{s.label}</p>
           </div>
         </div>

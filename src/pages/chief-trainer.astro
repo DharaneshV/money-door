@@ -30,22 +30,26 @@ const personSchema = {
   description="Venkatesh M, Chief Trainer of Money Door FX Academy — 18+ years of trading experience, creator of the PR & PC trading methodology, trained 2,500+ students."
   schema={personSchema}
 >
-  <section class="border-b border-ink-700 bg-ink-950 py-16 sm:py-20">
-    <Container class="grid gap-10 lg:grid-cols-2 lg:items-center">
-      <div class="overflow-hidden rounded-3xl border border-ink-700">
+  <section class="border-b border-paper/12 bg-ink-950 py-section">
+    <Container class="grid items-center gap-x-12 gap-y-10 lg:grid-cols-2">
+      <div
+        class="group mx-auto w-full max-w-xl overflow-hidden  border border-paper/12 lg:max-w-none"
+        data-reveal
+      >
         <Image
           src={trainerPortrait}
           alt="Venkatesh M, Chief Trainer of Money Door FX Academy, speaking at Forex Expo Dubai 2023"
           width={700}
           height={541}
-          class="h-full w-full object-cover"
+          sizes="(min-width: 1024px) 45vw, (min-width: 640px) 80vw, 92vw"
+          class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
         />
       </div>
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4" data-reveal>
         <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">
           Meet Your Chief Trainer
         </span>
-        <h1 class="font-heading text-4xl font-bold sm:text-5xl">Venkatesh M</h1>
+        <h1 class="text-4xl font-bold sm:text-5xl">Venkatesh M</h1>
         <p class="font-heading text-lg font-semibold text-gold-400">
           Chief Trainer, Money Door FX Academy
         </p>
@@ -66,13 +70,13 @@ const personSchema = {
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-16 sm:py-20">
+  <section class="bg-ink-900 py-section">
     <Container class="flex flex-col gap-10">
-      <h2 class="text-center font-heading text-2xl font-bold sm:text-3xl">Credentials &amp; Experience</h2>
-      <div class="mx-auto grid max-w-4xl gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <h2 class="text-center text-2xl font-bold sm:text-3xl" data-reveal>Credentials &amp; Experience</h2>
+      <div class="mx-auto grid max-w-4xl gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
         {
           credentials.map((c) => (
-            <div class="flex items-start gap-3 rounded-2xl border border-ink-700 bg-ink-950 p-5">
+            <div class="card-lift flex items-start gap-3  border border-paper/12 bg-ink-950 p-5 hover:border-gold-500/40">
               <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
               <span class="text-sm text-paper/80">{c}</span>
             </div>
@@ -82,8 +86,8 @@ const personSchema = {
     </Container>
   </section>
 
-  <section class="bg-paper py-16 sm:py-20">
-    <Container class="mx-auto max-w-3xl text-center">
+  <section class="bg-paper py-section">
+    <Container class="mx-auto max-w-3xl text-center" data-reveal>
       <Icon name="message-circle" class="mx-auto mb-4 h-10 w-10 text-gold-600" />
       <blockquote class="font-heading text-2xl font-semibold leading-snug text-ink-950 sm:text-3xl">
         "Our goal is not just to teach trading — but to develop disciplined, consistent, and
@@ -93,9 +97,9 @@ const personSchema = {
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-16 sm:py-20">
-    <Container class="flex flex-col gap-6 text-center">
-      <h2 class="font-heading text-2xl font-bold sm:text-3xl">The PR &amp; PC Methodology</h2>
+  <section class="bg-ink-950 py-section">
+    <Container class="flex flex-col gap-6 text-center" data-reveal>
+      <h2 class="text-2xl font-bold sm:text-3xl">The PR &amp; PC Methodology</h2>
       <p class="mx-auto max-w-2xl text-base leading-relaxed text-paper/70">
         Venkatesh developed the Point of Reversal (PR) and Point of Continuation (PC) framework —
         the structured, rule-based approach to reading Gold and Forex price action that sits at

@@ -41,7 +41,7 @@ const sessionFlow = [
     subtitle="Structured, educational market analysis taught live to our students — teaching you to read the market, not telling you what to buy."
   />
 
-  <section class="bg-paper py-16 sm:py-20">
+  <section class="bg-paper py-section">
     <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
       <h2 class="font-heading text-3xl font-bold text-ink-950">Analysis, Not Signals</h2>
       <p class="text-base leading-relaxed text-ink-700">
@@ -56,13 +56,13 @@ const sessionFlow = [
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-16 sm:py-20">
+  <section class="bg-ink-950 py-section">
     <Container class="flex flex-col gap-10">
       <SectionHeading eyebrow="Our Process" title="How a Live Analysis Session Works" />
       <div class="grid gap-6 sm:grid-cols-2">
         {
           sessionFlow.map((s, i) => (
-            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-900 p-7">
+            <div class="flex flex-col gap-3  border border-paper/12 bg-ink-900 p-7">
               <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/40 font-heading text-sm font-bold text-gold-400">
                 {i + 1}
               </span>
@@ -76,7 +76,7 @@ const sessionFlow = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-16 sm:py-20">
+  <section class="bg-ink-900 py-section">
     <Container class="flex flex-col gap-10">
       <SectionHeading eyebrow="Included in Your Program" title="Monthly Live Learning Schedule" />
       <div class="grid gap-6 sm:grid-cols-3">
@@ -98,7 +98,7 @@ const sessionFlow = [
               description: "Monthly performance review plus live Q&A and doubt-clearing sessions.",
             },
           ].map((item) => (
-            <div class="flex flex-col gap-3 rounded-2xl border border-ink-700 bg-ink-950 p-7">
+            <div class="flex flex-col gap-3  border border-paper/12 bg-ink-950 p-7">
               <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
                 <Icon name={item.icon} class="h-5 w-5" />
               </span>
@@ -111,7 +111,7 @@ const sessionFlow = [
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-16 sm:py-20">
+  <section class="bg-ink-950 py-section">
     <Container class="flex flex-col items-center gap-6 text-center">
       <h2 class="font-heading text-3xl font-bold sm:text-4xl">Join a Live Session</h2>
       <p class="max-w-xl text-base text-paper/70">

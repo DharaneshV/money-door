@@ -21,7 +21,7 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
     subtitle="Real feedback from real students — focused on what they learned and how their approach changed."
   />
 
-  <section class="bg-ink-950 py-16 sm:py-20">
+  <section class="bg-ink-950 py-section">
     <Container>
       {
         testimonials.length > 0 ? (
@@ -31,7 +31,7 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
             ))}
           </div>
         ) : (
-          <div class="mx-auto flex max-w-xl flex-col items-center gap-4 rounded-2xl border border-dashed border-ink-700 px-8 py-16 text-center">
+          <div class="mx-auto flex max-w-xl flex-col items-center gap-4  border border-dashed border-paper/12 px-8 py-16 text-center">
             <Icon name="message-circle" class="h-10 w-10 text-gold-500" />
             <h2 class="font-heading text-xl font-bold text-paper">Student stories, coming soon</h2>
             <p class="text-sm leading-relaxed text-paper/60">
@@ -51,7 +51,7 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-16 sm:py-20">
+  <section class="bg-ink-900 py-section">
     <Container class="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
       <h2 class="font-heading text-2xl font-bold sm:text-3xl">A Note on Testimonials</h2>
       <p class="text-base leading-relaxed text-paper/70">

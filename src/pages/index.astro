@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/sections/Hero.astro";
-import TrustBar from "../components/sections/TrustBar.astro";
+import MarqueeBand from "../components/sections/MarqueeBand.astro";
 import PathCards from "../components/sections/PathCards.astro";
 import WhyChooseUs from "../components/sections/WhyChooseUs.astro";
 import AboutTeaser from "../components/sections/AboutTeaser.astro";
@@ -19,14 +19,15 @@ import CtaBanner from "../components/sections/CtaBanner.astro";
   description="India's trusted Gold (XAU/USD) & Forex trading academy. Structured courses, live market mentorship, and disciplined risk management from a Chief Trainer with 18+ years of experience."
 >
   <Hero />
-  <TrustBar />
+  <MarqueeBand />
   <PathCards />
-  <WhyChooseUs />
   <AboutTeaser />
+  <WhyChooseUs />
   <ChiefTrainerTeaser />
   <ProgramsSection />
   <StudentJourney />
   <ComparisonSection />
+  <MarqueeBand items={["Gold XAU/USD", "Forex Majors", "Risk Management", "Trading Psychology"]} variant="gold" />
   <TestimonialsSection />
   <BlogTeaser />
   <CtaBanner />
