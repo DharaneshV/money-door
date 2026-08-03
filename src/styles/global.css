@@ -693,6 +693,268 @@
       transform: translateY(0.75rem);
     }
   }
+
+  /* ---- Cinematic bull intro ------------------------------------
+     Hidden by default and SHOWN by a class — the inverse of the usual
+     polarity, so with JS off (when `intro-active` is never applied) the
+     overlay simply never exists and nothing can be left covering the page. */
+  #site-intro {
+    display: none;
+  }
+  .intro-active #site-intro,
+  .intro-closing #site-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: var(--color-ink-950);
+    /* Belt to the JS braces: even if the module never runs, the overlay
+       uncovers itself. */
+    animation: intro-hardstop 3.4s steps(1, end) forwards;
+  }
+  @keyframes intro-hardstop {
+    to {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+  html.intro-active {
+    overflow: hidden;
+  }
+
+  .intro-closing #site-intro {
+    animation: intro-curtain 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes intro-curtain {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+  #site-intro.is-dismissing .intro__stage *,
+  #site-intro.is-dismissing .intro__brand * {
+    animation-play-state: paused;
+  }
+
+  .intro__skip {
+    position: absolute;
+    top: clamp(1rem, 3vw, 2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    z-index: 2;
+    padding: 0.75rem 1.25rem;
+    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
+    transition: color 0.3s ease;
+  }
+  .intro__skip:hover {
+    color: var(--color-paper);
+  }
+  .intro__skip:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 4px;
+  }
+
+  /* Camera: shake during the charge, then pull back from 1.9x to 1x. */
+  .intro__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    transform: scale(1.9);
+    animation:
+      intro-shake 1.2s cubic-bezier(0.36, 0, 0.66, 1) both,
+      intro-pullback 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both;
+  }
+  @keyframes intro-shake {
+    0% { translate: 0 0; }
+    12% { translate: -0.9% 0.5%; }
+    26% { translate: 0.8% -0.4%; }
+    41% { translate: -0.6% -0.5%; }
+    58% { translate: 0.5% 0.35%; }
+    74% { translate: -0.3% 0.2%; }
+    88% { translate: 0.15% -0.1%; }
+    100% { translate: 0 0; }
+  }
+  @keyframes intro-pullback {
+    from { transform: scale(1.9); }
+    to { transform: scale(1); }
+  }
+
+  /* Charge: enters off-screen RIGHT and travels LEFT, because the bull in the
+     artwork faces left. Mirroring it would flip the candlestick backdrop into
+     a downtrend. */
+  .intro__bull {
+    position: relative;
+    z-index: 1;
+    width: min(78vw, 62rem);
+    animation: intro-charge 0.9s cubic-bezier(0.05, 0.6, 0.25, 1) both;
+  }
+  @keyframes intro-charge {
+    from { transform: translateX(72%) scale(1.14); }
+    to { transform: translateX(-3%) scale(1); }
+  }
+
+  /* Rear-up pivots on the hind hooves, which sit low-right in the frame. */
+  .intro__bull-rear {
+    transform-origin: 78% 90%;
+    animation: intro-rear 0.7s cubic-bezier(0.34, 1.4, 0.5, 1) 1.5s both;
+  }
+  @keyframes intro-rear {
+    from { rotate: 0deg; }
+    60% { rotate: -7.5deg; }
+    to { rotate: -2.5deg; }
+  }
+
+  .intro__bull-bob {
+    animation:
+      intro-gallop 0.225s ease-in-out 0s 4,
+      intro-settle 0.3s ease-out 0.9s both;
+  }
+  @keyframes intro-gallop {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-2.2%) rotate(-1.1deg); }
+  }
+  @keyframes intro-settle {
+    from { transform: translateY(-1%); }
+    to { transform: translateY(0); }
+  }
+
+  .intro__bull-img {
+    width: 100%;
+    height: auto;
+    -webkit-mask-image: radial-gradient(ellipse 68% 72% at 53% 50%, #000 40%, transparent 92%);
+    mask-image: radial-gradient(ellipse 68% 72% at 53% 50%, #000 40%, transparent 92%);
+  }
+
+  .intro__world {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  /* Speed streaks travel left→right, i.e. trailing BEHIND a left-moving bull. */
+  .intro__streaks {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0 8rem,
+      color-mix(in srgb, var(--color-gold-300) 30%, transparent) 8rem 8.2rem,
+      transparent 8.2rem 14rem
+    );
+    opacity: 0;
+    animation: intro-streak 1.1s linear both;
+  }
+  .intro__streaks--slow {
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0 15rem,
+      color-mix(in srgb, var(--color-paper) 14%, transparent) 15rem 15.15rem,
+      transparent 15.15rem 26rem
+    );
+    animation-duration: 1.5s;
+  }
+  @keyframes intro-streak {
+    0% { transform: translateX(-30%); opacity: 0.9; }
+    100% { transform: translateX(30%); opacity: 0; }
+  }
+
+  /* Ground plume — also buries the statue's plinth during the charge. */
+  .intro__dust {
+    position: absolute;
+    inset: auto 0 6% 0;
+    height: 22%;
+    background: radial-gradient(
+      ellipse 60% 100% at 40% 100%,
+      color-mix(in srgb, var(--color-gold-200) 22%, transparent),
+      transparent 70%
+    );
+    filter: blur(18px);
+    opacity: 0;
+    animation: intro-dust 1.3s ease-out 0.12s both;
+  }
+  @keyframes intro-dust {
+    0% { opacity: 0; transform: translateX(12%) scaleX(0.7); }
+    35% { opacity: 0.55; }
+    100% { opacity: 0; transform: translateX(-6%) scaleX(1.25); }
+  }
+
+  .intro__flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 45% 55%,
+      color-mix(in srgb, var(--color-gold-300) 45%, transparent),
+      transparent 55%
+    );
+    opacity: 0;
+    animation: intro-flash 0.28s ease-out 0.88s both;
+  }
+  @keyframes intro-flash {
+    0%, 100% { opacity: 0; }
+    45% { opacity: 0.28; }
+  }
+
+  /* Sits at the very bottom over its own scrim: after the camera pulls back
+     the bull fills most of the frame, and without this the wordmark lands on
+     top of its body and the sub-label becomes unreadable. */
+  .intro__brand {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    padding: clamp(2rem, 6vh, 3.5rem) 1rem clamp(1.75rem, 5vh, 3rem);
+    background: linear-gradient(
+      to top,
+      var(--color-ink-950) 18%,
+      color-mix(in srgb, var(--color-ink-950) 82%, transparent) 55%,
+      transparent 100%
+    );
+    opacity: 0;
+    animation: intro-brand-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.65s both;
+  }
+  @keyframes intro-brand-in {
+    from { opacity: 0; transform: translateY(1rem); }
+    to { opacity: 1; transform: none; }
+  }
+  .intro__brand-mark {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1rem + 2.2vw, 3rem);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--color-paper);
+  }
+  .intro__brand-mark em {
+    font-style: normal;
+    color: var(--color-gold-500);
+  }
+  .intro__brand-rule {
+    width: clamp(4rem, 12vw, 9rem);
+    height: 1px;
+    background: var(--color-gold-500);
+    transform-origin: center;
+    animation: intro-rule 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.9s both;
+  }
+  @keyframes intro-rule {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .intro__brand-sub {
+    color: color-mix(in srgb, var(--color-paper) 45%, transparent);
+  }
+
+  /* While the overlay is up, suppress the hero bull's own entrance so it can
+     start fresh underneath as the curtain lifts (a cross-dissolve, not a cut). */
+  .intro-active .hero-bull {
+    animation: none !important;
+  }
 }
 
 /* Anyone who has asked their OS to reduce motion gets no movement at all —

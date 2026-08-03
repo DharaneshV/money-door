@@ -1,0 +1,126 @@
+---
+import { heroBull, heroBullAlt } from "../../lib/heroBull";
+
+// Full-screen intro, homepage only. Armed by the synchronous head script in
+// BaseLayout (see there for the four gates); this component is only ever
+// rendered on `/`, and is deliberately NOT transition:persist-ed — it's a
+// per-load artifact, and `<html class>` is wiped on every ClientRouter swap
+// so `intro-active` self-clears on navigation.
+//
+// The bull is a single static frame: its legs cannot articulate. The run is
+// sold by camera and environment motion instead — horizontal streaks, a
+// gallop bob, camera shake, a halt jolt, and a pull-back from 1.9x to 1x.
+// It faces LEFT, so it charges right-to-left; mirroring it would flip the
+// baked-in candlestick backdrop into a downtrend.
+---
+
+<div id="site-intro" role="dialog" aria-modal="true" aria-label="Money Door FX Academy intro">
+  <button id="intro-skip" type="button" class="intro__skip eyebrow">Skip intro</button>
+
+  <div class="intro__stage" aria-hidden="true">
+    <div class="intro__world">
+      <span class="intro__streaks"></span>
+      <span class="intro__streaks intro__streaks--slow"></span>
+      <span class="intro__dust"></span>
+    </div>
+    <div class="intro__bull">
+      <div class="intro__bull-rear">
+        <div class="intro__bull-bob">
+          <img
+            class="intro__bull-img"
+            src={heroBull.src}
+            width={heroBull.attributes.width}
+            height={heroBull.attributes.height}
+            alt=""
+            fetchpriority="high"
+            decoding="sync"
+          />
+        </div>
+      </div>
+    </div>
+    <span class="intro__flash"></span>
+  </div>
+
+  {/* aria-hidden: this duplicates the H1 underneath, and with aria-modal the
+      only thing announced should be the dialog label and the skip button. */}
+  <div class="intro__brand" aria-hidden="true">
+    <span class="intro__brand-mark">MONEY <em>DOOR</em></span>
+    <span class="intro__brand-rule"></span>
+    <span class="intro__brand-sub eyebrow">FX Academy</span>
+  </div>
+</div>
+
+<script>
+  function initIntro() {
+    const html = document.documentElement;
+    if (!html.classList.contains("intro-active")) return;
+
+    const root = document.getElementById("site-intro");
+    if (!root || root.dataset.bound) return;
+    root.dataset.bound = "1";
+
+    // Keep focus out of the page behind the overlay without building a focus
+    // trap. Header/Footer/WhatsApp are transition:persist-ed, so a stale
+    // `inert` would survive navigation and permanently disable them —
+    // hence release() is called from three places (see below).
+    const shielded = [
+      document.getElementById("site-header"),
+      document.querySelector("main"),
+      document.querySelector("footer"),
+      document.querySelector('a[aria-label*="WhatsApp"]'),
+    ].filter(Boolean) as HTMLElement[];
+    shielded.forEach((el) => el.setAttribute("inert", ""));
+
+    let done = false;
+    function release() {
+      shielded.forEach((el) => el.removeAttribute("inert"));
+      html.classList.remove("intro-active", "intro-closing");
+    }
+
+    function finish() {
+      if (done) return;
+      done = true;
+      html.classList.remove("intro-active");
+      html.classList.add("intro-closing");
+      shielded.forEach((el) => el.removeAttribute("inert"));
+      // Hero reveals/count-ups were suppressed while the overlay was up so
+      // they wouldn't play out unseen — start them as the curtain lifts.
+      document.dispatchEvent(new Event("md:intro-done"));
+      window.setTimeout(() => {
+        html.classList.remove("intro-closing");
+        root?.remove();
+      }, 700);
+    }
+
+    function dismiss() {
+      if (done) return;
+      root?.classList.add("is-dismissing");
+      finish();
+    }
+
+    // Natural end of the timeline.
+    const timer = window.setTimeout(finish, 2200);
+
+    document.getElementById("intro-skip")?.addEventListener("click", () => {
+      window.clearTimeout(timer);
+      dismiss();
+    });
+
+    // Anyone trying to interact wants the page — give it to them.
+    const bail = () => {
+      window.clearTimeout(timer);
+      dismiss();
+    };
+    document.addEventListener("keydown", bail, { once: true });
+    document.addEventListener("pointerdown", bail, { once: true });
+    document.addEventListener("wheel", bail, { once: true, passive: true });
+    document.addEventListener("touchmove", bail, { once: true, passive: true });
+
+    // Safety: if a navigation starts while the overlay is up, drop everything
+    // — especially `inert`, which would otherwise persist with the header.
+    document.addEventListener("astro:before-preparation", release, { once: true });
+  }
+
+  initIntro();
+  document.addEventListener("astro:page-load", initIntro);
+</script>
