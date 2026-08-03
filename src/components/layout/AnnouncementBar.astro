@@ -1,0 +1,54 @@
+---
+import Container from "../ui/Container.astro";
+import { announcement } from "../../data/site";
+---
+
+{/* Rendered by default and hidden by a class on <html>, matching the site's
+    `.js` invariant — with JS off (or before the head script runs) it simply
+    stays visible, which is the correct fallback for an announcement. */}
+<div class="announce-bar bg-gold-500 text-ink-950">
+  <div>
+    <Container width="wide" class="flex items-center justify-center gap-3 py-2 text-center">
+      <p class="text-[0.72rem] font-medium leading-snug sm:text-xs">
+        {announcement.text}
+        <a
+          href={announcement.href}
+          class="ml-1.5 font-semibold underline underline-offset-2 hover:no-underline"
+        >
+          {announcement.linkLabel}
+        </a>
+      </p>
+      <button
+        id="announce-dismiss"
+        type="button"
+        data-ann-id={announcement.id}
+        aria-label="Dismiss announcement"
+        class="ml-1 flex h-6 w-6 flex-none items-center justify-center rounded-full transition-colors hover:bg-ink-950/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-950"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </Container>
+  </div>
+</div>
+
+<script>
+  // The header is `transition:persist`ed, so this only needs binding once —
+  // but guard anyway since astro:page-load re-runs module scripts.
+  function initAnnounce() {
+    const btn = document.getElementById("announce-dismiss");
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", () => {
+      document.documentElement.classList.add("ann-dismissed");
+      try {
+        localStorage.setItem("md:ann", btn.dataset.annId || "1");
+      } catch {
+        /* private mode / storage disabled — dismissal just won't persist */
+      }
+    });
+  }
+  initAnnounce();
+  document.addEventListener("astro:page-load", initAnnounce);
+</script>

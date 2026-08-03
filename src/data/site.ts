@@ -13,6 +13,23 @@ export const siteConfig = {
   locale: "en_IN",
 } as const;
 
+// Thin promo strip above the nav.
+//
+// COMPLIANCE: this is the most prominent piece of copy on the site and sits
+// above the fold on every page. It must never carry a return figure, a
+// countdown, or a scarcity claim that isn't literally true ("only 3 seats
+// left" is a factual statement, not a marketing device). Keep it to what the
+// academy genuinely offers.
+//
+// Bump `id` whenever the copy changes — the dismissal is remembered against
+// this value, so a new id resurfaces the bar for people who dismissed the old one.
+export const announcement = {
+  id: "mdc1-free-v1",
+  text: "MDC1 Foundation Trader — a free, one-week introduction to Gold & Forex markets.",
+  linkLabel: "Start free",
+  href: "/courses/mdc1/",
+} as const;
+
 export const contact = {
   // Two numbers appear in the source materials; this one is the mockup's primary contact.
   // TODO: confirm with client whether both should be public and which is WhatsApp-active.

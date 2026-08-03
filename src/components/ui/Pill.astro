@@ -1,0 +1,30 @@
+---
+import Icon from "./Icon.astro";
+
+// Small outlined chip, borrowed in form from fundingpips.com.
+//
+// COMPLIANCE: this brand is education-only and promises no profits. Never put
+// a return figure, win-rate, profit split or leverage claim in a pill — the
+// reference site's chips ("80% Daily Rewards", "1:2000 leverage") are prop-firm
+// payout promises and must not be copied. Methodology, format, duration,
+// tooling and support model are all fine.
+interface Props {
+  icon?: Parameters<typeof Icon>[0]["name"];
+  /** `light` is required on the light `bg-paper` sections — it swaps to
+      gold-700, the only gold that clears WCAG AA on white. */
+  tone?: "default" | "gold" | "light";
+  class?: string;
+}
+const { icon, tone = "default", class: className = "" } = Astro.props;
+
+const toneClass = {
+  default: "",
+  gold: "pill--gold",
+  light: "pill--light",
+}[tone];
+---
+
+<span class:list={["pill", toneClass, className]}>
+  {icon && <Icon name={icon} class="h-3.5 w-3.5 flex-none" />}
+  <slot />
+</span>

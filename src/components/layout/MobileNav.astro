@@ -3,7 +3,12 @@ import { primaryNav, whatsappHref } from "../../data/site";
 import Button from "../ui/Button.astro";
 ---
 
-<div id="mobile-menu-panel" class="border-t border-paper/12 bg-ink-950 lg:hidden">
+{/* Detached panel sitting below the floating pill, inside the same Container
+    so it shares the pill's gutters and edge gap. */}
+<div
+  id="mobile-menu-panel"
+  class="mt-2 rounded-[1.75rem] border border-paper/12 bg-ink-950/95 backdrop-blur-xl xl:hidden"
+>
   <div class="px-4 py-4">
     <nav class="flex flex-col gap-1">
       {

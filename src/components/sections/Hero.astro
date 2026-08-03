@@ -1,11 +1,22 @@
 ---
 import { Image } from "astro:assets";
 import Container from "../ui/Container.astro";
+import Pill from "../ui/Pill.astro";
 import heroBull from "../../assets/brand/hero-gold-bull.png";
+
+// Methodology/format only — never a return or profit figure (see Pill.astro).
+const pills = [
+  { icon: "target" as const, label: "Gold (XAU/USD) Focus" },
+  { icon: "video" as const, label: "Live Market Sessions" },
+  { icon: "shield-check" as const, label: "Risk Management First" },
+  { icon: "users" as const, label: "One-on-One Mentorship" },
+];
 ---
 
 <section
-  class="relative isolate flex min-h-[94svh] flex-col justify-between overflow-hidden border-b border-paper/12 pb-10 pt-[clamp(2.5rem,6vh,4.5rem)]"
+  {/* min-h subtracts the in-flow header (announce strip + gap + pill) so the
+      first screen still fits without pushing the stats row below the fold. */}
+  class="relative isolate flex min-h-[calc(96svh-7.5rem)] flex-col justify-between overflow-hidden border-b border-paper/12 pb-10 pt-[clamp(2rem,5vh,3.5rem)]"
 >
   <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div
@@ -36,6 +47,10 @@ import heroBull from "../../assets/brand/hero-gold-bull.png";
         Learn professional trading the smart way. Understand the market, manage risk, and grow
         consistently through structured education and live market mentorship.
       </p>
+
+      <div class="mt-8 flex flex-wrap gap-2" data-reveal-stagger>
+        {pills.map((p) => <Pill icon={p.icon}>{p.label}</Pill>)}
+      </div>
 
       <div class="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4" data-reveal>
         <a
