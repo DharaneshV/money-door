@@ -13,6 +13,9 @@ highlights:
   - "Live market training & weekly market analysis sessions"
   - "Trading psychology & discipline-building"
   - "Regular trade reviews with feedback"
+mentorship: "Weekly live-market sessions and regular trade reviews"
+format: "Group + live market"
+level: "Intermediate"
 outcome: "By the end of MDC2, you'll have a documented trading plan built around Money Door's PR & PC methodology, and the practice reps to apply it with discipline in live market conditions."
 ---
 

@@ -625,11 +625,16 @@
   }
 
   /* ---- Segmented tab control ----------------------------------- */
+  /* Layout lives here rather than on Tailwind `flex` utilities in the markup:
+     utilities sit in a later cascade layer than components, so a `flex` class
+     on this element would override `display: none` and leave a dead tablist
+     visible when JS is off. */
   .tablist-shell {
     display: none;
   }
   .js .tablist-shell {
-    display: block;
+    display: flex;
+    justify-content: center;
   }
   .tablist {
     position: relative;

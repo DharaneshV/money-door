@@ -1,14 +1,44 @@
 ---
 import Container from "../ui/Container.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
+import StageConnector from "../ui/StageConnector.astro";
+import Pill from "../ui/Pill.astro";
 
-const steps = [
-  { title: "Learn the Basics", note: "Markets, platforms, terminology" },
-  { title: "Understand Market Structure", note: "How and why price moves" },
-  { title: "Master Gold Trading", note: "PR & PC methodology, EMA 24" },
-  { title: "Practice in Live Markets", note: "Guided sessions, real conditions" },
-  { title: "Develop Consistency", note: "Trade reviews and refinement" },
-  { title: "Trade with Confidence", note: "Independent, disciplined execution" },
+// The six original journey steps regrouped into three stages so they can be
+// read as a progression at a glance. No step was dropped — each stage carries
+// two of the original six as its bullets.
+//
+// COMPLIANCE: stage 3 must culminate in a SKILL outcome, never "get funded"
+// or "get paid". The wording below mirrors MDC3's published `outcome` string,
+// which deliberately says prop-firm *preparation*.
+const stages = [
+  {
+    n: "01",
+    label: "Foundation",
+    title: "Learn the fundamentals",
+    tilt: "-2.4deg",
+    steps: ["Learn the Basics", "Understand Market Structure"],
+    note: "MDC1 · 1 week · free",
+    dark: false,
+  },
+  {
+    n: "02",
+    label: "Professional",
+    title: "Build a repeatable process",
+    tilt: "1.8deg",
+    steps: ["Master Gold Trading", "Practice in Live Markets"],
+    note: "MDC2 · 6 months",
+    dark: false,
+  },
+  {
+    n: "03",
+    label: "Mastery",
+    title: "Trade independently",
+    tilt: "-1.4deg",
+    steps: ["Develop Consistency", "Trade with Confidence"],
+    note: "MDC3 · 12 months",
+    dark: true,
+  },
 ];
 ---
 
@@ -22,22 +52,71 @@ const steps = [
       light
     />
 
-    <ol class="flex flex-col" data-reveal-stagger>
+    <ol
+      class="grid items-stretch gap-y-2 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-y-0"
+      data-reveal-stagger
+    >
       {
-        steps.map((step, i) => (
-          <li class="edit-row edit-row-light group py-[clamp(1.5rem,3vw,2.5rem)]">
-            <div class="flex items-baseline gap-6 sm:gap-10">
-              <span class="section-index w-8 flex-none text-gold-700">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div class="flex flex-1 flex-col gap-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
-                <h3 class="font-display text-[clamp(1.35rem,1.1rem+1.1vw,2.1rem)] font-medium leading-tight text-ink-950 transition-colors duration-500 group-hover:text-gold-700">
-                  {step.title}
-                </h3>
-                <span class="eyebrow text-ink-500 sm:text-right">{step.note}</span>
+        stages.map((stage, i) => (
+          <>
+            <li
+              class:list={[
+                "tilt-card flex h-full flex-col border p-7 sm:p-8",
+                stage.dark
+                  ? "border-gold-500/40 bg-ink-950 shadow-xl shadow-ink-950/20"
+                  : "border-ink-950/12 bg-white shadow-sm",
+              ]}
+              style={`--tilt:${stage.tilt}`}
+            >
+              <div class="flex items-baseline justify-between gap-4">
+                <span
+                  class:list={["section-index", stage.dark ? "text-gold-400" : "text-gold-700"]}
+                >
+                  {stage.n}
+                </span>
+                <span
+                  class:list={["eyebrow", stage.dark ? "text-paper/45" : "text-ink-500"]}
+                >
+                  {stage.label}
+                </span>
               </div>
-            </div>
-          </li>
+
+              <h3
+                class:list={[
+                  "mt-6 font-display text-[clamp(1.35rem,1.1rem+1.1vw,2rem)] font-medium leading-tight",
+                  stage.dark ? "text-paper" : "text-ink-950",
+                ]}
+              >
+                {stage.title}
+              </h3>
+
+              <ul class="mt-6 flex flex-col">
+                {stage.steps.map((step) => (
+                  <li
+                    class:list={[
+                      "border-t py-3 text-sm leading-snug",
+                      stage.dark
+                        ? "border-paper/12 text-paper/70"
+                        : "border-ink-950/10 text-ink-700",
+                    ]}
+                  >
+                    {step}
+                  </li>
+                ))}
+              </ul>
+
+              <div class="mt-auto pt-7">
+                <Pill tone={stage.dark ? "gold" : "light"}>{stage.note}</Pill>
+              </div>
+            </li>
+
+            {i < stages.length - 1 && (
+              <li class="flex items-center justify-center py-1 lg:py-0" aria-hidden="true">
+                <StageConnector orientation="v" class="lg:hidden" />
+                <StageConnector orientation="h" class="hidden lg:block" />
+              </li>
+            )}
+          </>
         ))
       }
     </ol>

@@ -14,6 +14,9 @@ highlights:
   - "Technical analysis fundamentals"
   - "Risk management & trading psychology introduction"
   - "Guided demo trading practice"
+mentorship: "Guided demo practice with trainer support"
+format: "Group sessions"
+level: "Beginner"
 outcome: "By the end of MDC1, you'll understand how the Forex and Gold markets work, be comfortable navigating a trading platform, and be able to place disciplined practice trades on a demo account."
 ---
 

@@ -1,0 +1,61 @@
+---
+// Dashed connector between stage cards. Rendered into its own grid cell
+// rather than absolutely positioned — an absolutely-positioned decoration is
+// exactly the thing that silently pushes a page sideways, and this section
+// already sits inside the overflow audit's blast radius.
+interface Props {
+  orientation?: "h" | "v";
+  light?: boolean;
+  class?: string;
+}
+const { orientation = "h", light = true, class: className = "" } = Astro.props;
+const stroke = light ? "rgb(0 0 0 / 0.25)" : "rgb(250 249 247 / 0.28)";
+---
+
+{
+  orientation === "h" ? (
+    <svg
+      class:list={["h-10 w-16 flex-none", className]}
+      viewBox="0 0 64 40"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        class="dash-draw"
+        d="M2 30 C 18 30, 20 10, 40 10"
+        stroke={stroke}
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+      <path
+        d="M38 6.5 L44 10 L38 13.5"
+        stroke={stroke}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ) : (
+    <svg
+      class:list={["h-12 w-10", className]}
+      viewBox="0 0 40 48"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        class="dash-draw"
+        d="M20 3 C 20 16, 20 20, 20 34"
+        stroke={stroke}
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+      <path
+        d="M16 31 L20 37 L24 31"
+        stroke={stroke}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  )
+}

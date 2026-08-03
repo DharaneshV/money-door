@@ -13,6 +13,9 @@ highlights:
   - "One-to-one mentorship & personal performance reviews"
   - "Funded account (prop firm) evaluation preparation"
   - "Long-term portfolio & trade-management discipline"
+mentorship: "One-to-one mentorship with personal performance reviews"
+format: "One-to-one"
+level: "Advanced"
 outcome: "MDC3 is designed to leave you with a repeatable, disciplined process you can run independently — including the specific preparation needed for funded-account (prop firm) evaluations."
 ---
 

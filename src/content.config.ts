@@ -15,6 +15,11 @@ const programs = defineCollection({
     idealFor: z.string().optional(),
     highlights: z.array(z.string()),
     outcome: z.string(),
+    // Spec-sheet fields surfaced by the tabbed course selector. Optional so
+    // adding them can't break an existing entry.
+    mentorship: z.string().optional(),
+    format: z.string().optional(),
+    level: z.string().optional(),
   }),
 });
 
