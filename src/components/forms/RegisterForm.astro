@@ -1,0 +1,505 @@
+---
+import Button from "../ui/Button.astro";
+import { countries, statesByCountry, priorityCountryCodes } from "../../data/geo";
+
+// Turnstile is optional at build time: without a site key the widget isn't
+// rendered and the server skips verification, so local dev and preview deploys
+// keep working before the Cloudflare keys exist.
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
+const priority = priorityCountryCodes
+  .map((code) => countries.find((c) => c.code === code))
+  .filter(Boolean) as typeof countries;
+const rest = countries.filter((c) => !priorityCountryCodes.includes(c.code));
+
+const statesJson = JSON.stringify(statesByCountry);
+---
+
+<div id="register-root" class="flex flex-col gap-6">
+  {/* Success panel, swapped in on a 200. The form is hidden rather than
+      destroyed so it could be restored if a later step failed. */}
+  <div id="register-success" class="hidden">
+    <div class="surface-card-warm flex flex-col items-start gap-4 p-[clamp(1.5rem,3vw,2.5rem)]">
+      <span class="flex h-14 w-14 items-center justify-center rounded-full bg-gold-500 text-ink-950">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="m5 12.5 4.5 4.5L19 7.5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      <h3 class="font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.25rem)] font-medium leading-tight text-paper">
+        You're registered
+      </h3>
+      <p class="max-w-md text-sm leading-relaxed text-paper/65">
+        Check your inbox — we've sent a confirmation with what happens next. If it isn't there in
+        a few minutes, look in your spam folder and mark it as safe so you don't miss our replies.
+      </p>
+    </div>
+  </div>
+
+  <form id="register-form" class="flex flex-col gap-4" novalidate>
+    {/* Honeypot. Bots fill every field in the DOM; a person never sees this.
+        Kept out of the accessibility tree and out of tab order. */}
+    <div class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+      <label>
+        Company
+        <input type="text" name="company" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      {/* placeholder=" " is load-bearing: the floating label uses
+          :not(:placeholder-shown) to detect a filled field without JS. */}
+      <div class="field-group">
+        <input type="text" id="rf-name" name="fullName" autocomplete="name" required
+          class="field peer" placeholder=" " />
+        <label class="field-label" for="rf-name">Full name *</label>
+        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
+      </div>
+
+      <div class="field-group">
+        <input type="email" id="rf-email" name="email" autocomplete="email" required
+          class="field peer" placeholder=" " />
+        <label class="field-label" for="rf-email">Email *</label>
+        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="field-group">
+        <input type="tel" id="rf-phone" name="phone" autocomplete="tel" required
+          class="field peer" placeholder=" " />
+        <label class="field-label" for="rf-phone">Phone / WhatsApp *</label>
+        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
+      </div>
+
+      {/* Country — custom listbox over a real <select>. */}
+      <div>
+        <span class="mb-1.5 block text-xs font-medium uppercase tracking-[0.14em] text-paper/45">
+          Country *
+        </span>
+        <div class="select-shell" data-select data-searchable="true">
+          <select class="select-native field" id="register-country" name="country" required>
+            <option value="">Select your country</option>
+            <optgroup label="Most common">
+              {priority.map((c) => <option value={c.code}>{c.name}</option>)}
+            </optgroup>
+            <optgroup label="All countries">
+              {rest.map((c) => <option value={c.code}>{c.name}</option>)}
+            </optgroup>
+          </select>
+          <button type="button" class="select-button field" data-placeholder="true"
+            aria-haspopup="listbox" aria-expanded="false">
+            <span data-select-label>Select your country</span>
+            <svg class="select-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <div class="select-menu" role="listbox" tabindex="-1"></div>
+        </div>
+        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <span class="mb-1.5 block text-xs font-medium uppercase tracking-[0.14em] text-paper/45">
+          State / Region *
+        </span>
+        {/* Two controls, one shown at a time: the listbox for countries with a
+            known subdivision list, a text input for the rest. Swapping to text
+            keeps the real answer instead of discarding it as "Other". */}
+        <div class="select-shell" data-select data-searchable="true" id="register-state-shell">
+          <select class="select-native field" id="register-state" name="state" required disabled>
+            <option value="">Select a country first</option>
+          </select>
+          <button type="button" class="select-button field" data-placeholder="true"
+            aria-haspopup="listbox" aria-expanded="false" disabled>
+            <span data-select-label>Select a country first</span>
+            <svg class="select-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <div class="select-menu" role="listbox" tabindex="-1"></div>
+        </div>
+        <div class="field-group hidden" id="register-state-text-group">
+          <input type="text" id="rf-state-text" name="stateText" class="field peer" placeholder=" " />
+          <label class="field-label" for="rf-state-text">State / Region *</label>
+        </div>
+        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
+      </div>
+
+      <div class="field-group">
+        <input type="text" id="rf-city" name="city" autocomplete="address-level2" required
+          class="field peer" placeholder=" " />
+        <label class="field-label" for="rf-city">City *</label>
+        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
+      </div>
+    </div>
+
+    <label class="mt-2 flex items-start gap-3 text-sm">
+      <input type="checkbox" name="consent" value="yes" required class="checkbox mt-0.5" />
+      {/* Explicit {" "} around the link: Astro collapses the surrounding
+          newlines, which otherwise renders "thePrivacy Policyand". */}
+      <span class="leading-relaxed text-paper/70">
+        I agree that Money Door FX Academy may store the details above and contact me about its
+        programs. I've read the{" "}
+        <a href="/privacy-policy/" class="text-gold-400 underline underline-offset-2 hover:text-gold-300">
+          Privacy Policy
+        </a>{" "}
+        and understand I can ask for my data to be deleted at any time.
+        <span class="text-gold-500">*</span>
+      </span>
+    </label>
+    <span id="consent-error" class="field-error hidden text-xs text-market-down"></span>
+
+    {turnstileSiteKey && (
+      <div class="cf-turnstile mt-1" data-sitekey={turnstileSiteKey} data-theme="dark"></div>
+    )}
+
+    <p id="register-error" class="hidden text-sm leading-relaxed text-market-down" role="alert"></p>
+
+    <div class="mt-2">
+      <Button id="register-submit" type="submit" size="lg" class="w-full sm:w-fit">
+        <span id="register-submit-label">Create my account</span>
+      </Button>
+    </div>
+
+    <p class="text-xs leading-relaxed text-paper/40">
+      Registration collects your details so we can contact you about programs. It does not open a
+      trading account and does not involve any payment.
+    </p>
+  </form>
+</div>
+
+{turnstileSiteKey && (
+  <script is:inline async src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+)}
+
+<script define:vars={{ statesByCountry: JSON.parse(statesJson) }}>
+  (function () {
+    const form = document.getElementById("register-form");
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = "1";
+
+    /* ---------------------------------------------------------------
+       Custom select: an ARIA listbox layered over a real <select>.
+       The <select> stays the source of truth — it's what the browser
+       validates and what the form reads — so this only mirrors state.
+       ---------------------------------------------------------------*/
+    function initSelect(shell) {
+      const native = shell.querySelector(".select-native");
+      const button = shell.querySelector(".select-button");
+      const menu = shell.querySelector(".select-menu");
+      const labelEl = shell.querySelector("[data-select-label]");
+      const searchable = shell.dataset.searchable === "true";
+      let activeIndex = -1;
+      let options = [];
+
+      function currentPlaceholder() {
+        return native.options[0]?.textContent || "Select";
+      }
+
+      // Rebuilt from the <select> each time it opens, so repopulating the
+      // native element (as the country change does) needs no extra wiring.
+      function buildMenu(filter) {
+        const q = (filter || "").trim().toLowerCase();
+        menu.innerHTML = "";
+        options = [];
+
+        if (searchable && native.options.length > 12) {
+          const wrap = document.createElement("div");
+          wrap.className = "select-search";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.className = "field";
+          input.placeholder = "Type to filter…";
+          input.value = filter || "";
+          input.addEventListener("input", () => {
+            buildMenu(input.value);
+            const fresh = menu.querySelector(".select-search input");
+            if (fresh) { fresh.focus(); fresh.setSelectionRange(fresh.value.length, fresh.value.length); }
+          });
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowDown") { e.preventDefault(); setActive(0); menu.focus(); }
+            else if (e.key === "Escape") { e.preventDefault(); close(); button.focus(); }
+            else if (e.key === "Enter") { e.preventDefault(); if (options.length) choose(options[0]); }
+          });
+          wrap.appendChild(input);
+          menu.appendChild(wrap);
+        }
+
+        const addOption = (opt) => {
+          if (!opt.value) return; // skip the placeholder entry
+          if (q && !opt.textContent.toLowerCase().includes(q)) return;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "select-option";
+          b.role = "option";
+          b.dataset.value = opt.value;
+          b.textContent = opt.textContent;
+          b.setAttribute("aria-selected", String(opt.value === native.value));
+          b.addEventListener("click", () => choose(b));
+          menu.appendChild(b);
+          options.push(b);
+        };
+
+        Array.from(native.children).forEach((child) => {
+          if (child.tagName === "OPTGROUP") {
+            const before = options.length;
+            const label = document.createElement("div");
+            label.className = "select-group-label";
+            label.textContent = child.label;
+            menu.appendChild(label);
+            Array.from(child.children).forEach(addOption);
+            // Drop a group heading that filtered down to nothing.
+            if (options.length === before) label.remove();
+          } else {
+            addOption(child);
+          }
+        });
+
+        if (!options.length) {
+          const empty = document.createElement("div");
+          empty.className = "select-empty";
+          empty.textContent = "No matches";
+          menu.appendChild(empty);
+        }
+        activeIndex = -1;
+      }
+
+      function setActive(i) {
+        options.forEach((o) => o.classList.remove("is-active"));
+        if (i < 0 || i >= options.length) { activeIndex = -1; return; }
+        activeIndex = i;
+        options[i].classList.add("is-active");
+        options[i].scrollIntoView({ block: "nearest" });
+      }
+
+      function syncLabel() {
+        const has = !!native.value;
+        labelEl.textContent = has
+          ? native.options[native.selectedIndex].textContent
+          : currentPlaceholder();
+        button.dataset.placeholder = String(!has);
+      }
+
+      function choose(optEl) {
+        native.value = optEl.dataset.value;
+        // Programmatic .value assignment doesn't fire input events, and the
+        // country→state wiring listens for `change`.
+        native.dispatchEvent(new Event("change", { bubbles: true }));
+        syncLabel();
+        close();
+        button.focus();
+      }
+
+      function open() {
+        if (button.disabled) return;
+        // Flip upward when the menu wouldn't fit below.
+        const spaceBelow = window.innerHeight - button.getBoundingClientRect().bottom;
+        shell.classList.toggle("is-up", spaceBelow < 300);
+        buildMenu("");
+        shell.classList.add("is-open");
+        button.setAttribute("aria-expanded", "true");
+        const search = menu.querySelector(".select-search input");
+        if (search) search.focus();
+        else { menu.focus(); const sel = options.findIndex((o) => o.getAttribute("aria-selected") === "true"); setActive(sel >= 0 ? sel : 0); }
+      }
+
+      function close() {
+        shell.classList.remove("is-open");
+        button.setAttribute("aria-expanded", "false");
+      }
+
+      button.addEventListener("click", () => (shell.classList.contains("is-open") ? close() : open()));
+
+      menu.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown") { e.preventDefault(); setActive(Math.min(activeIndex + 1, options.length - 1)); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); setActive(Math.max(activeIndex - 1, 0)); }
+        else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (activeIndex >= 0) choose(options[activeIndex]); }
+        else if (e.key === "Escape") { e.preventDefault(); close(); button.focus(); }
+        else if (e.key === "Home") { e.preventDefault(); setActive(0); }
+        else if (e.key === "End") { e.preventDefault(); setActive(options.length - 1); }
+      });
+
+      button.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+      });
+
+      // Escape handled on the shell so it works wherever focus sits inside —
+      // the search input, the menu, or an option — rather than needing a
+      // duplicate handler on each.
+      shell.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape" || !shell.classList.contains("is-open")) return;
+        e.preventDefault();
+        e.stopPropagation();
+        close();
+        button.focus();
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!shell.contains(e.target)) close();
+      });
+
+      shell.__sync = syncLabel;
+      syncLabel();
+    }
+
+    document.querySelectorAll("[data-select]").forEach(initSelect);
+
+    /* ---- Country → state ------------------------------------------------ */
+    const countrySel = document.getElementById("register-country");
+    const stateSel = document.getElementById("register-state");
+    const stateShell = document.getElementById("register-state-shell");
+    const stateTextGroup = document.getElementById("register-state-text-group");
+    const stateText = document.getElementById("rf-state-text");
+    const stateBtn = stateShell.querySelector(".select-button");
+
+    function syncStates() {
+      const list = statesByCountry[countrySel.value];
+      if (list && list.length) {
+        stateSel.innerHTML =
+          '<option value="">Select your state</option>' +
+          list.map((s) => `<option value="${s}">${s}</option>`).join("");
+        stateSel.disabled = false;
+        stateSel.required = true;
+        stateBtn.disabled = false;
+        stateShell.classList.remove("hidden");
+        stateTextGroup.classList.add("hidden");
+        stateText.required = false;
+        stateText.value = "";
+      } else if (countrySel.value) {
+        // No fixed list for this country — collect it as free text.
+        stateSel.value = "";
+        stateSel.disabled = true;
+        stateSel.required = false;
+        stateShell.classList.add("hidden");
+        stateTextGroup.classList.remove("hidden");
+        stateText.required = true;
+      } else {
+        stateSel.innerHTML = '<option value="">Select a country first</option>';
+        stateSel.disabled = true;
+        stateSel.required = true;
+        stateBtn.disabled = true;
+        stateShell.classList.remove("hidden");
+        stateTextGroup.classList.add("hidden");
+        stateText.required = false;
+      }
+      stateShell.__sync?.();
+    }
+    countrySel.addEventListener("change", syncStates);
+    syncStates();
+
+    /* ---- Errors --------------------------------------------------------- */
+    const submit = document.getElementById("register-submit");
+    const submitLabel = document.getElementById("register-submit-label");
+    const formError = document.getElementById("register-error");
+    const consentError = document.getElementById("consent-error");
+    const successPanel = document.getElementById("register-success");
+
+    function clearErrors() {
+      form.querySelectorAll(".field-error").forEach((el) => {
+        el.textContent = "";
+        el.classList.add("hidden");
+      });
+      form.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute("aria-invalid"));
+      formError.textContent = "";
+      formError.classList.add("hidden");
+    }
+
+    function showFieldError(name, message) {
+      if (name === "consent") {
+        consentError.textContent = message;
+        consentError.classList.remove("hidden");
+        return;
+      }
+      const field = form.querySelector(`[name="${name}"]`);
+      if (!field) {
+        formError.textContent = message;
+        formError.classList.remove("hidden");
+        return;
+      }
+      field.setAttribute("aria-invalid", "true");
+      // Walk up to the wrapper that holds this field's error slot.
+      const holder = field.closest(".field-group, .select-shell, div")?.parentElement
+        ?.querySelector(".field-error")
+        ?? field.closest("div")?.querySelector(".field-error");
+      if (holder) {
+        holder.textContent = message;
+        holder.classList.remove("hidden");
+      } else {
+        formError.textContent = message;
+        formError.classList.remove("hidden");
+      }
+    }
+
+    function setBusy(busy) {
+      submit.disabled = busy;
+      submit.setAttribute("aria-busy", String(busy));
+      submitLabel.textContent = busy ? "Creating your account…" : "Create my account";
+    }
+
+    /* ---- Submit --------------------------------------------------------- */
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors();
+      setBusy(true);
+
+      const fd = new FormData(form);
+      const usingText = !stateTextGroup.classList.contains("hidden");
+      const state = usingText ? String(fd.get("stateText") || "") : String(fd.get("state") || "");
+
+      const payload = {
+        fullName: String(fd.get("fullName") || "").trim(),
+        email: String(fd.get("email") || "").trim(),
+        phone: String(fd.get("phone") || "").trim(),
+        country: String(fd.get("country") || ""),
+        state: state.trim(),
+        city: String(fd.get("city") || "").trim(),
+        consent: fd.get("consent") === "yes",
+        company: String(fd.get("company") || ""),
+        turnstileToken: String(fd.get("cf-turnstile-response") || ""),
+      };
+
+      try {
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.ok) {
+          form.classList.add("hidden");
+          successPanel.classList.remove("hidden");
+          successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        // Field errors render against their inputs; entered values are never
+        // cleared, so nothing has to be retyped.
+        if (data.fieldErrors && typeof data.fieldErrors === "object") {
+          Object.entries(data.fieldErrors).forEach(([k, v]) => showFieldError(k, String(v)));
+        }
+        formError.textContent =
+          data.message || "We couldn't complete your registration. Please check the form and try again.";
+        formError.classList.remove("hidden");
+
+        if (window.turnstile) window.turnstile.reset();
+      } catch {
+        formError.textContent =
+          "We couldn't reach the server. Check your connection and try again — your details are still here.";
+        formError.classList.remove("hidden");
+      } finally {
+        // Always runs, so the button can never be stranded mid-load.
+        setBusy(false);
+      }
+    });
+  })();
+</script>

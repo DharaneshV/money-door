@@ -5,11 +5,12 @@
 // already sits inside the overflow audit's blast radius.
 interface Props {
   orientation?: "h" | "v";
-  light?: boolean;
   class?: string;
 }
-const { orientation = "h", light = true, class: className = "" } = Astro.props;
-const stroke = light ? "rgb(0 0 0 / 0.25)" : "rgb(250 249 247 / 0.28)";
+const { orientation = "h", class: className = "" } = Astro.props;
+// Every surface is dark now, so the connector is always drawn in the off-white
+// tone. It previously defaulted to a black stroke for the light sections.
+const stroke = "rgb(250 249 247 / 0.28)";
 ---
 
 {

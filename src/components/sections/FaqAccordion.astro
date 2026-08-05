@@ -5,10 +5,12 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="mx-auto flex max-w-3xl flex-col gap-3" data-faq>
+{/* Two columns from md up: a single 3xl-wide stack left a long FAQ list
+    running as a thin ribbon down the middle of a very wide section. */}
+<div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-3 md:grid-cols-2" data-faq>
   {
     items.map((item, i) => (
-      <div class="faq-item overflow-hidden  border border-paper/12 bg-ink-900 transition-colors duration-300 [&.is-open]:border-gold-500/40">
+      <div class="faq-item surface-card h-fit overflow-hidden">
         <button
           type="button"
           class="faq-toggle flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-heading text-base font-semibold text-paper transition-colors hover:text-gold-300"

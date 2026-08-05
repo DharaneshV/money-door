@@ -20,15 +20,19 @@
   --color-gold-400: #e6b53a; /* accent text on dark backgrounds */
   --color-gold-500: #d6a31e; /* primary brand gold — logo's measured average tone */
   --color-gold-600: #b8850f; /* hover / pressed state */
-  --color-gold-700: #8d6206; /* darkest measured tone — the only gold that passes AA as text on white */
+  --color-gold-700: #8d6206; /* darkest measured tone — used for deep gold washes, not text */
 
-  /* Black/ink — the logo's flattened background is true #000000. */
+  /* Black/ink — the logo's flattened background is true #000000.
+     The palette is deliberately gold-and-black only: an earlier version
+     alternated off-white sections against these, and the transitions read as
+     harsh no matter how they were blended. */
   --color-ink-950: #000000;
   --color-ink-900: #0a0a0c; /* large surfaces (page background) — softer than pure black */
   --color-ink-800: #15161b; /* card surfaces */
   --color-ink-700: #212228; /* borders / dividers on dark */
-  --color-ink-500: #5c5f6b; /* muted text on light backgrounds */
-  --color-paper: #faf9f7; /* off-white text — matches the logo's white ink tone */
+  --color-ink-500: #5c5f6b; /* muted text where it sits on a gold fill */
+  /* Off-white — used ONLY as text/iconography on dark, never as a surface. */
+  --color-paper: #faf9f7;
 
   /* Reserved strictly for price/ticker contexts — never decorative. */
   --color-market-up: #16a34a;
@@ -55,24 +59,91 @@
 
   /* Fluid section rhythm — vertical spacing grows with the viewport too. */
   --spacing-section: clamp(4.5rem, 3rem + 6vw, 10rem);
+
+  /* Corner radius. The design was aggressively square everywhere except the
+     nav pill, which is what made every card read as a hard rectangle. These
+     scale with the element's importance, not its size. */
+  --radius-card: 1.25rem;
+  --radius-card-lg: 1.75rem;
+  --radius-field: 0.75rem;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
     /* Guard against decorative absolutely-positioned glows pushing the page
-       sideways on narrow screens. Individual sections also clip their own.
+       sideways on narrow screens. `clip` (not `hidden`) on purpose: `hidden`
+       makes html/body an overflow *scroll container*, which breaks
+       `position: sticky` on any descendant (the header silently degrades to
+       static and scrolls away — this is a well-known CSS footgun). `clip`
+       prevents the horizontal overflow without creating that container.
        NOTE: this also pins window.scrollX at 0, so any overflow audit must
        test bounding rects rather than attempted scroll position. */
-    overflow-x: hidden;
+    overflow-x: clip;
     /* Clears the sticky header for in-page anchors (e.g. /courses/#mdc2). */
     scroll-padding-top: 9rem;
+  }
+
+  /* ---- Lenis smooth scrolling ---------------------------------------------
+     Lenis adds `.lenis` to <html> and drives scroll position itself. CSS
+     `scroll-behavior: smooth` animating the same property at the same time
+     produces a visible fight, so it's handed over entirely while Lenis is
+     active. These rules are inert until then — with reduced motion, on touch
+     devices, or if the dynamic import fails, the class never appears and
+     native smooth scrolling above still applies. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  html.lenis {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  /* Opt-out hook for any independently-scrolling pane. */
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
   body {
     background-color: var(--color-ink-950);
     color: var(--color-paper);
     font-family: var(--font-body);
-    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  /* Page-wide ambient wash on a single fixed layer behind everything.
+     Because it's `fixed` it does not move with the content, so gradients read
+     as light in the room rather than as a decoration belonging to whichever
+     section happens to be on screen — which is what stops long scrolls looking
+     like a stack of separately-painted rectangles.
+     `-z-10` + body's own background keeps it under all content. Every surface
+     tier is dark, so this wash reads through all of them. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    pointer-events: none;
+    background-image:
+      radial-gradient(
+        ellipse 70% 50% at 12% 8%,
+        color-mix(in srgb, var(--color-gold-500) 9%, transparent),
+        transparent 62%
+      ),
+      radial-gradient(
+        ellipse 60% 45% at 88% 32%,
+        color-mix(in srgb, var(--color-gold-600) 7%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 80% 50% at 50% 96%,
+        color-mix(in srgb, var(--color-gold-700) 8%, transparent),
+        transparent 65%
+      );
   }
   h1,
   h2,
@@ -146,6 +217,502 @@
 
 @layer components {
   /* ============================================================
+     SURFACES — depth instead of flat slabs.
+
+     The page used to alternate between a flat #000 and a flat
+     #faf9f7 with a hard seam at every section boundary, which is
+     what made long scrolls tiring to look at. These give each
+     surface a soft internal gradient and let neighbouring sections
+     blend into one another.
+
+     Use `.surface-*` in place of a bare `bg-ink-950` / `bg-paper`.
+     ============================================================ */
+
+  /* Dark surface: near-black with an off-centre warm wash, so a tall
+     dark section has depth rather than reading as an empty void.
+     Two stops at different positions keeps it from looking like a
+     single obvious vignette. */
+  .surface-ink {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-ink-950);
+    background-image:
+      radial-gradient(
+        ellipse 90% 60% at 15% 0%,
+        color-mix(in srgb, var(--color-gold-500) 7%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 70% 50% at 85% 100%,
+        color-mix(in srgb, var(--color-gold-600) 5%, transparent),
+        transparent 65%
+      );
+  }
+  /* Slightly lifted variant, for a section that should read as a
+     distinct band without jumping to a different hue. */
+  .surface-ink-raised {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-ink-900);
+    background-image:
+      radial-gradient(
+        ellipse 80% 55% at 75% 0%,
+        color-mix(in srgb, var(--color-gold-500) 8%, transparent),
+        transparent 62%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-paper) 3%, transparent),
+        transparent 40%
+      );
+  }
+
+  /* Third dark tier — the warmest of the three. This is what alternates
+     against `.surface-ink` to give a page its rhythm; it replaced a genuine
+     off-white band, because mixing white sections into a black-and-gold site
+     produced harsh transitions no amount of gradient blending fixed. Staying
+     inside the gold/black palette keeps the alternation without the glare.
+     Bronze-toned rather than merely lighter black, so the step is legible. */
+  .surface-gold {
+    position: relative;
+    isolation: isolate;
+    background-color: #100d06;
+    background-image:
+      radial-gradient(
+        ellipse 85% 60% at 80% 0%,
+        color-mix(in srgb, var(--color-gold-600) 20%, transparent),
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 70% 55% at 10% 100%,
+        color-mix(in srgb, var(--color-gold-700) 22%, transparent),
+        transparent 62%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-gold-500) 5%, transparent),
+        transparent 45%
+      );
+  }
+
+  /* ---- Seams -------------------------------------------------
+     A short transitional band painted inside a section's own top
+     edge, in the colour of the section ABOVE it — so the two
+     dissolve into each other instead of meeting at a hard line.
+
+     Driven entirely by the adjacent-sibling combinator rather than a
+     hand-applied class, because the correct seam colour is a fact
+     about the *previous* section. Declaring it by hand means every
+     reorder or inserted section silently produces a wrong seam (a
+     bright paper band in the middle of two dark sections, say).
+     This way a section only ever declares what it is, and the seam
+     between any pair is always correct by construction.
+
+     Layering: `z-index: -1` combined with the `isolation: isolate`
+     that every `.surface-*` sets paints the seam above that
+     section's own background but beneath all of its content,
+     without content needing to be positioned. */
+  .surface-ink + .surface-gold::before,
+  .surface-ink-raised + .surface-gold::before,
+  .surface-gold + .surface-ink::before,
+  .surface-gold + .surface-ink-raised::before,
+  .surface-gold + .surface-gold::before,
+  .surface-ink + .surface-ink-raised::before,
+  .surface-ink-raised + .surface-ink::before,
+  .surface-ink + .surface-ink::before,
+  .surface-ink-raised + .surface-ink-raised::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: clamp(2.5rem, 4.5vw, 4.5rem);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Each seam carries the colour of the section immediately above it, so any
+     pair blends regardless of which two tiers meet. All three tiers are dark
+     now, so these are tonal transitions rather than colour changes. */
+  .surface-ink + .surface-gold::before,
+  .surface-ink + .surface-ink-raised::before,
+  .surface-ink + .surface-ink::before {
+    background: linear-gradient(to bottom, var(--color-ink-950), transparent);
+  }
+  .surface-ink-raised + .surface-gold::before,
+  .surface-ink-raised + .surface-ink::before,
+  .surface-ink-raised + .surface-ink-raised::before {
+    background: linear-gradient(to bottom, var(--color-ink-900), transparent);
+  }
+  .surface-gold + .surface-ink::before,
+  .surface-gold + .surface-ink-raised::before,
+  .surface-gold + .surface-gold::before {
+    background: linear-gradient(to bottom, #100d06, transparent);
+  }
+
+  /* ============================================================
+     FORM CONTROLS
+     ============================================================ */
+
+  /* Inset field: reads as carved into the card rather than drawn on top of
+     it, which is what stops a form looking like default browser furniture. */
+  .field {
+    width: 100%;
+    border-radius: var(--radius-field);
+    border: 1px solid color-mix(in srgb, var(--color-paper) 10%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-ink-950) 70%, transparent),
+        color-mix(in srgb, var(--color-ink-900) 60%, transparent)
+      );
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.5);
+    padding: 0.85rem 1rem;
+    color: var(--color-paper);
+    outline: none;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .field::placeholder {
+    color: color-mix(in srgb, var(--color-paper) 28%, transparent);
+  }
+  .field:hover {
+    border-color: color-mix(in srgb, var(--color-paper) 20%, transparent);
+  }
+  .field:focus,
+  .field:focus-visible {
+    border-color: color-mix(in srgb, var(--color-gold-500) 65%, transparent);
+    box-shadow:
+      inset 0 1px 2px rgb(0 0 0 / 0.5),
+      0 0 0 3px color-mix(in srgb, var(--color-gold-500) 18%, transparent);
+  }
+  .field[aria-invalid="true"] {
+    border-color: color-mix(in srgb, var(--color-market-down) 70%, transparent);
+  }
+
+  /* Floating-label field. The label sits inside the control and rises when the
+     field is focused or filled. `:not(:placeholder-shown)` is what detects
+     "filled" without JS — which is why every input using this keeps a
+     placeholder of " ". */
+  .field-group {
+    position: relative;
+  }
+  .field-group > .field {
+    padding-top: 1.45rem;
+    padding-bottom: 0.5rem;
+  }
+  .field-group > .field-label {
+    position: absolute;
+    top: 0.95rem;
+    left: 1rem;
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-paper) 45%, transparent);
+    pointer-events: none;
+    transform-origin: left top;
+    transition:
+      transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+      color 0.22s ease;
+  }
+  .field-group > .field:focus ~ .field-label,
+  .field-group > .field:not(:placeholder-shown) ~ .field-label,
+  .field-group.is-filled > .field-label {
+    transform: translateY(-0.72rem) scale(0.78);
+    color: var(--color-gold-400);
+  }
+
+  /* ---- Custom select ------------------------------------------
+     A native <select> can't be styled past its closed state — the dropdown
+     list itself is drawn by the OS and ignores CSS entirely, which is what
+     made the country picker look out of place. This is a listbox built from
+     real elements so the menu can be themed, searched and scrolled.
+
+     The underlying <select> stays in the DOM (visually hidden, not removed):
+     it remains the thing that's submitted and validated, and it's the
+     no-JS fallback — `.js` gates which of the two is shown. */
+  .select-native {
+    display: block;
+  }
+  .js .select-shell .select-native {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  .select-shell {
+    position: relative;
+  }
+  .select-button {
+    display: none;
+  }
+  .js .select-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .select-button[data-placeholder="true"] {
+    color: color-mix(in srgb, var(--color-paper) 28%, transparent);
+  }
+  .select-chevron {
+    flex: none;
+    color: var(--color-gold-500);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .select-shell.is-open .select-chevron {
+    transform: rotate(180deg);
+  }
+
+  .select-menu {
+    position: absolute;
+    z-index: 40;
+    left: 0;
+    right: 0;
+    margin-top: 0.4rem;
+    max-height: 17rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 25%, transparent);
+    background: color-mix(in srgb, #0d0b07 97%, transparent);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 28px 60px -18px rgb(0 0 0 / 0.85);
+    padding: 0.4rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.35rem);
+    transition:
+      opacity 0.22s ease,
+      transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0.22s;
+  }
+  .select-shell.is-open .select-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  /* Opens upward when there isn't room below. */
+  .select-shell.is-up .select-menu {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 0.4rem;
+  }
+
+  .select-search {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin-bottom: 0.3rem;
+    background: #0d0b07;
+    padding-bottom: 0.3rem;
+  }
+  .select-option {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-radius: 0.55rem;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--color-paper) 72%, transparent);
+    cursor: pointer;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease;
+  }
+  /* Both states styled: pointer hover and keyboard-driven "active" index. */
+  .select-option:hover,
+  .select-option.is-active {
+    background: color-mix(in srgb, var(--color-gold-500) 14%, transparent);
+    color: var(--color-paper);
+  }
+  .select-option[aria-selected="true"] {
+    color: var(--color-gold-300);
+  }
+  .select-option[aria-selected="true"]::after {
+    content: "✓";
+    font-size: 0.8rem;
+  }
+  .select-group-label {
+    padding: 0.55rem 0.75rem 0.3rem;
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-gold-500) 70%, transparent);
+  }
+  .select-empty {
+    padding: 0.85rem 0.75rem;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--color-paper) 40%, transparent);
+  }
+
+  /* ---- Checkbox ------------------------------------------------ */
+  .checkbox {
+    appearance: none;
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 0.35rem;
+    border: 1px solid color-mix(in srgb, var(--color-paper) 25%, transparent);
+    background: color-mix(in srgb, var(--color-ink-950) 60%, transparent);
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .checkbox:hover {
+    border-color: color-mix(in srgb, var(--color-gold-500) 60%, transparent);
+  }
+  .checkbox:checked {
+    background: var(--color-gold-500);
+    border-color: var(--color-gold-500);
+    /* Inline SVG tick: no extra element, and it scales with the box. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8.5l3 3 6-6' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size: 100%;
+  }
+  .checkbox:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 2px;
+  }
+
+  /* ---- Partner band -------------------------------------------
+     Full-width alternating rows on /partnerships. Separated by a rule that
+     fades out at both ends rather than a border, so the bands read as one
+     continuous column of content instead of a stack of boxed cards. */
+  .partner-band + .partner-band {
+    position: relative;
+  }
+  .partner-band + .partner-band::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--color-gold-500) 30%, transparent) 20%,
+      color-mix(in srgb, var(--color-paper) 16%, transparent) 50%,
+      color-mix(in srgb, var(--color-gold-500) 30%, transparent) 80%,
+      transparent
+    );
+  }
+
+  /* ---- Card surface -------------------------------------------
+     Replaces `bg-ink-900 + border border-paper/12`, which is what
+     produced the flat rectangles. A gradient fill plus a gradient
+     hairline (via border-image on a masked pseudo-element would be
+     heavier; a layered background achieves it in one paint). */
+  .surface-card {
+    position: relative;
+    border-radius: var(--radius-card);
+    background-image:
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--color-paper) 7%, transparent),
+        color-mix(in srgb, var(--color-paper) 2%, transparent) 45%,
+        transparent 75%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-ink-800) 92%, transparent),
+        color-mix(in srgb, var(--color-ink-900) 96%, transparent)
+      );
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--color-paper) 9%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 7%, transparent);
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s ease;
+  }
+  .surface-card:hover,
+  .surface-card:focus-within {
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--color-gold-300) 22%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 28%, transparent),
+      0 22px 50px -20px rgb(0 0 0 / 0.65);
+  }
+
+  /* Asymmetric-radius variant. A uniform radius on every card is precisely
+     what makes a page read as templated; a large radius on two opposing
+     corners gives a card a deliberate shape instead. Easing toward a rounder,
+     more even value on hover makes it feel responsive rather than static.
+
+     Applied selectively — on every card at once it becomes its own kind of
+     monotony. `clamp()` keeps the big corner from swallowing a narrow card on
+     mobile, where 190px would consume the whole thing. */
+  .surface-card--shaped {
+    border-radius: clamp(2.5rem, 12vw, 11.875rem) var(--radius-card)
+      clamp(2.5rem, 12vw, 11.875rem) var(--radius-card);
+    transition:
+      border-radius 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s ease;
+  }
+  .surface-card--shaped:hover,
+  .surface-card--shaped:focus-within {
+    border-radius: var(--radius-card-lg);
+  }
+  /* Mirrored, so alternating cards in a row lean opposite ways. */
+  .surface-card--shaped-alt {
+    border-radius: var(--radius-card) clamp(2.5rem, 12vw, 11.875rem)
+      var(--radius-card) clamp(2.5rem, 12vw, 11.875rem);
+  }
+
+  /* ---- Full-height sections -----------------------------------------------
+     Fixes scrolling that comes to rest halfway through a card. `svh` (small
+     viewport height) rather than `vh`: on mobile browsers with a collapsing
+     address bar, `100vh` is taller than the visible area, so a "full height"
+     section is silently cut off. `min-height` rather than `height` so a section
+     whose content outgrows the viewport still expands instead of overflowing. */
+  .section-full {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Warmer card, for use on `.surface-gold` bands where a plain `.surface-card`
+     would sit too close in tone to its background to read as a distinct object. */
+  .surface-card-warm {
+    position: relative;
+    border-radius: var(--radius-card);
+    background-image: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--color-gold-500) 12%, transparent),
+      color-mix(in srgb, var(--color-gold-700) 8%, transparent) 55%,
+      transparent 85%
+    );
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--color-gold-300) 16%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 16%, transparent);
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s ease;
+  }
+  .surface-card-warm:hover,
+  .surface-card-warm:focus-within {
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--color-gold-300) 30%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 38%, transparent),
+      0 22px 50px -20px rgb(0 0 0 / 0.7);
+  }
+
+  /* ============================================================
      EDITORIAL TYPE — the core of the SOMA / ELLE-style language.
      Oversized display headlines, offset by tiny wide-tracked
      uppercase micro-labels. Type does the work; chrome recedes.
@@ -200,9 +767,6 @@
     border-top: 1px solid;
     border-color: color-mix(in srgb, var(--color-paper) 14%, transparent);
   }
-  .rule-dark {
-    border-color: color-mix(in srgb, var(--color-ink-950) 14%, transparent);
-  }
 
   /* Editorial "row" — a full-width record with hairline separators, the
      magazine-index alternative to a grid of bordered cards. */
@@ -218,12 +782,6 @@
   }
   .edit-row:hover {
     background-color: color-mix(in srgb, var(--color-gold-500) 7%, transparent);
-  }
-  .edit-row-light {
-    border-top-color: color-mix(in srgb, var(--color-ink-950) 12%, transparent);
-  }
-  .edit-row-light:last-child {
-    border-bottom-color: color-mix(in srgb, var(--color-ink-950) 12%, transparent);
   }
 
   /* Animated underline for editorial text links — wipes in from the left. */
@@ -355,10 +913,10 @@
      IntersectionObserver in BaseLayout, re-run after every page transition. */
   .js [data-reveal] {
     opacity: 0;
-    transform: translateY(1.5rem) scale(0.985);
+    transform: translateY(2rem);
     transition:
-      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
   }
   .js [data-reveal].is-visible {
@@ -561,15 +1119,6 @@
     border-color: color-mix(in srgb, var(--color-gold-500) 45%, transparent);
     color: var(--color-gold-400);
   }
-  /* gold-700 is the only gold that clears AA on the light `bg-paper` sections. */
-  .pill--light {
-    border-color: color-mix(in srgb, var(--color-ink-950) 20%, transparent);
-    color: var(--color-gold-700);
-  }
-  .pill--light:hover {
-    border-color: color-mix(in srgb, var(--color-gold-700) 60%, transparent);
-    color: var(--color-gold-600);
-  }
 
   /* ---- Icon + label spec row ----------------------------------
      Deliberately NOT .edit-row: that one carries a hover background and
@@ -581,9 +1130,6 @@
     gap: 1.5rem;
     border-top: 1px solid color-mix(in srgb, var(--color-paper) 12%, transparent);
     padding-block: 0.85rem;
-  }
-  .spec-row--light {
-    border-top-color: color-mix(in srgb, var(--color-ink-950) 12%, transparent);
   }
 
   /* ---- Tilted stage card --------------------------------------
@@ -711,8 +1257,9 @@
     overflow: hidden;
     background: var(--color-ink-950);
     /* Belt to the JS braces: even if the module never runs, the overlay
-       uncovers itself. */
-    animation: intro-hardstop 3.4s steps(1, end) forwards;
+       uncovers itself. Duration is set inline from the intro config so a
+       longer clip isn't guillotined by a hardcoded value. */
+    animation: intro-hardstop var(--intro-hardstop, 3.4s) steps(1, end) forwards;
   }
   @keyframes intro-hardstop {
     to {
@@ -754,6 +1301,18 @@
   .intro__skip:focus-visible {
     outline: 2px solid var(--color-gold-500);
     outline-offset: 4px;
+  }
+
+  /* Video mode: the clip carries its own motion, so the stage takes none of
+     the camera animation applied to the static-frame fallback below. */
+  .intro__stage--video {
+    animation: none;
+    transform: none;
+  }
+  .intro__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   /* Camera: shake during the charge, then pull back from 1.9x to 1x. */

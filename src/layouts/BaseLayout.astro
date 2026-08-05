@@ -7,7 +7,7 @@ import WhatsAppButton from "../components/layout/WhatsAppButton.astro";
 import SeoHead from "../components/seo/SeoHead.astro";
 import StructuredData from "../components/seo/StructuredData.astro";
 import SiteIntro from "../components/layout/SiteIntro.astro";
-import { announcement } from "../data/site";
+import { announcement, introVideo } from "../data/site";
 
 interface Props {
   title: string;
@@ -38,7 +38,10 @@ const isHome = Astro.url.pathname === "/";
         animation/hiding CSS is scoped to it, so with JS off nothing is ever
         hidden), restores a dismissed announcement without a flash, and arms
         the homepage intro. */}
-    <script is:inline define:vars={{ annId: announcement.id, isHome }}>
+    <script
+      is:inline
+      define:vars={{ annId: announcement.id, isHome, introMaxMs: introVideo.maxDurationMs }}
+    >
       (function () {
         var html = document.documentElement;
         html.classList.add("js");
@@ -78,10 +81,12 @@ const isHome = Astro.url.pathname === "/";
 
         // Dead-man switch. Registered here, in the same synchronous script
         // that applied the scroll lock — so the lock can never outlive it,
-        // even if the intro's own module fails to load.
+        // even if the intro's own module fails to load. Sits beyond the
+        // intro's own max duration plus its curtain animation, so it only
+        // ever fires when something has genuinely gone wrong.
         setTimeout(function () {
           html.classList.remove("intro-active", "intro-closing");
-        }, 4000);
+        }, introMaxMs + 1800);
       })();
     </script>
   </head>
@@ -96,6 +101,59 @@ const isHome = Astro.url.pathname === "/";
     </main>
     <Footer transition:persist />
     <WhatsAppButton transition:persist />
+
+    <script>
+      // ---- Lenis inertial smooth scrolling ---------------------------------
+      // Imported dynamically so the ~10KB never reaches anyone who has asked
+      // for reduced motion, and so it can't block first paint.
+      //
+      // Duration is 1.1s deliberately: longer reads as sluggish and makes
+      // people think the page has hung.
+      //
+      // Lenis takes over the scroll position, which conflicts with CSS
+      // `scroll-behavior: smooth` — so global.css sets that to `auto` whenever
+      // Lenis is active (`.lenis` class), and anchor jumps are handed to Lenis
+      // instead below.
+      (async () => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        // Coarse pointers already have native momentum scrolling; layering
+        // Lenis on top of it fights the platform and feels worse, not better.
+        if (window.matchMedia("(pointer: coarse)").matches) return;
+
+        try {
+          const { default: Lenis } = await import("lenis");
+          const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+          (window as any).__lenis = lenis;
+
+          function raf(time: number) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+          }
+          requestAnimationFrame(raf);
+
+          // In-page anchors must go through Lenis, otherwise the browser jumps
+          // instantly and Lenis then animates back from wherever it thought it was.
+          document.addEventListener("click", (e) => {
+            const link = (e.target as Element)?.closest?.('a[href^="#"]');
+            if (!link) return;
+            const id = link.getAttribute("href");
+            if (!id || id === "#") return;
+            const target = document.querySelector(id);
+            if (!target) return;
+            e.preventDefault();
+            // Matches `scroll-padding-top` so the sticky header doesn't cover
+            // the heading being jumped to.
+            lenis.scrollTo(target as HTMLElement, { offset: -144 });
+          });
+
+          // A transitioned-in page starts at the previous scroll offset unless
+          // Lenis is told otherwise.
+          document.addEventListener("astro:after-swap", () => lenis.scrollTo(0, { immediate: true }));
+        } catch {
+          // Native scrolling is a perfectly good fallback.
+        }
+      })();
+    </script>
 
     <script>
       // Scroll-reveal + route-progress bar. Kept deliberately small and

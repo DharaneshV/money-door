@@ -10,17 +10,15 @@ import Icon from "./Icon.astro";
 // tooling and support model are all fine.
 interface Props {
   icon?: Parameters<typeof Icon>[0]["name"];
-  /** `light` is required on the light `bg-paper` sections — it swaps to
-      gold-700, the only gold that clears WCAG AA on white. */
-  tone?: "default" | "gold" | "light";
+  tone?: "default" | "gold";
   class?: string;
 }
 const { icon, tone = "default", class: className = "" } = Astro.props;
 
+// The `light` tone is gone with the off-white sections it existed for.
 const toneClass = {
   default: "",
   gold: "pill--gold",
-  light: "pill--light",
 }[tone];
 ---
 

@@ -21,7 +21,7 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
     subtitle="Real feedback from real students — focused on what they learned and how their approach changed."
   />
 
-  <section class="bg-ink-950 py-section">
+  <section class="surface-ink py-section">
     <Container>
       {
         testimonials.length > 0 ? (
@@ -43,7 +43,7 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
               Already a student? We'd love to hear from you.
             </p>
             <div class="pt-2">
-              <Button href="/contact/" variant="secondary" arrow>Share Your Experience</Button>
+              <Button href="/join/" variant="secondary" arrow>Share Your Experience</Button>
             </div>
           </div>
         )
@@ -51,7 +51,7 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-section">
+  <section class="surface-ink-raised py-section">
     <Container class="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
       <h2 class="font-heading text-2xl font-bold sm:text-3xl">A Note on Testimonials</h2>
       <p class="text-base leading-relaxed text-paper/70">

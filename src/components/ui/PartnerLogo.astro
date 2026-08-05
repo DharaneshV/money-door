@@ -1,0 +1,66 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+
+interface Props {
+  name: string;
+  slug: string;
+  class?: string;
+}
+const { name, slug, class: className = "" } = Astro.props;
+
+// Resolve the logo at build time. Drop a file at
+// `public/partners/<slug>.(svg|png|webp|jpg)` and it is picked up
+// automatically — no code change, no registry to update.
+//
+// Until a file exists, a designed monogram stands in. That is deliberate: a
+// broken <img> or a hotlink to the partner's own CDN would be worse than a
+// placeholder. Hotlinking in particular is unreliable (they can move or block
+// the asset at any time) and leaks visitor requests to a third party, so
+// partner artwork must be committed here, from their affiliate media kit.
+const EXTS = [".svg", ".png", ".webp", ".jpg", ".jpeg"];
+const dir = path.join(process.cwd(), "public", "partners");
+
+let logoSrc: string | null = null;
+for (const ext of EXTS) {
+  if (fs.existsSync(path.join(dir, slug + ext))) {
+    logoSrc = `/partners/${slug}${ext}`;
+    break;
+  }
+}
+
+// Initials for the fallback: first letter of each word, max two. "NYS Markets"
+// → "NM", "HFM" → "HF".
+const initials = name
+  .split(/\s+/)
+  .map((w) => w[0])
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
+---
+
+{
+  logoSrc ? (
+    <img
+      src={logoSrc}
+      alt={`${name} logo`}
+      loading="lazy"
+      decoding="async"
+      /* max-h + w-auto keeps wildly different logo aspect ratios optically
+         similar in size; object-left stops a wide logo centring away from the
+         text it belongs to. */
+      class:list={["h-auto max-h-12 w-auto max-w-[13rem] object-contain object-left", className]}
+    />
+  ) : (
+    <span
+      class:list={[
+        "flex h-14 w-14 items-center justify-center rounded-2xl border border-gold-500/30 bg-gold-500/10 font-display text-lg font-medium tracking-[0.06em] text-gold-300",
+        className,
+      ]}
+      aria-hidden="true"
+      title={`${name} — logo pending`}
+    >
+      {initials}
+    </span>
+  )
+}

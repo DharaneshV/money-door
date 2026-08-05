@@ -19,7 +19,7 @@ const stages = [
     tilt: "-2.4deg",
     steps: ["Learn the Basics", "Understand Market Structure"],
     note: "MDC1 · 1 week · free",
-    dark: false,
+    featured: false,
   },
   {
     n: "02",
@@ -28,7 +28,7 @@ const stages = [
     tilt: "1.8deg",
     steps: ["Master Gold Trading", "Practice in Live Markets"],
     note: "MDC2 · 6 months",
-    dark: false,
+    featured: false,
   },
   {
     n: "03",
@@ -37,19 +37,18 @@ const stages = [
     tilt: "-1.4deg",
     steps: ["Develop Consistency", "Trade with Confidence"],
     note: "MDC3 · 12 months",
-    dark: true,
+    featured: true,
   },
 ];
 ---
 
-<section class="bg-paper py-section">
+<section class="surface-gold py-section">
   <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
     <SectionHeading
       eyebrow="Our Learning Process"
       index="05"
       title="Your Journey to Becoming a Professional Trader"
       align="left"
-      light
     />
 
     <ol
@@ -59,54 +58,39 @@ const stages = [
       {
         stages.map((stage, i) => (
           <>
+            {/* The final stage is the emphasised one — it used to be the only
+                dark card against two white ones. With an all-dark palette the
+                emphasis comes from a warmer fill and a gold edge instead. */}
             <li
               class:list={[
-                "tilt-card flex h-full flex-col border p-7 sm:p-8",
-                stage.dark
-                  ? "border-gold-500/40 bg-ink-950 shadow-xl shadow-ink-950/20"
-                  : "border-ink-950/12 bg-white shadow-sm",
+                "tilt-card flex h-full flex-col p-7 sm:p-8",
+                stage.featured ? "surface-card-warm" : "surface-card",
               ]}
               style={`--tilt:${stage.tilt}`}
             >
               <div class="flex items-baseline justify-between gap-4">
                 <span
-                  class:list={["section-index", stage.dark ? "text-gold-400" : "text-gold-700"]}
+                  class:list={["section-index", stage.featured ? "text-gold-300" : "text-gold-500"]}
                 >
                   {stage.n}
                 </span>
-                <span
-                  class:list={["eyebrow", stage.dark ? "text-paper/45" : "text-ink-500"]}
-                >
-                  {stage.label}
-                </span>
+                <span class="eyebrow text-paper/45">{stage.label}</span>
               </div>
 
-              <h3
-                class:list={[
-                  "mt-6 font-display text-[clamp(1.35rem,1.1rem+1.1vw,2rem)] font-medium leading-tight",
-                  stage.dark ? "text-paper" : "text-ink-950",
-                ]}
-              >
+              <h3 class="mt-6 font-display text-[clamp(1.35rem,1.1rem+1.1vw,2rem)] font-medium leading-tight text-paper">
                 {stage.title}
               </h3>
 
               <ul class="mt-6 flex flex-col">
                 {stage.steps.map((step) => (
-                  <li
-                    class:list={[
-                      "border-t py-3 text-sm leading-snug",
-                      stage.dark
-                        ? "border-paper/12 text-paper/70"
-                        : "border-ink-950/10 text-ink-700",
-                    ]}
-                  >
+                  <li class="border-t border-paper/12 py-3 text-sm leading-snug text-paper/70">
                     {step}
                   </li>
                 ))}
               </ul>
 
               <div class="mt-auto pt-7">
-                <Pill tone={stage.dark ? "gold" : "light"}>{stage.note}</Pill>
+                <Pill tone={stage.featured ? "gold" : "default"}>{stage.note}</Pill>
               </div>
             </li>
 

@@ -20,7 +20,7 @@ const specsFor = (d: (typeof programs)[number]["data"]) =>
   ].filter(Boolean) as { icon: "wallet" | "clock" | "layers" | "users" | "award"; label: string; value: string }[];
 ---
 
-<section class="bg-ink-950 py-section">
+<section class="surface-ink py-section">
   <Container class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
     <div class="program-tabs" data-tabs>
       {/* Hidden entirely without JS, so the tablist never advertises a widget
@@ -81,7 +81,7 @@ const specsFor = (d: (typeof programs)[number]["data"]) =>
                       <Button href={`/courses/${slug}/`} arrow>
                         View full {d.code}
                       </Button>
-                      <Button href="/contact/" variant="ghost">
+                      <Button href="/join/" variant="ghost">
                         Book a free consultation
                       </Button>
                     </div>

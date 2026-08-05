@@ -1,12 +1,15 @@
 ---
 interface Props {
   href?: string;
-  variant?: "primary" | "secondary" | "ghost" | "secondary-light" | "ghost-light";
+  variant?: "primary" | "secondary" | "ghost";
   size?: "md" | "lg";
   class?: string;
   arrow?: boolean;
   target?: "_blank";
   type?: "button" | "submit";
+  /** Needed when a script has to address the button (e.g. the register form). */
+  id?: string;
+  disabled?: boolean;
 }
 const {
   href,
@@ -16,6 +19,8 @@ const {
   arrow = false,
   target,
   type = "button",
+  id,
+  disabled = false,
 } = Astro.props;
 
 // Editorial button language: squared-off, hairline-bordered, wide-tracked
@@ -23,18 +28,19 @@ const {
 const base =
   "group inline-flex items-center justify-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-500";
 
-// The -light variants exist because gold-300/paper text fails WCAG contrast on
-// the light `bg-paper` sections — use them for any button on a light background.
+// Every surface is dark now, so the former `-light` variants (which existed
+// only because gold-300/paper text failed contrast on the old off-white
+// sections) are gone. Three variants cover the whole site.
+//
+// `hover:text-ink-950` is deliberate and must stay dark: the fill inverts to
+// solid gold/paper on hover, so the label needs near-black to remain legible.
 const variants = {
   primary: "border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-ink-950",
   secondary: "border border-paper/25 text-paper hover:border-paper hover:bg-paper hover:text-ink-950",
   ghost: "text-gold-400 hover:text-gold-300",
-  "secondary-light":
-    "border border-ink-950/25 text-ink-950 hover:border-ink-950 hover:bg-ink-950 hover:text-paper",
-  "ghost-light": "text-gold-700 hover:text-gold-600",
 };
 
-const isGhost = variant === "ghost" || variant === "ghost-light";
+const isGhost = variant === "ghost";
 const sizes = {
   md: isGhost ? "" : "px-7 py-3.5",
   lg: isGhost ? "" : "px-9 py-4.5",
@@ -46,7 +52,7 @@ const rel = target === "_blank" ? "noopener noreferrer" : undefined;
 
 {
   href ? (
-    <a href={href} class={classes} target={target} rel={rel}>
+    <a href={href} class={classes} target={target} rel={rel} id={id}>
       <span class:list={[isGhost && "link-underline"]}>
         <slot />
       </span>
@@ -70,7 +76,7 @@ const rel = target === "_blank" ? "noopener noreferrer" : undefined;
       )}
     </a>
   ) : (
-    <button type={type} class={classes}>
+    <button type={type} class={classes} id={id} disabled={disabled}>
       <span class:list={[isGhost && "link-underline"]}>
         <slot />
       </span>

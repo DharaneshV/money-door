@@ -6,6 +6,32 @@ import SectionHeading from "../components/ui/SectionHeading.astro";
 import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
 import Button from "../components/ui/Button.astro";
 import Icon from "../components/ui/Icon.astro";
+import CurveDivider from "../components/ui/CurveDivider.astro";
+
+// Market characteristics, set opposite the intro copy so the section uses its
+// full width. Descriptive only — no performance or return claims.
+const characteristics = [
+  {
+    title: "Deep Liquidity",
+    description:
+      "One of the most heavily traded instruments globally, which means tight spreads and reliable order execution.",
+  },
+  {
+    title: "Clear Macro Drivers",
+    description:
+      "Moves on identifiable catalysts — interest rates, inflation data, and risk sentiment — rather than opaque, one-off events.",
+  },
+  {
+    title: "Near 24-Hour Access",
+    description:
+      "Tradable across the Asian, London, and New York sessions, so students can practise around their own schedule.",
+  },
+  {
+    title: "Volatility Cuts Both Ways",
+    description:
+      "The same movement that creates opportunity creates risk — which is why risk management is taught from day one, not as an afterthought.",
+  },
+];
 
 const methodology = [
   {
@@ -45,34 +71,87 @@ const methodology = [
     subtitle="Learn to read one of the world's most actively traded markets with a structured, rule-based approach — not guesswork, not signals."
   />
 
-  <section class="bg-paper py-section">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center" data-reveal>
-      <h2 class="font-heading text-3xl font-bold text-ink-950">Why We Focus on Gold</h2>
-      <p class="text-base leading-relaxed text-ink-700">
-        Gold (XAU/USD) is one of the most actively traded instruments in the world — highly
-        liquid, driven by clear macro and sentiment-based catalysts, and tradable nearly around
-        the clock. These characteristics make it a valuable market for learning structured price
-        analysis. The same volatility that creates opportunity also creates risk, which is why
-        every strategy we teach is paired with disciplined risk management from day one.
-      </p>
+  {/* Two-column editorial split rather than a centred column marooned in a
+      wide section — the copy sits against a set of market characteristics so
+      the full width is doing work. */}
+  <section class="surface-gold py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading
+            eyebrow="The Market"
+            index="01"
+            title="Why We Focus on Gold"
+            align="left"
+          />
+          <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/70 sm:text-lg">
+            Gold (XAU/USD) is one of the most actively traded instruments in the world — highly
+            liquid, driven by clear macro and sentiment-based catalysts, and tradable nearly
+            around the clock. These characteristics make it a valuable market for learning
+            structured price analysis. The same volatility that creates opportunity also creates
+            risk, which is why every strategy we teach is paired with disciplined risk management
+            from day one.
+          </p>
+        </div>
+
+        <dl class="flex flex-col" data-reveal-stagger>
+          {
+            characteristics.map((c) => (
+              <div class="edit-row group py-[clamp(1.25rem,2.5vw,2rem)]">
+                <dt class="font-display text-[clamp(1.15rem,0.95rem+0.8vw,1.6rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                  {c.title}
+                </dt>
+                <dd class="mt-2 max-w-md text-sm leading-relaxed text-paper/55">{c.description}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-section">
-    <Container class="flex flex-col gap-10">
+  {/* Curved boundary instead of the usual gradient seam. Inserting an element
+      between the two sections also stops the seam applying, since the seam is
+      keyed on the adjacent-sibling combinator — the two treatments can't
+      double up and muddy each other. */}
+  <CurveDivider from="gold" to="ink" />
+
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
       <div data-reveal>
-        <SectionHeading eyebrow="Our Methodology" title="How We Teach Gold Trading" />
+        <SectionHeading
+          eyebrow="Our Methodology"
+          index="02"
+          title="How We Teach Gold Trading"
+          align="left"
+        />
       </div>
-      <div class="grid gap-6 sm:grid-cols-2" data-reveal-stagger>
+      {/* Asymmetric grid so the row never reads as four identical boxes.
+          Spans alternate 4+2 then 2+4, which fills both rows of the 6-column
+          grid completely rather than leaving a gap at the end. */}
+      <div
+        class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-6"
+        data-reveal-stagger
+      >
         {
-          methodology.map((m) => (
-            <div class="card-lift flex flex-col gap-3  border border-paper/12 bg-ink-900 p-7 hover:border-gold-500/40">
-              <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+          methodology.map((m, i) => (
+            <article
+              class:list={[
+                "surface-card surface-card--shaped card-lift group flex flex-col gap-4 p-[clamp(1.5rem,2.5vw,2.5rem)]",
+                i === 0 || i === 3 ? "lg:col-span-4" : "lg:col-span-2",
+                // Mirrored on alternating cards so the row leans in and out
+                // rather than repeating one shape four times.
+                i % 2 === 1 && "surface-card--shaped-alt",
+              ]}
+            >
+              <span class="icon-pop flex h-12 w-12 items-center justify-center rounded-full bg-gold-500/12 text-gold-500">
                 <Icon name={m.icon} class="h-5 w-5" />
               </span>
-              <h3 class="font-heading text-lg font-bold text-paper">{m.title}</h3>
-              <p class="text-sm leading-relaxed text-paper/65">{m.description}</p>
-            </div>
+              <h3 class="font-display text-[clamp(1.25rem,1rem+0.9vw,1.75rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                {m.title}
+              </h3>
+              <p class="max-w-lg text-sm leading-relaxed text-paper/65">{m.description}</p>
+            </article>
           ))
         }
       </div>
@@ -80,16 +159,18 @@ const methodology = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-section">
-    <Container class="flex flex-col items-center gap-6 text-center" data-reveal>
-      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Learn PR &amp; PC in Depth</h2>
-      <p class="max-w-xl text-base text-paper/70">
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col items-center gap-6 text-center" data-reveal>
+      <h2 class="max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+        Learn PR &amp; PC in Depth
+      </h2>
+      <p class="max-w-xl text-base leading-relaxed text-paper/65 sm:text-lg">
         The full PR &amp; PC methodology — with live market training and weekly analysis sessions
         — is taught in depth inside MDC2: Professional Trader.
       </p>
-      <div class="flex flex-col gap-3 sm:flex-row">
+      <div class="mt-2 flex flex-col gap-3 sm:flex-row">
         <Button href="/courses/mdc2/" arrow>View MDC2 — Professional Trader</Button>
-        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+        <Button href="/join/" variant="secondary">Book Free Consultation</Button>
       </div>
     </Container>
   </section>

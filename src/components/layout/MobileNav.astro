@@ -1,5 +1,5 @@
 ---
-import { primaryNav, whatsappHref } from "../../data/site";
+import { primaryNav, whatsappHref, joinHref } from "../../data/site";
 import Button from "../ui/Button.astro";
 ---
 
@@ -37,7 +37,7 @@ import Button from "../ui/Button.astro";
       }
     </nav>
     <div class="mt-4 flex flex-col gap-2">
-      <Button href="/contact/" class="w-full">Join Now</Button>
+      <Button href={joinHref} class="w-full">Join Now</Button>
       <Button href={whatsappHref} target="_blank" variant="secondary" class="w-full">
         Chat on WhatsApp
       </Button>

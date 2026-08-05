@@ -2,32 +2,32 @@
 import Container from "../ui/Container.astro";
 ---
 
-<section class="bg-paper py-section">
+<section class="surface-gold py-section">
   <Container class="grid gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-[1.1fr_0.9fr]">
     <div class="flex flex-col" data-reveal>
       <div class="mb-6 flex items-center gap-4">
-        <span class="section-index text-gold-700">02</span>
+        <span class="section-index text-gold-500">02</span>
         <span class="h-px w-10 bg-ink-950/25" aria-hidden="true"></span>
-        <span class="eyebrow text-gold-700">About the Academy</span>
+        <span class="eyebrow text-gold-500">About the Academy</span>
       </div>
       {/* Column-scoped size: the full `display` tier is built for full-bleed
           headings and overflows a two-column text block at large viewports. */}
-      <h2 class="max-w-xl font-display text-[clamp(2rem,1.4rem+2.6vw,3.75rem)] font-medium leading-[1.02] tracking-[-0.015em] text-ink-950">
+      <h2 class="max-w-xl font-display text-[clamp(2rem,1.4rem+2.6vw,3.75rem)] font-medium leading-[1.02] tracking-[-0.015em] text-paper">
         Trading Education Built Around Discipline
       </h2>
-      <p class="mt-8 max-w-xl text-base leading-relaxed text-ink-700">
+      <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/70">
         Money Door FX Academy is committed to helping aspiring traders build strong foundations in
         Gold and Forex trading. Our structured programs combine market knowledge, technical
         analysis, practical trading sessions, and disciplined risk management to help students
         become confident decision-makers.
       </p>
-      <p class="mt-4 max-w-xl text-base leading-relaxed text-ink-700">
+      <p class="mt-4 max-w-xl text-base leading-relaxed text-paper/70">
         Rather than focusing on shortcuts or unrealistic expectations, we emphasize education,
         consistency, and continuous improvement.
       </p>
       <a
         href="/about/"
-        class="group mt-10 inline-flex w-fit items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-ink-950 transition-colors hover:text-gold-700"
+        class="group mt-10 inline-flex w-fit items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper transition-colors hover:text-gold-300"
       >
         <span class="link-underline">Read our story</span>
         <svg
@@ -57,13 +57,13 @@ import Container from "../ui/Container.astro";
           { to: 3, suffix: "", label: "Structured program levels, MDC1 to MDC3" },
           { to: 2, suffix: "", label: "Core strategies — the PR & PC methodology" },
         ].map((stat) => (
-          <div class="edit-row edit-row-light flex items-baseline justify-between gap-6 py-6">
-            <dt class="font-display text-[clamp(2rem,1.4rem+2.4vw,3.5rem)] font-medium leading-none tabular-nums text-gold-700">
+          <div class="edit-row flex items-baseline justify-between gap-6 py-6">
+            <dt class="font-display text-[clamp(2rem,1.4rem+2.4vw,3.5rem)] font-medium leading-none tabular-nums text-gold-500">
               <span data-count-to={stat.to} data-count-suffix={stat.suffix}>
                 0
               </span>
             </dt>
-            <dd class="max-w-[14rem] text-right text-sm leading-snug text-ink-700">{stat.label}</dd>
+            <dd class="max-w-[14rem] text-right text-sm leading-snug text-paper/70">{stat.label}</dd>
           </div>
         ))
       }

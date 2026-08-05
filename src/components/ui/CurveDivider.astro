@@ -1,0 +1,49 @@
+---
+type Surface = "ink" | "ink-raised" | "gold";
+
+interface Props {
+  /** Colour of the section ABOVE — becomes the divider's own background. */
+  from: Surface;
+  /** Colour of the section BELOW — becomes the curved shape's fill. */
+  to: Surface;
+  class?: string;
+}
+const { from, to, class: className = "" } = Astro.props;
+
+// Flat approximations of the gradient surfaces. `.surface-gold` and
+// `.surface-ink` carry very low-contrast internal gradients, so a flat fill at
+// their base colour is visually indistinguishable at the boundary. An SVG path
+// can't take a gradient that continues a parent's background, so this is the
+// honest trade — and it's why the divider is only used at a hard colour change,
+// where the curve does real work.
+const COLOR: Record<Surface, string> = {
+  ink: "var(--color-ink-950)",
+  "ink-raised": "var(--color-ink-900)",
+  gold: "#100d06",
+};
+---
+
+{/* Sits between two sections and curves one into the other, so the boundary
+    isn't a straight horizontal cut across the full width.
+
+    Note: inserting this between two sections also stops the gradient-seam
+    system applying to that pair, because the seam is keyed on the
+    adjacent-sibling combinator. The two treatments therefore can't double up.
+
+    aria-hidden + role=presentation: decoration with no meaning to announce.
+    `leading-[0]` and `block` on the svg kill the inline descender gap that
+    would otherwise show a hairline of body background beneath the curve. */}
+<div
+  class:list={["relative -mt-px w-full leading-[0]", className]}
+  style={`background:${COLOR[from]}`}
+  aria-hidden="true"
+>
+  <svg
+    role="presentation"
+    viewBox="0 0 1440 80"
+    preserveAspectRatio="none"
+    class="block h-[clamp(2.5rem,5vw,5rem)] w-full"
+  >
+    <path d="M0 80V28C240 -6 480 -6 720 14s480 34 720 4v62H0Z" fill={COLOR[to]} />
+  </svg>
+</div>

@@ -29,26 +29,26 @@ const paths = [
 ];
 ---
 
-<section class="bg-paper py-section">
+<section class="surface-gold py-section">
   <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
     <SectionHeading eyebrow="Our Programs" index="01" title="Choose Your Path" align="left" light />
 
     <div class="flex flex-col" data-reveal-stagger>
       {
         paths.map((p) => (
-          <a href={p.href} class="edit-row edit-row-light group block py-[clamp(1.75rem,3.5vw,3rem)]">
+          <a href={p.href} class="edit-row group block py-[clamp(1.75rem,3.5vw,3rem)]">
             <div class="grid items-baseline gap-x-8 gap-y-3 md:grid-cols-[auto_1fr_auto] md:gap-x-12">
-              <span class="section-index text-gold-700 md:pt-2">{p.index}</span>
+              <span class="section-index text-gold-500 md:pt-2">{p.index}</span>
               <div class="flex flex-col gap-3 md:flex-row md:items-baseline md:gap-12">
-                <h3 class="w-full max-w-xs font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.6rem)] font-medium leading-tight text-ink-950 transition-colors duration-500 group-hover:text-gold-700">
+                <h3 class="w-full max-w-xs font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.6rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
                   {p.title}
                 </h3>
                 <div class="flex flex-1 flex-col gap-2">
-                  <p class="max-w-md text-base leading-relaxed text-ink-700">{p.description}</p>
-                  <span class="eyebrow text-ink-500">{p.meta}</span>
+                  <p class="max-w-md text-base leading-relaxed text-paper/70">{p.description}</p>
+                  <span class="eyebrow text-paper/55">{p.meta}</span>
                 </div>
               </div>
-              <span class="mt-2 inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-ink-950 md:mt-0 md:pt-2">
+              <span class="mt-2 inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper md:mt-0 md:pt-2">
                 <span class="link-underline">View</span>
                 <svg
                   width="16"

@@ -1,5 +1,6 @@
 ---
 import { heroBull, heroBullAlt } from "../../lib/heroBull";
+import { introVideo } from "../../data/site";
 
 // Full-screen intro, homepage only. Armed by the synchronous head script in
 // BaseLayout (see there for the four gates); this component is only ever
@@ -7,39 +8,74 @@ import { heroBull, heroBullAlt } from "../../lib/heroBull";
 // per-load artifact, and `<html class>` is wiped on every ClientRouter swap
 // so `intro-active` self-clears on navigation.
 //
-// The bull is a single static frame: its legs cannot articulate. The run is
-// sold by camera and environment motion instead — horizontal streaks, a
-// gallop bob, camera shake, a halt jolt, and a pull-back from 1.9x to 1x.
-// It faces LEFT, so it charges right-to-left; mirroring it would flip the
-// baked-in candlestick backdrop into a downtrend.
+// Two modes, chosen by `introVideo.src` in data/site.ts:
+//
+//  • Video (src set) — plays a real clip, using the bull frame as its poster
+//    so the first paint is identical either way and there's no flash of empty
+//    black while the video buffers.
+//  • Fallback (src null) — the CSS-animated sequence. The bull is a single
+//    static frame whose legs cannot articulate, so the run is sold by camera
+//    and environment motion instead: horizontal streaks, a gallop bob, camera
+//    shake, a halt jolt, and a pull-back from 1.9x to 1x. It faces LEFT, so it
+//    charges right-to-left; mirroring it would flip the baked-in candlestick
+//    backdrop into a downtrend.
+const { src: videoSrc, maxDurationMs } = introVideo;
 ---
 
-<div id="site-intro" role="dialog" aria-modal="true" aria-label="Money Door FX Academy intro">
+<div
+  id="site-intro"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Money Door FX Academy intro"
+  data-max-duration={maxDurationMs}
+  style={`--intro-hardstop:${maxDurationMs + 1200}ms`}
+>
   <button id="intro-skip" type="button" class="intro__skip eyebrow">Skip intro</button>
 
-  <div class="intro__stage" aria-hidden="true">
-    <div class="intro__world">
-      <span class="intro__streaks"></span>
-      <span class="intro__streaks intro__streaks--slow"></span>
-      <span class="intro__dust"></span>
-    </div>
-    <div class="intro__bull">
-      <div class="intro__bull-rear">
-        <div class="intro__bull-bob">
-          <img
-            class="intro__bull-img"
-            src={heroBull.src}
-            width={heroBull.attributes.width}
-            height={heroBull.attributes.height}
-            alt=""
-            fetchpriority="high"
-            decoding="sync"
-          />
-        </div>
+  {
+    videoSrc ? (
+      <div class="intro__stage intro__stage--video" aria-hidden="true">
+        {/* muted + playsinline are what make autoplay legal on mobile Safari
+            and Chrome; without both, play() rejects and the intro would hang
+            on a black frame until the safety timeout fired. */}
+        <video
+          id="intro-video"
+          class="intro__video"
+          src={videoSrc}
+          poster={heroBull.src}
+          muted
+          autoplay
+          playsinline
+          preload="auto"
+          disablepictureinpicture
+        />
       </div>
-    </div>
-    <span class="intro__flash"></span>
-  </div>
+    ) : (
+      <div class="intro__stage" aria-hidden="true">
+        <div class="intro__world">
+          <span class="intro__streaks" />
+          <span class="intro__streaks intro__streaks--slow" />
+          <span class="intro__dust" />
+        </div>
+        <div class="intro__bull">
+          <div class="intro__bull-rear">
+            <div class="intro__bull-bob">
+              <img
+                class="intro__bull-img"
+                src={heroBull.src}
+                width={heroBull.attributes.width}
+                height={heroBull.attributes.height}
+                alt=""
+                fetchpriority="high"
+                decoding="sync"
+              />
+            </div>
+          </div>
+        </div>
+        <span class="intro__flash" />
+      </div>
+    )
+  }
 
   {/* aria-hidden: this duplicates the H1 underneath, and with aria-modal the
       only thing announced should be the dialog label and the skip button. */}
@@ -98,8 +134,29 @@ import { heroBull, heroBullAlt } from "../../lib/heroBull";
       finish();
     }
 
-    // Natural end of the timeline.
-    const timer = window.setTimeout(finish, 2200);
+    // Natural end of the timeline. In video mode the clip's own `ended` event
+    // is the real cue and this timeout is only the backstop — a video that
+    // stalls, fails to decode, or has autoplay refused must never leave the
+    // curtain up.
+    const maxDuration = Number(root.dataset.maxDuration) || 2200;
+    const timer = window.setTimeout(finish, maxDuration);
+
+    const video = document.getElementById("intro-video") as HTMLVideoElement | null;
+    if (video) {
+      video.addEventListener("ended", () => {
+        window.clearTimeout(timer);
+        finish();
+      });
+      // Autoplay can still be refused (battery saver, strict data settings).
+      // Nothing to wait for in that case — go straight to the page.
+      const played = video.play();
+      if (played) {
+        played.catch(() => {
+          window.clearTimeout(timer);
+          finish();
+        });
+      }
+    }
 
     document.getElementById("intro-skip")?.addEventListener("click", () => {
       window.clearTimeout(timer);

@@ -25,28 +25,45 @@ const pairs = [
     subtitle="The same structured, rule-based approach we teach for Gold — applied to the major currency pairs."
   />
 
-  <section class="bg-paper py-section">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center" data-reveal>
-      <h2 class="font-heading text-3xl font-bold text-ink-950">A Shared Foundation</h2>
-      <p class="text-base leading-relaxed text-ink-700">
-        Forex and Gold are read using the same underlying skills: market structure, price action,
-        and disciplined risk control. Students who complete MDC1 and MDC2 apply Money Door's PR
-        (Point of Reversal) and PC (Point of Continuation) framework across major currency pairs,
-        not just Gold — building a versatile, repeatable process rather than a single
-        market-specific trick.
-      </p>
+  <section class="surface-gold py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading
+            eyebrow="The Approach"
+            index="01"
+            title="A Shared Foundation"
+            align="left"
+          />
+        </div>
+        <p
+          class="max-w-xl text-base leading-relaxed text-paper/70 sm:text-lg lg:pt-4"
+          data-reveal
+        >
+          Forex and Gold are read using the same underlying skills: market structure, price
+          action, and disciplined risk control. Students who complete MDC1 and MDC2 apply Money
+          Door's PR (Point of Reversal) and PC (Point of Continuation) framework across major
+          currency pairs, not just Gold — building a versatile, repeatable process rather than a
+          single market-specific trick.
+        </p>
+      </div>
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-section">
-    <Container class="flex flex-col gap-10">
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
       <div data-reveal>
-        <SectionHeading eyebrow="What You'll Study" title="Major Pairs We Cover" />
+        <SectionHeading
+          eyebrow="What You'll Study"
+          index="02"
+          title="Major Pairs We Cover"
+          align="left"
+        />
       </div>
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-stagger>
         {
           pairs.map((p) => (
-            <div class="card-lift flex flex-col gap-2  border border-paper/12 bg-ink-900 p-6 hover:border-gold-500/40">
+            <div class="surface-card card-lift flex flex-col gap-2 p-6">
               <span class="icon-pop flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
                 <Icon name="chart-bar" class="h-5 w-5" />
               </span>
@@ -60,16 +77,18 @@ const pairs = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-section">
-    <Container class="flex flex-col items-center gap-6 text-center" data-reveal>
-      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Start With the Fundamentals</h2>
-      <p class="max-w-xl text-base text-paper/70">
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col items-center gap-6 text-center" data-reveal>
+      <h2 class="max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+        Start With the Fundamentals
+      </h2>
+      <p class="max-w-xl text-base leading-relaxed text-paper/65 sm:text-lg">
         MDC1 — Foundation Trader is a free, one-week introduction to Forex &amp; Gold market
         basics, platform setup, and risk management fundamentals.
       </p>
       <div class="flex flex-col gap-3 sm:flex-row">
         <Button href="/courses/mdc1/" arrow>Start with MDC1 (Free)</Button>
-        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+        <Button href="/join/" variant="secondary">Book Free Consultation</Button>
       </div>
     </Container>
   </section>

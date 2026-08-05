@@ -41,28 +41,46 @@ const sessionFlow = [
     subtitle="Structured, educational market analysis taught live to our students — teaching you to read the market, not telling you what to buy."
   />
 
-  <section class="bg-paper py-section">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
-      <h2 class="font-heading text-3xl font-bold text-ink-950">Analysis, Not Signals</h2>
-      <p class="text-base leading-relaxed text-ink-700">
-        We don't publish buy/sell calls or price predictions. What we do — in live sessions with
-        enrolled students — is walk through the market as it moves: which levels matter today,
-        what the structure suggests, where a setup would and wouldn't be valid, and how risk
-        would be managed around it.
-      </p>
-      <p class="text-base leading-relaxed text-ink-700">
-        The goal is that you eventually do this analysis yourself, without needing us.
-      </p>
+  <section class="surface-gold py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading
+            eyebrow="Our Position"
+            index="01"
+            title="Analysis, Not Signals"
+            align="left"
+          />
+        </div>
+        <div class="flex max-w-xl flex-col gap-5 lg:pt-4" data-reveal>
+          <p class="text-base leading-relaxed text-paper/70 sm:text-lg">
+            We don't publish buy/sell calls or price predictions. What we do — in live sessions
+            with enrolled students — is walk through the market as it moves: which levels matter
+            today, what the structure suggests, where a setup would and wouldn't be valid, and how
+            risk would be managed around it.
+          </p>
+          <p class="text-base leading-relaxed text-paper/70 sm:text-lg">
+            The goal is that you eventually do this analysis yourself, without needing us.
+          </p>
+        </div>
+      </div>
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-section">
-    <Container class="flex flex-col gap-10">
-      <SectionHeading eyebrow="Our Process" title="How a Live Analysis Session Works" />
-      <div class="grid gap-6 sm:grid-cols-2">
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+      <div data-reveal>
+        <SectionHeading
+          eyebrow="Our Process"
+          index="02"
+          title="How a Live Analysis Session Works"
+          align="left"
+        />
+      </div>
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2" data-reveal-stagger>
         {
           sessionFlow.map((s, i) => (
-            <div class="flex flex-col gap-3  border border-paper/12 bg-ink-900 p-7">
+            <div class="surface-card card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.5vw,2.25rem)]">
               <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/40 font-heading text-sm font-bold text-gold-400">
                 {i + 1}
               </span>
@@ -76,7 +94,7 @@ const sessionFlow = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-section">
+  <section class="surface-ink-raised py-section">
     <Container class="flex flex-col gap-10">
       <SectionHeading eyebrow="Included in Your Program" title="Monthly Live Learning Schedule" />
       <div class="grid gap-6 sm:grid-cols-3">
@@ -111,7 +129,7 @@ const sessionFlow = [
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-section">
+  <section class="surface-ink py-section">
     <Container class="flex flex-col items-center gap-6 text-center">
       <h2 class="font-heading text-3xl font-bold sm:text-4xl">Join a Live Session</h2>
       <p class="max-w-xl text-base text-paper/70">

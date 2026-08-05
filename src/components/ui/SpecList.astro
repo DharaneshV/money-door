@@ -12,43 +12,22 @@ interface Props {
     label: string;
     value?: string;
   }[];
-  /** Set on light `bg-paper` sections so borders and text invert. */
-  light?: boolean;
   class?: string;
 }
-const { items, light = false, class: className = "" } = Astro.props;
+// The former `light` prop is gone along with the off-white sections.
+const { items, class: className = "" } = Astro.props;
 ---
 
 <dl class:list={["flex flex-col", className]}>
   {
     items.map((item) => (
-      <div class:list={["spec-row", light && "spec-row--light"]}>
-        <dt
-          class:list={[
-            "flex items-center gap-3 text-sm",
-            light ? "text-ink-700" : "text-paper/60",
-          ]}
-        >
-          {item.icon && (
-            <Icon
-              name={item.icon}
-              class:list={[
-                "h-4 w-4 flex-none",
-                light ? "text-gold-700" : "text-gold-500",
-              ]}
-            />
-          )}
+      <div class="spec-row">
+        <dt class="flex items-center gap-3 text-sm text-paper/60">
+          {item.icon && <Icon name={item.icon} class="h-4 w-4 flex-none text-gold-500" />}
           {item.label}
         </dt>
         {item.value && (
-          <dd
-            class:list={[
-              "text-right font-heading text-sm font-semibold",
-              light ? "text-ink-950" : "text-paper",
-            ]}
-          >
-            {item.value}
-          </dd>
+          <dd class="text-right font-heading text-sm font-semibold text-paper">{item.value}</dd>
         )}
       </div>
     ))

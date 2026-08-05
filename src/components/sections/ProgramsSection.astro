@@ -7,7 +7,7 @@ import ProgramCard from "../cards/ProgramCard.astro";
 const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section class="bg-ink-900 py-section">
+<section class="surface-ink-raised py-section">
   <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
     <SectionHeading
       eyebrow="Our Learning Programs"

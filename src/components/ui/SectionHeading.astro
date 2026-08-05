@@ -4,11 +4,13 @@ interface Props {
   title: string;
   subtitle?: string;
   align?: "left" | "center";
-  light?: boolean; // set true when this section sits on a light/paper background
   /** Editorial section number, e.g. "01" — shown opposite the eyebrow. */
   index?: string;
 }
-const { eyebrow, title, subtitle, align = "center", light = false, index } = Astro.props;
+// The former `light` prop is gone: every surface is dark since the palette was
+// reduced to gold and black, so there is no longer a background that needs the
+// darker gold-700 for contrast.
+const { eyebrow, title, subtitle, align = "center", index } = Astro.props;
 
 const alignClass = align === "center" ? "text-center items-center" : "text-left items-start";
 ---
@@ -22,45 +24,23 @@ const alignClass = align === "center" ? "text-center items-center" : "text-left 
           align === "center" ? "justify-center" : "justify-start",
         ]}
       >
-        {index && (
-          <span class:list={["section-index", light ? "text-gold-700" : "text-gold-500"]}>
-            {index}
-          </span>
-        )}
-        {index && (
-          <span
-            class:list={[
-              "h-px w-10",
-              light ? "bg-ink-950/25" : "bg-paper/25",
-            ]}
-            aria-hidden="true"
-          />
-        )}
-        {eyebrow && (
-          <span class:list={["eyebrow", light ? "text-gold-700" : "text-gold-500"]}>{eyebrow}</span>
-        )}
+        {index && <span class="section-index text-gold-500">{index}</span>}
+        {index && <span class="h-px w-10 bg-paper/25" aria-hidden="true" />}
+        {eyebrow && <span class="eyebrow text-gold-500">{eyebrow}</span>}
       </div>
     )
   }
   <h2
     class:list={[
-      "display max-w-4xl",
+      "display max-w-4xl text-paper",
       align === "center" ? "text-balance" : "",
-      light ? "text-ink-950" : "text-paper",
     ]}
   >
     {title}
   </h2>
   {
     subtitle && (
-      <p
-        class:list={[
-          "mt-6 max-w-2xl text-base leading-relaxed sm:text-lg",
-          light ? "text-ink-700" : "text-paper/60",
-        ]}
-      >
-        {subtitle}
-      </p>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-paper/60 sm:text-lg">{subtitle}</p>
     )
   }
 </div>

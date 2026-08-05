@@ -4,7 +4,7 @@ import Container from "../ui/Container.astro";
 import MobileNav from "./MobileNav.astro";
 import AnnouncementBar from "./AnnouncementBar.astro";
 import logoMark from "../../assets/brand/logo-mark.jpg";
-import { primaryNav } from "../../data/site";
+import { primaryNav, joinHref } from "../../data/site";
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -101,8 +101,8 @@ const isActive = (href: string) =>
 
     <div class="ml-auto flex flex-none items-center gap-5">
       <a
-        href="/contact/"
-        class="eyebrow hidden whitespace-nowrap border border-gold-500/50 px-6 py-3 text-gold-400 transition-colors duration-300 hover:bg-gold-500 hover:text-ink-950 xl:inline-block"
+        href={joinHref}
+        class="eyebrow hidden whitespace-nowrap rounded-full border border-gold-500/50 px-6 py-3 text-gold-400 transition-colors duration-300 hover:bg-gold-500 hover:text-ink-950 xl:inline-block"
       >
         Join Now
       </a>

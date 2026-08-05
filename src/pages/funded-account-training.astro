@@ -45,30 +45,49 @@ const preparation = [
     subtitle="Preparation for proprietary trading firm evaluations — taught as part of our MDC3 Elite Master Trader mentorship."
   />
 
-  <section class="bg-paper py-section">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
-      <h2 class="font-heading text-3xl font-bold text-ink-950">What Is a Funded Account?</h2>
-      <p class="text-base leading-relaxed text-ink-700">
-        Proprietary trading firms ("prop firms") let traders demonstrate their skill through a
-        paid evaluation. Traders who pass are given access to trade firm capital and share in the
-        profits. Evaluations typically impose strict rules — maximum daily loss, maximum overall
-        drawdown, and minimum trading days — and most candidates fail on those risk rules rather
-        than on the profit target.
-      </p>
-      <p class="text-base leading-relaxed text-ink-700">
-        We prepare students for that reality. We are an education provider — we do not operate a
-        prop firm, guarantee that you will pass any evaluation, or provide funding ourselves.
-      </p>
+  <section class="surface-gold py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading
+            eyebrow="The Basics"
+            index="01"
+            title="What Is a Funded Account?"
+            align="left"
+          />
+        </div>
+        <div class="flex max-w-xl flex-col gap-5 lg:pt-4" data-reveal>
+          <p class="text-base leading-relaxed text-paper/70 sm:text-lg">
+            Proprietary trading firms ("prop firms") let traders demonstrate their skill through a
+            paid evaluation. Traders who pass are given access to trade firm capital and share in
+            the profits. Evaluations typically impose strict rules — maximum daily loss, maximum
+            overall drawdown, and minimum trading days — and most candidates fail on those risk
+            rules rather than on the profit target.
+          </p>
+          <p class="text-base leading-relaxed text-paper/70 sm:text-lg">
+            We prepare students for that reality. We are an education provider — we do not operate
+            a prop firm, guarantee that you will pass any evaluation, or provide funding
+            ourselves.
+          </p>
+        </div>
+      </div>
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-section">
-    <Container class="flex flex-col gap-10">
-      <SectionHeading eyebrow="How We Prepare You" title="What Funded Account Training Covers" />
-      <div class="grid gap-6 sm:grid-cols-2">
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+      <div data-reveal>
+        <SectionHeading
+          eyebrow="How We Prepare You"
+          index="02"
+          title="What Funded Account Training Covers"
+          align="left"
+        />
+      </div>
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2" data-reveal-stagger>
         {
           preparation.map((p) => (
-            <div class="flex flex-col gap-3  border border-paper/12 bg-ink-900 p-7">
+            <div class="surface-card card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.5vw,2.25rem)]">
               <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
                 <Icon name={p.icon} class="h-5 w-5" />
               </span>
@@ -82,16 +101,18 @@ const preparation = [
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-section">
-    <Container class="flex flex-col items-center gap-6 text-center">
-      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Included in MDC3</h2>
-      <p class="max-w-xl text-base text-paper/70">
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col items-center gap-6 text-center" data-reveal>
+      <h2 class="max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+        Included in MDC3
+      </h2>
+      <p class="max-w-xl text-base leading-relaxed text-paper/65 sm:text-lg">
         Funded-account preparation is delivered as part of MDC3 — Elite Master Trader, our
         12-month one-to-one mentorship program.
       </p>
       <div class="flex flex-col gap-3 sm:flex-row">
         <Button href="/courses/mdc3/" arrow>View MDC3 — Elite Master Trader</Button>
-        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+        <Button href="/join/" variant="secondary">Book Free Consultation</Button>
       </div>
     </Container>
   </section>

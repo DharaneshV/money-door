@@ -5,7 +5,27 @@ import Container from "../components/ui/Container.astro";
 import SectionHeading from "../components/ui/SectionHeading.astro";
 import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
 import Button from "../components/ui/Button.astro";
-import Icon from "../components/ui/Icon.astro";
+
+// The two sides of the pitch, set beside the definition. Deliberately framed
+// as "what it is / what it isn't" — no performance or suitability claims.
+const realities = [
+  {
+    label: "What it does",
+    body: "Mirrors another trader's entries and exits into your account automatically, without you placing each order yourself.",
+  },
+  {
+    label: "What it doesn't do",
+    body: "Remove market risk. A copied loss is still your loss, and a strong past record is not a forecast.",
+  },
+  {
+    label: "Who stays responsible",
+    body: "You do. The account, the capital, and the outcome remain yours regardless of who generated the signal.",
+  },
+  {
+    label: "Our position",
+    body: "We teach how it works so you can evaluate it critically. We don't operate a signal or copy-trading service.",
+  },
+];
 
 const checklist = [
   "Verify the track record independently — don't rely on screenshots alone.",
@@ -26,47 +46,88 @@ const checklist = [
     subtitle="We teach you how copy trading works and what to evaluate before following any strategy — we don't operate a signal or copy-trading service ourselves."
   />
 
-  <section class="bg-paper py-section">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-4 text-center">
-      <h2 class="font-heading text-3xl font-bold text-ink-950">What Is Copy Trading?</h2>
-      <p class="text-base leading-relaxed text-ink-700">
-        Copy trading lets one trader's positions be automatically mirrored into another person's
-        account, typically through a broker's platform. It's often marketed as a passive way to
-        participate in the markets — but every copied trade still carries full market risk, and
-        the person copying is still responsible for the outcome, whether the strategy performs
-        well or poorly.
-      </p>
+  {/* Definition set against the two sides of the trade-off, so the section
+      fills its width instead of running as one narrow centred column. */}
+  <section class="surface-gold py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading
+            eyebrow="The Basics"
+            index="01"
+            title="What Is Copy Trading?"
+            align="left"
+          />
+          <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/70 sm:text-lg">
+            Copy trading lets one trader's positions be automatically mirrored into another
+            person's account, typically through a broker's platform. It's often marketed as a
+            passive way to participate in the markets — but every copied trade still carries full
+            market risk, and the person copying is still responsible for the outcome, whether the
+            strategy performs well or poorly.
+          </p>
+        </div>
+
+        <div class="grid gap-[clamp(1rem,2vw,1.5rem)] sm:grid-cols-2" data-reveal-stagger>
+          {
+            realities.map((r) => (
+              <article class="surface-card-warm card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.2vw,2rem)]">
+                <span class="eyebrow text-gold-500">{r.label}</span>
+                <p class="text-sm leading-relaxed text-paper/70">{r.body}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
     </Container>
   </section>
 
-  <section class="bg-ink-950 py-section">
-    <Container class="flex flex-col gap-10">
-      <SectionHeading eyebrow="Before You Copy Anyone" title="What to Evaluate" />
-      <div class="mx-auto flex max-w-2xl flex-col gap-4">
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
+      <div data-reveal>
+        <SectionHeading
+          eyebrow="Before You Copy Anyone"
+          index="02"
+          title="What to Evaluate"
+          align="left"
+        />
+      </div>
+
+      {/* Numbered editorial rows, matching the language used on the home page,
+          rather than five identical stacked rectangles. */}
+      <ol class="grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2" data-reveal-stagger>
         {
-          checklist.map((c) => (
-            <div class="flex items-start gap-3  border border-paper/12 bg-ink-900 p-4">
-              <Icon name="shield-check" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
-              <span class="text-sm text-paper/80">{c}</span>
-            </div>
+          checklist.map((c, i) => (
+            <li class="edit-row group py-[clamp(1.5rem,3vw,2.25rem)]">
+              <div class="flex items-baseline gap-6">
+                <span class="section-index flex-none text-gold-500">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p class="max-w-md text-sm leading-relaxed text-paper/70 transition-colors duration-500 group-hover:text-paper">
+                  {c}
+                </p>
+              </div>
+            </li>
           ))
         }
-      </div>
+      </ol>
+
       <RiskDisclaimer />
     </Container>
   </section>
 
-  <section class="bg-ink-900 py-section">
-    <Container class="flex flex-col items-center gap-6 text-center">
-      <h2 class="font-heading text-3xl font-bold sm:text-4xl">Learn to Trade Independently Instead</h2>
-      <p class="max-w-xl text-base text-paper/70">
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col items-center gap-6 text-center" data-reveal>
+      <h2 class="max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+        Learn to Trade Independently Instead
+      </h2>
+      <p class="max-w-xl text-base leading-relaxed text-paper/65 sm:text-lg">
         Our core belief: independent, disciplined traders make better long-term decisions than
         those relying on someone else's positions. Our structured courses teach you to analyze
         the market and manage risk yourself.
       </p>
-      <div class="flex flex-col gap-3 sm:flex-row">
+      <div class="mt-2 flex flex-col gap-3 sm:flex-row">
         <Button href="/courses/" arrow>Explore Courses</Button>
-        <Button href="/contact/" variant="secondary">Book Free Consultation</Button>
+        <Button href="/join/" variant="secondary">Book Free Consultation</Button>
       </div>
     </Container>
   </section>

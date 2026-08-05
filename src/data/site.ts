@@ -30,6 +30,22 @@ export const announcement = {
   href: "/courses/mdc1/",
 } as const;
 
+// Full-screen homepage intro.
+//
+// `src` null → the built-in CSS-animated bull sequence plays (a single static
+// frame sold with camera motion). Drop a file into `public/` and set `src` to
+// its path (e.g. "/intro.mp4") to play a real video instead — nothing else
+// needs changing. Keep it short, silent and muted: it blocks first view of the
+// page, browsers refuse to autoplay anything with sound, and it is skippable.
+//
+// `maxDurationMs` is the ceiling the overlay is allowed to stay up. It drives
+// the safety timeouts as well, so a video that stalls or never fires `ended`
+// can still never trap the viewer behind the curtain.
+export const introVideo = {
+  src: null as string | null,
+  maxDurationMs: 2600,
+} as const;
+
 export const contact = {
   // Two numbers appear in the source materials; this one is the mockup's primary contact.
   // TODO: confirm with client whether both should be public and which is WhatsApp-active.
@@ -87,8 +103,15 @@ export const primaryNav: NavLink[] = [
   { label: "Copy Trading", href: "/copy-trading/" },
   { label: "Daily Analysis", href: "/daily-market-analysis/" },
   { label: "Blog", href: "/blog/" },
-  { label: "Contact", href: "/contact/" },
+  // Replaced "Contact" in this slot. Contact and Join Now were always the same
+  // destination, so the page survives at /join/ (where the register form now
+  // lives) and /contact/ redirects there rather than 404ing.
+  { label: "Partnerships", href: "/partnerships/" },
 ];
+
+// The single CTA target used by the header, mobile nav and every "Join Now"
+// button. Kept here so the route can move without hunting through components.
+export const joinHref = "/join/";
 
 export const legalLinks: NavLink[] = [
   { label: "Privacy Policy", href: "/privacy-policy/" },
@@ -106,7 +129,8 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
       { label: "About Us", href: "/about/" },
       { label: "Meet the Chief Trainer", href: "/chief-trainer/" },
       { label: "Blog", href: "/blog/" },
-      { label: "Contact", href: "/contact/" },
+      { label: "Partnerships", href: "/partnerships/" },
+      { label: "Join Now", href: joinHref },
     ],
   },
   {
@@ -131,6 +155,109 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Partner / referral links.
+//
+// COMPLIANCE, read before editing:
+//  • Every CTA must carry rel="sponsored noopener noreferrer" and the
+//    disclosure line below. FTC guidance requires the disclosure to sit with
+//    the link, not buried in a footer, and most affiliate terms void the
+//    payout without it.
+//  • `blurb` and `pills` describe what the firm IS. Never state or imply a
+//    return, win rate, payout likelihood, or that we vet/endorse their
+//    financial soundness. "Tools the desk uses" is the honest framing.
+//  • Several of these are offshore brokers. Indian residents face FEMA/RBI
+//    restrictions on offshore forex trading, and RBI publishes an Alert List
+//    of unauthorised platforms. Legal review is recommended before promoting
+//    these to an India-based audience.
+export const partnerDisclosure =
+  "Referral link. Money Door FX Academy may earn a commission if you sign up.";
+
+export type Partner = {
+  name: string;
+  /** Also the logo filename: `public/partners/<slug>.(svg|png|webp|jpg)`. */
+  slug: string;
+  category: string;
+  blurb: string;
+  pills: string[];
+  href: string;
+};
+
+export const partners: Partner[] = [
+  {
+    name: "FundingPips",
+    slug: "fundingpips",
+    category: "Funded Account Evaluations",
+    blurb:
+      "A proprietary trading firm running paid evaluations. It's the environment our MDC3 funded-account training is built around, so students practise against the same style of drawdown and daily-loss rules they'll face in a real assessment.",
+    pills: ["Evaluation model", "Defined risk rules", "Used in MDC3"],
+    href: "https://app.fundingpips.com/register?referral_code=dbf794f6",
+  },
+  {
+    name: "Moneta Funded",
+    slug: "moneta-funded",
+    category: "Funded Account Evaluations",
+    blurb:
+      "A second prop-firm option, useful for comparing evaluation structures side by side. Rule sets differ meaningfully between firms, and learning to read those rules before paying for a challenge is part of the training.",
+    pills: ["Alternative rule set", "Comparison practice", "Challenge-based"],
+    href: "https://go.monetafunded.com/visit/?bta=35587&brand=monetafunded",
+  },
+  {
+    name: "HFM",
+    slug: "hfm",
+    category: "Broker",
+    blurb:
+      "A long-established broker with a wide instrument range including XAU/USD. Commonly used by students who want a familiar platform and straightforward account setup while they're still learning execution mechanics.",
+    pills: ["Gold & FX majors", "MT4 / MT5", "Established"],
+    href: "https://register.hfm.com/sv/en/new-live-account/?refid=30516104",
+  },
+  {
+    name: "JustMarkets",
+    slug: "justmarkets",
+    category: "Broker",
+    blurb:
+      "A broker offering low minimum deposits, which makes it a practical place to trade small while position sizing is still being learned. Small size is the point early on — the habit matters more than the capital.",
+    pills: ["Low entry size", "Gold & FX majors", "MT4 / MT5"],
+    href: "https://one.justmarkets.link/a/5daav08f6k",
+  },
+  {
+    name: "NYS Markets",
+    slug: "nys-markets",
+    category: "Broker",
+    blurb:
+      "A broker option students have asked about often enough that we list it here rather than leave people to search unaided. As with every firm on this page, verify its regulatory status in your own jurisdiction before depositing.",
+    pills: ["Gold & FX majors", "Multi-asset", "Verify locally"],
+    href: "https://nysmarkets.com/?cxd=MTKF4WBO+25858_141",
+  },
+  {
+    name: "Valetax",
+    slug: "valetax",
+    category: "Broker",
+    blurb:
+      "A broker with accounts aimed at smaller starting balances. Listed for completeness alongside the others so the comparison is yours to make rather than ours to make for you.",
+    pills: ["Small accounts", "Gold & FX majors", "MT4 / MT5"],
+    href: "https://ma.valetax.com/p/4650215",
+  },
+  {
+    name: "Vigco",
+    slug: "vigco",
+    category: "Investment Platform",
+    blurb:
+      "A platform partner covering investment-account access. Included so students evaluating options beyond a standard brokerage account can see it alongside everything else in one place.",
+    pills: ["Account access", "Platform partner", "Verify locally"],
+    href: "https://vigco.co/la-com-inv/5ErtKGci",
+  },
+  {
+    name: "MMSA",
+    slug: "mmsa",
+    category: "Investment Platform",
+    blurb:
+      "A managed-account platform partner. As with every entry here, this is a pointer to a service we're familiar with — not an assessment of its suitability for your circumstances.",
+    pills: ["Managed accounts", "Platform partner", "Verify locally"],
+    href: "https://mmsa.ltd/la-com/Z0LzpORa",
+  },
+];
+
 export const riskDisclaimerShort =
   "Trading in financial markets involves substantial risk and may not be suitable for every individual. Money Door FX Academy provides educational content only and does not offer investment advice, portfolio management, or guarantees of profits. Past performance does not guarantee future results.";
 
@@ -139,7 +266,7 @@ export const riskDisclaimerShort =
 export const riskDisclaimerBanner =
   "Educational content only — not investment advice. Trading involves risk and past performance does not guarantee future results.";
 
-// Web3Forms access key — a free, no-login form backend. Create the account under the
-// client's own email (moneydoorchennai@gmail.com) at web3forms.com and paste the key here.
-// TODO: currently empty — forms will show a "not configured yet" state until this is set.
-export const web3FormsAccessKey = "";
+// NOTE: the Web3Forms integration was removed when the register form landed.
+// Submissions now go to the site's own /api/register endpoint, which persists
+// the record before emailing so a mail outage can't lose a lead — something a
+// fire-and-forget form relay can't offer. See docs/REGISTRATIONS.md.

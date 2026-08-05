@@ -10,14 +10,13 @@ import TestimonialCard from "../cards/TestimonialCard.astro";
 const testimonials = (await getCollection("testimonials", ({ data }) => data.published)).slice(0, 6);
 ---
 
-<section class="bg-paper py-section">
+<section class="surface-gold py-section">
   <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
     <SectionHeading
       eyebrow="Student Success Stories"
       index="07"
       title="Hear From Our Students"
       align="left"
-      light
     />
 
     {
@@ -28,11 +27,11 @@ const testimonials = (await getCollection("testimonials", ({ data }) => data.pub
           ))}
         </div>
       ) : (
-        <div class="border-t border-ink-950/12 py-16 text-center" data-reveal>
-          <p class="font-display text-[clamp(1.35rem,1.1rem+1vw,2rem)] font-medium text-ink-950">
+        <div class="border-t border-paper/12 py-16 text-center" data-reveal>
+          <p class="font-display text-[clamp(1.35rem,1.1rem+1vw,2rem)] font-medium text-paper">
             Student stories, coming soon
           </p>
-          <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-700">
+          <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-paper/70">
             We're collecting real feedback from our students. Rather than publish invented
             reviews, we'll add genuine stories here as they come in.
           </p>
@@ -42,7 +41,7 @@ const testimonials = (await getCollection("testimonials", ({ data }) => data.pub
 
     <a
       href="/student-reviews/"
-      class="group inline-flex w-fit items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-ink-950 transition-colors hover:text-gold-700"
+      class="group inline-flex w-fit items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper transition-colors hover:text-gold-300"
     >
       <span class="link-underline">View all testimonials</span>
       <svg

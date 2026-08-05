@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/ui/PageHero.astro";
 import Container from "../components/ui/Container.astro";
-import ContactForm from "../components/forms/ContactForm.astro";
+import RegisterForm from "../components/forms/RegisterForm.astro";
 import Icon from "../components/ui/Icon.astro";
 import { contact, whatsappHref, whatsappChannelUrl, socials } from "../data/site";
 
@@ -20,31 +20,33 @@ const socialIcon: Record<string, string> = {
 ---
 
 <BaseLayout
-  title="Contact Us"
-  description="Get in touch with Money Door FX Academy — book a free consultation, ask a question, or reach us on WhatsApp, phone, or email."
+  title="Join Now"
+  description="Register with Money Door FX Academy — tell us about yourself and we'll help you find the right starting point, or reach us directly on WhatsApp, phone or email."
 >
   <PageHero
-    eyebrow="Contact"
-    title="Let's Start the Conversation"
-    subtitle="Questions about a program, or ready to book a free consultation? Reach out — we'll get back to you personally."
+    eyebrow="Join Now"
+    title="Start Your Trading Education"
+    subtitle="Register below and we'll be in touch personally about the right program for you. Registration is free, opens no trading account, and involves no payment."
   />
 
-  <section class="bg-ink-950 py-section">
-    <Container class="grid gap-12 lg:grid-cols-3">
+  <section class="surface-ink py-section">
+    <Container width="wide" class="grid gap-12 lg:grid-cols-3">
       <div class="lg:col-span-2">
-        <div id="consultation" class=" border border-paper/12 bg-ink-900 p-6 sm:p-10">
-          <h2 class="font-heading text-2xl font-bold text-paper">Book a Free Consultation</h2>
-          <p class="mt-2 text-sm text-paper/60">
+        <div id="register" class="surface-card p-6 sm:p-10">
+          <h2 class="font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.25rem)] font-medium leading-tight text-paper">
+            Create your account
+          </h2>
+          <p class="mt-3 max-w-md text-sm leading-relaxed text-paper/60">
             Tell us a bit about yourself and we'll help you find the right starting point.
           </p>
           <div class="mt-8">
-            <ContactForm variant="consultation" />
+            <RegisterForm />
           </div>
         </div>
       </div>
 
       <div class="flex flex-col gap-6">
-        <div class=" border border-paper/12 bg-ink-900 p-6">
+        <div class=" surface-card p-6">
           <h3 class="font-heading text-lg font-bold text-paper">Contact Details</h3>
           <div class="mt-4 flex flex-col gap-4">
             <a href={`tel:+${contact.primaryPhoneE164}`} class="flex items-start gap-3 text-sm text-paper/75 hover:text-gold-300">
@@ -98,7 +100,7 @@ const socialIcon: Record<string, string> = {
 
         {
           socials.some((s) => s.url) && (
-            <div class=" border border-paper/12 bg-ink-900 p-6">
+            <div class=" surface-card p-6">
               <h3 class="font-heading text-lg font-bold text-paper">Follow Us</h3>
               <div class="mt-4 flex gap-3">
                 {socials

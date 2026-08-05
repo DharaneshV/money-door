@@ -5,10 +5,9 @@ interface Props {
   publishDate: Date;
   category: string;
   slug: string;
-  /** Set true on light/paper backgrounds. */
-  light?: boolean;
 }
-const { title, description, publishDate, category, slug, light = false } = Astro.props;
+// The former `light` prop is gone with the off-white sections it existed for.
+const { title, description, publishDate, category, slug } = Astro.props;
 const dateLabel = publishDate.toLocaleDateString("en-IN", {
   day: "numeric",
   month: "long",
@@ -18,37 +17,21 @@ const dateLabel = publishDate.toLocaleDateString("en-IN", {
 
 <a
   href={`/blog/${slug}/`}
-  class:list={[
-    "group flex h-full flex-col border-t pt-8 transition-colors duration-500",
-    light ? "border-ink-950/12 hover:border-gold-600" : "border-paper/15 hover:border-gold-500",
-  ]}
+  class="group flex h-full flex-col border-t border-paper/15 pt-8 transition-colors duration-500 hover:border-gold-500"
 >
   <div class="flex items-baseline justify-between gap-4">
-    <span class:list={["eyebrow", light ? "text-gold-700" : "text-gold-500"]}>{category}</span>
-    <time
-      class:list={["eyebrow", light ? "text-ink-500" : "text-paper/35"]}
-      datetime={publishDate.toISOString()}
-    >
+    <span class="eyebrow text-gold-500">{category}</span>
+    <time class="eyebrow text-paper/35" datetime={publishDate.toISOString()}>
       {dateLabel}
     </time>
   </div>
-  <h3
-    class:list={[
-      "mt-6 font-display text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium leading-tight transition-colors duration-500",
-      light ? "text-ink-950 group-hover:text-gold-700" : "text-paper group-hover:text-gold-300",
-    ]}
-  >
+  <h3 class="mt-6 font-display text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
     {title}
   </h3>
-  <p class:list={["mt-4 text-sm leading-relaxed", light ? "text-ink-700" : "text-paper/55"]}>
+  <p class="mt-4 text-sm leading-relaxed text-paper/55">
     {description}
   </p>
-  <span
-    class:list={[
-      "mt-auto inline-flex items-center gap-3 pt-8 font-heading text-xs font-semibold uppercase tracking-[0.18em]",
-      light ? "text-ink-950" : "text-paper",
-    ]}
-  >
+  <span class="mt-auto inline-flex items-center gap-3 pt-8 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper">
     <span class="link-underline">Read</span>
     <svg
       width="16"
