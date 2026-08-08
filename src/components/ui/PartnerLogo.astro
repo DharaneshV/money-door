@@ -21,10 +21,26 @@ const { name, slug, class: className = "" } = Astro.props;
 const EXTS = [".svg", ".png", ".webp", ".jpg", ".jpeg"];
 const dir = path.join(process.cwd(), "public", "partners");
 
+// Matched case-INsensitively against the real directory listing, then built
+// from the ACTUAL filename on disk — not `fs.existsSync(slug + ext)`, which
+// silently found e.g. "HFM.png" while checking for "hfm.png" (Windows'
+// filesystem lookups are case-insensitive) and then emitted a lowercase URL
+// that doesn't match the file. That build-time check passing is not proof the
+// runtime request will resolve: the static file server serving `public/` is
+// case-sensitive even when the filesystem underneath it isn't, so a mismatched
+// case 404s in the browser despite compiling clean.
 let logoSrc: string | null = null;
+let dirEntries: string[] = [];
+try {
+  dirEntries = fs.readdirSync(dir);
+} catch {
+  // public/partners not created yet — every partner falls back to a monogram.
+}
 for (const ext of EXTS) {
-  if (fs.existsSync(path.join(dir, slug + ext))) {
-    logoSrc = `/partners/${slug}${ext}`;
+  const wanted = (slug + ext).toLowerCase();
+  const match = dirEntries.find((f) => f.toLowerCase() === wanted);
+  if (match) {
+    logoSrc = `/partners/${match}`;
     break;
   }
 }

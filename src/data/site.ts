@@ -106,7 +106,7 @@ export const primaryNav: NavLink[] = [
   // Replaced "Contact" in this slot. Contact and Join Now were always the same
   // destination, so the page survives at /join/ (where the register form now
   // lives) and /contact/ redirects there rather than 404ing.
-  { label: "Partnerships", href: "/partnerships/" },
+  { label: "Trading Partners", href: "/partnerships/" },
 ];
 
 // The single CTA target used by the header, mobile nav and every "Join Now"
@@ -129,7 +129,7 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
       { label: "About Us", href: "/about/" },
       { label: "Meet the Chief Trainer", href: "/chief-trainer/" },
       { label: "Blog", href: "/blog/" },
-      { label: "Partnerships", href: "/partnerships/" },
+      { label: "Trading Partners", href: "/partnerships/" },
       { label: "Join Now", href: joinHref },
     ],
   },
@@ -166,45 +166,73 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
 //  • `blurb` and `pills` describe what the firm IS. Never state or imply a
 //    return, win rate, payout likelihood, or that we vet/endorse their
 //    financial soundness. "Tools the desk uses" is the honest framing.
-//  • Several of these are offshore brokers. Indian residents face FEMA/RBI
-//    restrictions on offshore forex trading, and RBI publishes an Alert List
-//    of unauthorised platforms. Legal review is recommended before promoting
-//    these to an India-based audience.
+//  • Several of these are offshore brokers, and three (Inocyx, Delta Exchange,
+//    Binance) are crypto exchanges — a second, materially different
+//    regulatory question from the forex/FEMA one below. India taxes crypto
+//    gains at a flat 30% plus 1% TDS on most transactions, exchange access
+//    has shifted under RBI/FIU-IND pressure before (Binance itself was
+//    blocked in India in Dec 2023 and only reinstated after registering with
+//    FIU-IND and paying a penalty), and "crypto exchange" is not the same
+//    licensing question as "offshore forex broker" — both are flagged here,
+//    but neither should be assumed to cover the other. Legal review is
+//    recommended before promoting either category to an India-based audience.
 export const partnerDisclosure =
   "Referral link. Money Door FX Academy may earn a commission if you sign up.";
+
+export type PartnerGroup = "CFD Brokers" | "Prop Firms" | "Crypto Exchanges";
+
+/** Display order for the group headings on /partnerships. */
+export const partnerGroupOrder: PartnerGroup[] = ["CFD Brokers", "Prop Firms", "Crypto Exchanges"];
 
 export type Partner = {
   name: string;
   /** Also the logo filename: `public/partners/<slug>.(svg|png|webp|jpg)`. */
   slug: string;
+  /** Section heading this partner is grouped under on the page. */
+  group: PartnerGroup;
+  /** Per-partner label shown above its name (e.g. "Broker", "Crypto Exchange"). */
   category: string;
   blurb: string;
   pills: string[];
   href: string;
 };
 
+// Ordering, grouping and links match the client's requested list (2026-08-08,
+// two messages: links first, then the numbered order with group labels).
+// "Moneta Markets" — the client wrote "Moneta Markers" both times; the
+// supplied link (monetamarkets.com) confirms the real name, used here. This
+// is a DIFFERENT entity from "Moneta Funded" below (a prop firm) — same root
+// brand, different product.
+// "JustMarkets" and "FundingPips" are spelled as one word, matching the
+// companies' own branding and their domains (justmarkets.com,
+// fundingpips.com) — the client's messages wrote them with a space.
+// Vigco and MMSA (previously listed, pre-dating the client's numbered list)
+// stay dropped — they were never part of any version of the requested list.
 export const partners: Partner[] = [
   {
-    name: "FundingPips",
-    slug: "fundingpips",
-    category: "Funded Account Evaluations",
+    name: "Moneta Markets",
+    slug: "moneta-markets",
+    group: "CFD Brokers",
+    category: "Broker",
     blurb:
-      "A proprietary trading firm running paid evaluations. It's the environment our MDC3 funded-account training is built around, so students practise against the same style of drawdown and daily-loss rules they'll face in a real assessment.",
-    pills: ["Evaluation model", "Defined risk rules", "Used in MDC3"],
-    href: "https://app.fundingpips.com/register?referral_code=dbf794f6",
+      "A multi-asset broker offering Gold, FX majors, indices and commodities through MT4 and MT5, with account tiers by minimum deposit — a lower-cost tier to start on while position sizing and consistency are still being built.",
+    pills: ["Gold & FX majors", "MT4 / MT5", "Tiered accounts"],
+    href: "https://www.monetamarkets.com/open-live-account/?affid=Nzc0NzUwMQ==",
   },
   {
-    name: "Moneta Funded",
-    slug: "moneta-funded",
-    category: "Funded Account Evaluations",
+    name: "Valetax",
+    slug: "valetax",
+    group: "CFD Brokers",
+    category: "Broker",
     blurb:
-      "A second prop-firm option, useful for comparing evaluation structures side by side. Rule sets differ meaningfully between firms, and learning to read those rules before paying for a challenge is part of the training.",
-    pills: ["Alternative rule set", "Comparison practice", "Challenge-based"],
-    href: "https://go.monetafunded.com/visit/?bta=35587&brand=monetafunded",
+      "A broker with accounts aimed at smaller starting balances. Listed for completeness alongside the others so the comparison is yours to make rather than ours to make for you.",
+    pills: ["Small accounts", "Gold & FX majors", "MT4 / MT5"],
+    href: "https://ma.valetax.com/p/4650215",
   },
   {
     name: "HFM",
     slug: "hfm",
+    group: "CFD Brokers",
     category: "Broker",
     blurb:
       "A long-established broker with a wide instrument range including XAU/USD. Commonly used by students who want a familiar platform and straightforward account setup while they're still learning execution mechanics.",
@@ -212,8 +240,19 @@ export const partners: Partner[] = [
     href: "https://register.hfm.com/sv/en/new-live-account/?refid=30516104",
   },
   {
+    name: "Vantage Markets",
+    slug: "vantage-markets",
+    group: "CFD Brokers",
+    category: "Broker",
+    blurb:
+      "A broker with a strong presence across Asia-Pacific, offering ECN-style spreads on Gold and the major currency pairs through MT4, MT5 and its own proprietary platform.",
+    pills: ["ECN-style spreads", "Gold & FX majors", "MT4 / MT5"],
+    href: "https://www.vantagemarkets.com/en/open-live-account/?affid=Mjc4NjgyMDA=&invitecode=5ErtKGci",
+  },
+  {
     name: "JustMarkets",
     slug: "justmarkets",
+    group: "CFD Brokers",
     category: "Broker",
     blurb:
       "A broker offering low minimum deposits, which makes it a practical place to trade small while position sizing is still being learned. Small size is the point early on — the habit matters more than the capital.",
@@ -223,38 +262,62 @@ export const partners: Partner[] = [
   {
     name: "NYS Markets",
     slug: "nys-markets",
+    group: "Prop Firms",
     category: "Broker",
     blurb:
       "A broker option students have asked about often enough that we list it here rather than leave people to search unaided. As with every firm on this page, verify its regulatory status in your own jurisdiction before depositing.",
     pills: ["Gold & FX majors", "Multi-asset", "Verify locally"],
-    href: "https://nysmarkets.com/?cxd=MTKF4WBO+25858_141",
+    href: "https://nysmarkets.com/signup?cxd=Moneydoor",
   },
   {
-    name: "Valetax",
-    slug: "valetax",
-    category: "Broker",
+    name: "Moneta Funded",
+    slug: "moneta-funded",
+    group: "Prop Firms",
+    category: "Funded Account Evaluations",
     blurb:
-      "A broker with accounts aimed at smaller starting balances. Listed for completeness alongside the others so the comparison is yours to make rather than ours to make for you.",
-    pills: ["Small accounts", "Gold & FX majors", "MT4 / MT5"],
-    href: "https://ma.valetax.com/p/4650215",
+      "A second prop-firm option, useful for comparing evaluation structures side by side. Rule sets differ meaningfully between firms, and learning to read those rules before paying for a challenge is part of the training.",
+    pills: ["Alternative rule set", "Comparison practice", "Challenge-based"],
+    href: "https://www.monetafunded.com/checkout/?cxd=35587_365911&brand=monetafunded&bta=35587",
   },
   {
-    name: "Vigco",
-    slug: "vigco",
-    category: "Investment Platform",
+    name: "FundingPips",
+    slug: "fundingpips",
+    group: "Prop Firms",
+    category: "Funded Account Evaluations",
     blurb:
-      "A platform partner covering investment-account access. Included so students evaluating options beyond a standard brokerage account can see it alongside everything else in one place.",
-    pills: ["Account access", "Platform partner", "Verify locally"],
-    href: "https://vigco.co/la-com-inv/5ErtKGci",
+      "A proprietary trading firm running paid evaluations. It's the environment our MDC3 funded-account training is built around, so students practise against the same style of drawdown and daily-loss rules they'll face in a real assessment.",
+    pills: ["Evaluation model", "Defined risk rules", "Used in MDC3"],
+    href: "https://app.fundingpips.com/register?referral_code=dbf794f6",
   },
   {
-    name: "MMSA",
-    slug: "mmsa",
-    category: "Investment Platform",
+    name: "Inocyx",
+    slug: "inocyx",
+    group: "Crypto Exchanges",
+    category: "Crypto Exchange",
     blurb:
-      "A managed-account platform partner. As with every entry here, this is a pointer to a service we're familiar with — not an assessment of its suitability for your circumstances.",
-    pills: ["Managed accounts", "Platform partner", "Verify locally"],
-    href: "https://mmsa.ltd/la-com/Z0LzpORa",
+      "A crypto exchange partner. As with every entry on this page, this is a pointer to a platform we're familiar with — not an endorsement of its features or an assessment of its suitability for your circumstances. Verify its registration and regulatory standing in your own jurisdiction before you sign up.",
+    pills: ["Crypto trading", "Verify locally", "Separate risk profile"],
+    href: "https://ref.inocyx.com/ref?code=Ayv3ov",
+  },
+  {
+    name: "Delta Exchange",
+    slug: "delta-exchange",
+    group: "Crypto Exchanges",
+    category: "Crypto Exchange",
+    blurb:
+      "A crypto derivatives exchange offering futures and options on major cryptocurrencies. A different asset class and risk profile from the Gold and Forex markets taught in our courses — evaluate it on its own terms, not as an extension of that training.",
+    pills: ["Crypto futures & options", "Derivatives", "Separate risk profile"],
+    href: "https://www.delta.exchange/?code=MONEYDOOR",
+  },
+  {
+    name: "Binance",
+    slug: "binance",
+    group: "Crypto Exchanges",
+    category: "Crypto Exchange",
+    blurb:
+      "One of the world's largest cryptocurrency exchanges by volume, offering spot and derivatives trading across a wide range of digital assets. Regulatory standing for crypto exchanges has shifted before in India — confirm current registration status before depositing.",
+    pills: ["Spot & derivatives", "Wide asset range", "Verify locally"],
+    href: "https://www.binance.com/register?ref=MONEYDOOR",
   },
 ];
 
