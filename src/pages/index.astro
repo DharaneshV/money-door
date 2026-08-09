@@ -5,6 +5,7 @@ import MarqueeBand from "../components/sections/MarqueeBand.astro";
 import PathCards from "../components/sections/PathCards.astro";
 import WhyChooseUs from "../components/sections/WhyChooseUs.astro";
 import AboutTeaser from "../components/sections/AboutTeaser.astro";
+import DecisionFramework from "../components/sections/DecisionFramework.astro";
 import ChiefTrainerTeaser from "../components/sections/ChiefTrainerTeaser.astro";
 import ProgramsSection from "../components/sections/ProgramsSection.astro";
 import StudentJourney from "../components/sections/StudentJourney.astro";
@@ -22,6 +23,9 @@ import BlogTeaser from "../components/sections/BlogTeaser.astro";
   <PathCards />
   <AboutTeaser />
   <WhyChooseUs />
+  {/* Sits directly after WhyChooseUs so the "why us" case runs as one block:
+      the practical reasons first, then the methodology that backs them. */}
+  <DecisionFramework index="04" />
   <ChiefTrainerTeaser />
   <ProgramsSection />
   <StudentJourney />

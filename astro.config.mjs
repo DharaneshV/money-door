@@ -26,10 +26,13 @@ export default defineConfig({
   // /contact was the old Join Now destination; the page moved to /join when the
   // register form landed on it. 301 rather than 302 — the move is permanent and
   // we want the link equity to follow.
-  // One entry only — Astro normalises the trailing slash, so declaring both
-  // '/contact' and '/contact/' collides on the same route.
+  // One entry only per path — Astro normalises the trailing slash, so
+  // declaring both '/contact' and '/contact/' collides on the same route.
   redirects: {
     '/contact': { status: 301, destination: '/join/' },
+    // The Courses index was folded into What We Teach. The individual
+    // /courses/mdcN/ pages keep their own URLs; only this index moved.
+    '/courses': { status: 301, destination: '/what-we-teach/' },
   },
 
   vite: {

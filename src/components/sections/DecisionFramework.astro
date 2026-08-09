@@ -1,0 +1,89 @@
+---
+import Container from "../ui/Container.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Button from "../ui/Button.astro";
+
+// The academy's core differentiator, stated plainly: six analysis tools are
+// combined into six named decision models, rather than sold as six separate
+// "indicator courses". This is the argument the whole curriculum rests on, so
+// it sits on the homepage rather than being buried on a course page.
+//
+// COMPLIANCE: describes what the framework IS and what it helps a student DO.
+// Never add a win rate, accuracy figure, or return claim to this section.
+interface Props {
+  /** Editorial section number, e.g. "03". */
+  index?: string;
+}
+const { index } = Astro.props;
+
+const tools = [
+  "EMA 24",
+  "ATR 24",
+  "W.D. Gann 45° Angles",
+  "Price Action",
+  "Smart Money Concepts (SMC)",
+  "ICT Concepts",
+];
+
+const models = [
+  { abbr: "PR", name: "Point of Reversal" },
+  { abbr: "PC", name: "Point of Continuation" },
+  { abbr: "EPR", name: "EMA Point of Reversal" },
+  { abbr: "EPC", name: "EMA Point of Continuation" },
+  { abbr: "GPR", name: "Gann Point of Reversal" },
+  { abbr: "GPC", name: "Gann Point of Continuation" },
+];
+---
+
+<section class="surface-gold py-section">
+  <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+    {/* Eyebrow deliberately isn't "Why Choose Us" — WhyChooseUs immediately
+        above already owns that label; this section is the proof behind it. */}
+    <SectionHeading
+      eyebrow="Our Methodology"
+      index={index}
+      title="We Don't Teach Indicators. We Teach Decision Making."
+      align="left"
+    />
+
+    <div class="grid items-start gap-x-[clamp(2rem,6vw,5rem)] gap-y-12 lg:grid-cols-[0.85fr_1.15fr]">
+      {/* Left: the six inputs. */}
+      <div data-reveal>
+        <span class="eyebrow text-gold-500">Our framework combines</span>
+        <ul class="mt-6 flex flex-col">
+          {
+            tools.map((t) => (
+              <li class="edit-row py-[clamp(0.75rem,1.6vw,1.1rem)] font-display text-[clamp(1.05rem,0.9rem+0.6vw,1.4rem)] font-medium leading-tight text-paper">
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {/* Right: the six outputs those inputs validate. */}
+      <div data-reveal>
+        <span class="eyebrow text-gold-500">To create exclusive trading models</span>
+        <div class="mt-6 grid gap-[clamp(0.75rem,1.5vw,1.25rem)] sm:grid-cols-2" data-reveal-stagger>
+          {
+            models.map((m) => (
+              <div class="surface-card-warm card-lift flex items-baseline gap-4 p-[clamp(1rem,2vw,1.4rem)]">
+                <span class="section-index flex-none text-gold-300">{m.abbr}</span>
+                <span class="text-sm leading-snug text-paper/75">{m.name}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-start gap-6" data-reveal>
+      <p class="max-w-2xl text-base leading-relaxed text-paper/70 sm:text-lg">
+        This structured approach helps students analyze the market with confidence rather than
+        relying on guesswork — one repeatable decision-making process, taught the same way to
+        every student.
+      </p>
+      <Button href="/what-we-teach/" arrow>See the full curriculum</Button>
+    </div>
+  </Container>
+</section>

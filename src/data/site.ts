@@ -83,30 +83,36 @@ export type NavLink = {
   children?: { label: string; href: string; description?: string }[];
 };
 
-// Resolved structure — see the plan's "Open items" #3 for why this differs slightly
-// from the raw brief text. Pages not in the top nav are still real, linked pages
-// (see footer siteLinks below).
+// Resolved structure — matches the client's requested top-nav order (2026-08-08):
+// Home | About Us | Courses | What We Teach | Daily Analysis | Blog |
+// Trading Partners | Our Achievements | Join Now (Join Now is rendered
+// separately as the header's CTA button — see joinHref below — same as before).
+//
+// "Gold Trading" and "Copy Trading" are no longer top-level items — that
+// request removed them from this list. Both pages still exist and are still
+// reachable (footer's "Trading" column, homepage path cards, and cross-links
+// from /what-we-teach and other course pages) — only the top nav slot changed.
 export const primaryNav: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about/" },
+  // "Courses" is no longer its own tab — What We Teach absorbed it and is now
+  // the dropdown parent the three MDC programs roll down from. The individual
+  // /courses/mdcN/ pages keep their URLs (already indexed, still linked here);
+  // only the /courses/ index was folded in, and it redirects to this page.
   {
-    label: "Courses",
-    href: "/courses/",
+    label: "What We Teach",
+    href: "/what-we-teach/",
     children: [
-      { label: "All Courses", href: "/courses/" },
+      { label: "Full Curriculum", href: "/what-we-teach/", description: "All 16 areas we cover" },
       { label: "MDC1 — Foundation Trader", href: "/courses/mdc1/", description: "Free · 1 week" },
       { label: "MDC2 — Professional Trader", href: "/courses/mdc2/", description: "USDT 300 · 6 months" },
       { label: "MDC3 — Elite Master Trader", href: "/courses/mdc3/", description: "USDT 1,000 · 12 months" },
     ],
   },
-  { label: "Gold Trading", href: "/gold-trading/" },
-  { label: "Copy Trading", href: "/copy-trading/" },
   { label: "Daily Analysis", href: "/daily-market-analysis/" },
   { label: "Blog", href: "/blog/" },
-  // Replaced "Contact" in this slot. Contact and Join Now were always the same
-  // destination, so the page survives at /join/ (where the register form now
-  // lives) and /contact/ redirects there rather than 404ing.
   { label: "Trading Partners", href: "/partnerships/" },
+  { label: "Our Achievements", href: "/our-achievements/" },
 ];
 
 // The single CTA target used by the header, mobile nav and every "Join Now"
@@ -128,6 +134,7 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
       { label: "Home", href: "/" },
       { label: "About Us", href: "/about/" },
       { label: "Meet the Chief Trainer", href: "/chief-trainer/" },
+      { label: "Our Achievements", href: "/our-achievements/" },
       { label: "Blog", href: "/blog/" },
       { label: "Trading Partners", href: "/partnerships/" },
       { label: "Join Now", href: joinHref },
@@ -136,7 +143,10 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
   {
     heading: "Trading",
     links: [
-      { label: "Courses", href: "/courses/" },
+      { label: "What We Teach", href: "/what-we-teach/" },
+      { label: "MDC1 — Foundation Trader", href: "/courses/mdc1/" },
+      { label: "MDC2 — Professional Trader", href: "/courses/mdc2/" },
+      { label: "MDC3 — Elite Master Trader", href: "/courses/mdc3/" },
       { label: "Gold Trading", href: "/gold-trading/" },
       { label: "Forex Trading", href: "/forex-trading/" },
       { label: "Copy Trading", href: "/copy-trading/" },

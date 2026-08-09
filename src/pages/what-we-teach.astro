@@ -1,0 +1,457 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import Icon from "../components/ui/Icon.astro";
+import Button from "../components/ui/Button.astro";
+import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
+import ProgramSelector from "../components/sections/ProgramSelector.astro";
+
+// Full curriculum overview across all three MDC programs. Kept as a page-local
+// array (not a content collection) — this is one page, not a repeated entity
+// type, so a collection would be overhead without benefit.
+const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name"]; items: string[] }[] = [
+  {
+    n: "01",
+    title: "Gold Trading (XAUUSD)",
+    icon: "trending-up",
+    items: [
+      "Gold market fundamentals",
+      "Understanding XAU/USD price movements",
+      "Intraday trading strategies",
+      "Swing trading concepts",
+      "Market timing",
+      "Identifying high-probability trade opportunities",
+      "Economic news impact on Gold",
+      "Trading during London & New York sessions",
+      "Gold market psychology",
+    ],
+  },
+  {
+    n: "02",
+    title: "Forex Trading",
+    icon: "refresh",
+    items: [
+      "Forex market structure",
+      "Major, minor & exotic currency pairs",
+      "Currency correlations",
+      "Bid, ask & spread",
+      "Pip and lot size calculation",
+      "Market sessions",
+      "Liquidity concepts",
+      "Order execution",
+      "Developing trading discipline",
+      "Pairs covered: EUR/USD, GBP/USD, USD/JPY, AUD/USD, NZD/USD, USD/CAD, USD/CHF, XAU/USD",
+    ],
+  },
+  {
+    n: "03",
+    title: "Technical Analysis",
+    icon: "chart-bar",
+    items: [
+      "Market structure",
+      "Trend analysis",
+      "Support & resistance",
+      "Supply & demand",
+      "Price action",
+      "Multi-timeframe analysis",
+      "Entry & exit planning",
+      "Trend continuation & reversal",
+      "EMA 24 strategy",
+      "ATR 24 analysis",
+      "W.D. Gann 45° angle analysis",
+      "Smart Money Concepts (SMC)",
+      "ICT concepts integration",
+      "Liquidity analysis",
+      "Premium & discount zones",
+      "Market structure breaks",
+      "Change of Character (CHoCH)",
+      "Fair Value Gaps (FVG)",
+    ],
+  },
+  {
+    n: "04",
+    title: "PR & PC Trading Strategy",
+    icon: "target",
+    items: [
+      "Point of Reversal (PR)",
+      "Point of Continuation (PC)",
+      "Entry Point Reversal (EPR)",
+      "Entry Point Continuation (EPC)",
+      "Gann Point Reversal (GPR)",
+      "Gann Point Continuation (GPC)",
+      "Combining EMA 24, ATR 24, Gann angles, price action, SMC and ICT into one structured approach",
+    ],
+  },
+  {
+    n: "05",
+    title: "Risk Management",
+    icon: "shield-check",
+    items: [
+      "Position sizing",
+      "Risk-to-reward ratio",
+      "Daily risk limits",
+      "Weekly loss limits",
+      "Maximum drawdown management",
+      "Trade management",
+      "Scaling positions",
+      "Capital preservation",
+      "Trading psychology",
+      "Long-term consistency",
+    ],
+  },
+  {
+    n: "06",
+    title: "Live Market Trading Sessions",
+    icon: "video",
+    items: [
+      "Market preparation",
+      "Chart analysis",
+      "Trade planning",
+      "Entry validation",
+      "Risk calculation",
+      "Trade management",
+      "Exit planning",
+      "Post-trade review",
+    ],
+  },
+  {
+    n: "07",
+    title: "Prop Firm Trading",
+    icon: "award",
+    items: [
+      "Understanding prop firms",
+      "Evaluation rules",
+      "Challenge planning",
+      "Drawdown management",
+      "Daily loss limits",
+      "Consistency rules",
+      "Trading journal",
+      "Risk control",
+      "Scaling plans",
+      "Account management best practices",
+    ],
+  },
+  {
+    n: "08",
+    title: "Copy Trading",
+    icon: "copy",
+    items: [
+      "What is copy trading?",
+      "Master & follower accounts",
+      "Risk multipliers",
+      "Account allocation",
+      "Performance monitoring",
+      "Portfolio diversification",
+      "Risk considerations",
+      "Responsible use of copy trading",
+    ],
+  },
+  {
+    n: "09",
+    title: "PAMM Account Concepts",
+    icon: "layers",
+    items: [
+      "Introduction to PAMM",
+      "Capital allocation",
+      "Performance tracking",
+      "Investor & manager roles",
+      "Risk allocation",
+      "Transparency",
+      "Understanding performance metrics",
+    ],
+  },
+  {
+    n: "10",
+    title: "Trading Psychology",
+    icon: "users",
+    items: [
+      "Control fear & greed",
+      "Build discipline",
+      "Follow trading rules",
+      "Avoid overtrading",
+      "Manage losses professionally",
+      "Develop consistency",
+      "Build long-term confidence",
+    ],
+  },
+  {
+    n: "11",
+    title: "Economic News Analysis",
+    icon: "calendar",
+    items: [
+      "Economic calendar",
+      "High-impact news events",
+      "NFP (Non-Farm Payrolls)",
+      "CPI",
+      "Interest rate decisions",
+      "FOMC meetings",
+      "GDP reports",
+      "Employment data",
+      "Inflation reports",
+      "Trading around news releases",
+    ],
+  },
+  {
+    n: "12",
+    title: "Trading Journal & Performance Review",
+    icon: "book-open",
+    items: [
+      "Maintain a trading journal",
+      "Record trade setups",
+      "Evaluate risk",
+      "Review mistakes",
+      "Track performance metrics",
+      "Improve decision making",
+      "Build consistency over time",
+    ],
+  },
+  {
+    n: "13",
+    title: "Trading Platforms & Tools",
+    icon: "wallet",
+    items: [
+      "MetaTrader 4 (MT4)",
+      "MetaTrader 5 (MT5)",
+      "TradingView",
+      "Platform navigation",
+      "Order types",
+      "Chart customization",
+      "Indicators",
+      "Alerts",
+      "Templates",
+      "Watchlists",
+      "Trade execution",
+      "Trade history",
+    ],
+  },
+  {
+    n: "14",
+    title: "Trading Plan Development",
+    icon: "route",
+    items: [
+      "Trading goals",
+      "Daily routine",
+      "Entry rules",
+      "Exit rules",
+      "Risk rules",
+      "Capital allocation",
+      "Performance targets",
+      "Review process",
+    ],
+  },
+  {
+    n: "15",
+    title: "One-to-One Mentorship (MDC3)",
+    icon: "graduation-cap",
+    items: [
+      "Individual progress reviews",
+      "Strategy clarification",
+      "Trade evaluations",
+      "Performance feedback",
+      "Risk management guidance",
+      "Personalized improvement plans",
+    ],
+  },
+  {
+    n: "16",
+    title: "Continuous Learning & Community Support",
+    icon: "message-circle",
+    items: [
+      "Weekly live sessions",
+      "Market discussions",
+      "Educational updates",
+      "Trading community",
+      "Strategy reviews",
+      "Q&A sessions",
+      "Ongoing learning resources",
+    ],
+  },
+];
+
+const whyChooseUs = [
+  "18+ years of financial market experience",
+  "Structured learning path (MDC1 → MDC2 → MDC3)",
+  "Beginner to advanced curriculum",
+  "Live market education",
+  "Practical, rule-based trading methods",
+  "Personalized mentorship",
+  "Strong focus on risk management",
+  "Professional trading discipline",
+];
+---
+
+<BaseLayout
+  title="What We Teach"
+  description="A complete curriculum overview from Money Door FX Academy — Gold and Forex trading, technical analysis, our proprietary PR & PC strategy framework, risk management, and more, taught across MDC1, MDC2 and MDC3."
+>
+  <PageHero
+    eyebrow="What We Teach"
+    title="Master the Global Financial Markets"
+    subtitle="Structured trading education designed to help aspiring traders understand how the financial markets work — technical knowledge, practical market analysis, disciplined risk management, and live market learning, whether you're a beginner or an experienced trader."
+  />
+
+  <section class="surface-gold py-section">
+    <Container width="wide" class="max-w-3xl" data-reveal>
+      <p class="text-base leading-relaxed text-paper/75 sm:text-lg">
+        At Money Door FX Academy, we provide structured trading education designed to help
+        aspiring traders understand how the financial markets work. Our training combines
+        technical knowledge, practical market analysis, disciplined risk management, and live
+        market learning.
+      </p>
+      <p class="mt-4 text-base leading-relaxed text-paper/75 sm:text-lg">
+        Whether you are a beginner or an experienced trader, our curriculum is designed to build
+        confidence through education, practice, and continuous learning — across sixteen areas of
+        the curriculum, taught progressively through MDC1, MDC2 and MDC3.
+      </p>
+    </Container>
+  </section>
+
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading
+        eyebrow="Full Curriculum"
+        title="Sixteen Areas of Practical Trading Education"
+        align="left"
+      />
+      <div class="grid gap-[clamp(1rem,2vw,1.5rem)] sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+        {
+          topics.map((t) => (
+            <div class="surface-card flex flex-col gap-4 p-[clamp(1.5rem,2.2vw,2rem)]">
+              <div class="flex items-center gap-3">
+                <span class="icon-pop flex h-10 w-10 flex-none items-center justify-center rounded-full bg-gold-500/12 text-gold-500">
+                  <Icon name={t.icon} class="h-5 w-5" />
+                </span>
+                <span class="section-index text-gold-500">{t.n}</span>
+              </div>
+              <h3 class="font-heading text-base font-bold leading-snug text-paper">{t.title}</h3>
+              <ul class="flex flex-col gap-2">
+                {t.items.map((item) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/65">
+                    <span class="mt-[0.55rem] h-1 w-1 flex-none rounded-full bg-gold-500/70" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  {/* The old /courses/ page's tabbed selector, moved here when Courses was
+      folded into What We Teach. Same component, same content collection — the
+      programs shown can't drift from the individual course pages. */}
+  <ProgramSelector
+    surface="gold"
+    eyebrow="How It's Taught"
+    title="Learn. Apply. Master."
+    subtitle="Every topic above is delivered through three progressive programs. Each one is the next stage of becoming a professional trader — not a separate course."
+  />
+
+  {/* Prop-firm / funded-account training, pulled out of the sixteen-card grid
+      into its own band. It's the outcome many students are actually here for,
+      and it carries terms that shouldn't be reduced to a bullet. */}
+  <section class="surface-ink py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading
+            eyebrow="Funded Accounts"
+            title="Prop Firm & Funded Account Training"
+            align="left"
+          />
+          <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/70">
+            Proprietary trading firms let traders demonstrate skill through a paid evaluation,
+            then trade firm capital. Most candidates fail on the risk rules — maximum daily loss,
+            maximum drawdown, minimum trading days — rather than on the profit target. We prepare
+            students for that reality, phase by phase, inside MDC3.
+          </p>
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-paper/55">
+            We are an education provider. We do not operate a prop firm, provide funding
+            ourselves, or guarantee that any student will pass an evaluation.
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button href="/funded-account-training/" arrow>Funded account training</Button>
+            <Button href="/partnerships/" variant="secondary">See our prop firm partners</Button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-5" data-reveal>
+          <div class="surface-card p-[clamp(1.5rem,2.5vw,2rem)]">
+            <h3 class="eyebrow text-gold-500">What Evaluation Prep Covers</h3>
+            <ul class="mt-4 grid gap-2.5 sm:grid-cols-2">
+              {
+                [
+                  "Phase 1 & Phase 2 evaluations",
+                  "Drawdown rules",
+                  "Daily loss limits",
+                  "Consistency rules",
+                  "Risk scaling",
+                  "Challenge planning",
+                  "Trading journal discipline",
+                  "Account management practices",
+                ].map((item) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/70">
+                    <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+                    <span>{item}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          {/* Same wording as the course pages — never "FREE $X account". */}
+          <div class="surface-card-warm p-[clamp(1.5rem,2.5vw,2rem)]">
+            <h3 class="eyebrow text-gold-400">Sponsored Evaluation Account</h3>
+            <p class="mt-3 text-sm leading-relaxed text-paper/75">
+              Eligible MDC2 and MDC3 students receive a sponsored prop firm evaluation account,
+              subject to academy terms and partner availability.
+            </p>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading
+        eyebrow="Why Money Door"
+        title="Why Learn With Money Door FX Academy?"
+        align="left"
+      />
+      <ul class="grid gap-x-[clamp(2rem,5vw,4rem)] gap-y-4 md:grid-cols-2" data-reveal-stagger>
+        {
+          whyChooseUs.map((point) => (
+            <li class="flex items-start gap-3 text-base leading-relaxed text-paper/85">
+              <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
+              <span>{point}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col gap-8">
+      <RiskDisclaimer variant="full" />
+      <div class="flex flex-col items-center gap-4 text-center" data-reveal>
+        <h2 class="font-display text-[clamp(1.75rem,1.4rem+1.5vw,2.5rem)] font-medium text-paper">
+          Ready to start learning?
+        </h2>
+        <p class="max-w-lg text-base text-paper/70">
+          MDC1 — Foundation Trader is free and takes one week. It's the place every Money Door
+          student starts.
+        </p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <Button href="/courses/mdc1/" arrow>Start with MDC1 (Free)</Button>
+          <Button href="/join/" variant="secondary">Book Free Consultation</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

@@ -1,0 +1,26 @@
+---
+import Icon from "../ui/Icon.astro";
+
+// What's included / bonuses, as a checked-off list. Shared across all three
+// MDC course pages.
+interface Props {
+  items: { title: string; description?: string }[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="flex flex-col">
+  {
+    items.map((it) => (
+      <li class="edit-row flex items-start gap-3 py-[clamp(1rem,2vw,1.25rem)]">
+        <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
+        <div>
+          <p class="text-sm font-semibold text-paper">{it.title}</p>
+          {it.description && (
+            <p class="mt-1 text-sm leading-relaxed text-paper/60">{it.description}</p>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ul>

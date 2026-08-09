@@ -392,34 +392,81 @@
     border-color: color-mix(in srgb, var(--color-market-down) 70%, transparent);
   }
 
-  /* Floating-label field. The label sits inside the control and rises when the
-     field is focused or filled. `:not(:placeholder-shown)` is what detects
-     "filled" without JS — which is why every input using this keeps a
-     placeholder of " ". */
-  .field-group {
-    position: relative;
+  /* ---- Form field row ------------------------------------------
+     Labels sit ABOVE their control rather than floating inside it. The
+     register form has eight controls; with floating labels every empty field
+     looked identical and the whole thing read as a wall of grey boxes. A
+     static label is also the accessible default — it never overlaps the value
+     and never disappears once the field is filled. */
+  .field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
   }
-  .field-group > .field {
-    padding-top: 1.45rem;
-    padding-bottom: 0.5rem;
+  .field-label {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
   }
-  .field-group > .field-label {
-    position: absolute;
-    top: 0.95rem;
-    left: 1rem;
-    font-size: 0.875rem;
-    color: color-mix(in srgb, var(--color-paper) 45%, transparent);
-    pointer-events: none;
-    transform-origin: left top;
-    transition:
-      transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-      color 0.22s ease;
+  .field-req {
+    color: var(--color-gold-500);
   }
-  .field-group > .field:focus ~ .field-label,
-  .field-group > .field:not(:placeholder-shown) ~ .field-label,
-  .field-group.is-filled > .field-label {
-    transform: translateY(-0.72rem) scale(0.78);
-    color: var(--color-gold-400);
+  .field-hint {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-paper) 35%, transparent);
+  }
+  .field-error {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-market-down);
+  }
+
+  /* ---- Grouped step -------------------------------------------
+     Splits the form into two short, named stages so it reads as "two quick
+     steps" rather than one long interrogation. */
+  .form-step {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .form-step + .form-step {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 8%, transparent);
+  }
+  .form-step__legend {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+    padding: 0;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+  }
+  .form-step__num {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--color-gold-500);
+  }
+
+  /* ---- Consent ------------------------------------------------
+     Boxed so the DPDP consent reads as a deliberate decision rather than one
+     more field to tab past. */
+  .consent-box {
+    margin-top: 2rem;
+    border-radius: var(--radius-field);
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 22%, transparent);
+    background: color-mix(in srgb, var(--color-gold-500) 5%, transparent);
+    padding: clamp(1rem, 2vw, 1.25rem);
   }
 
   /* ---- Custom select ------------------------------------------

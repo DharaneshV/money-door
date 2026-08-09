@@ -1,0 +1,22 @@
+---
+// The six named Money Door strategy models (PR, PC, EPR, EPC, GPR, GPC).
+// Shared between MDC2 and MDC3, since MDC3 includes everything MDC2 teaches.
+interface Props {
+  models: { abbr: string; name: string; description: string }[];
+}
+const { models } = Astro.props;
+---
+
+<div class="grid gap-[clamp(1rem,2vw,1.5rem)] sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+  {
+    models.map((m) => (
+      <div class="surface-card-warm card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.5vw,2rem)]">
+        <span class="section-index text-gold-300">{m.abbr}</span>
+        <h3 class="font-display text-[clamp(1.1rem,0.95rem+0.5vw,1.35rem)] font-medium leading-tight text-paper">
+          {m.name}
+        </h3>
+        <p class="text-sm leading-relaxed text-paper/65">{m.description}</p>
+      </div>
+    ))
+  }
+</div>

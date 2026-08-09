@@ -12,6 +12,7 @@ const programs = defineCollection({
     currency: z.string().default("USDT"),
     priceLabel: z.string().optional(), // e.g. "Free" override for MDC1
     order: z.number(),
+    // Short single-line version — used by the compact tab selector.
     idealFor: z.string().optional(),
     highlights: z.array(z.string()),
     outcome: z.string(),
@@ -20,6 +21,51 @@ const programs = defineCollection({
     mentorship: z.string().optional(),
     format: z.string().optional(),
     level: z.string().optional(),
+    // One-word position in the MDC progression — Learn → Apply → Master.
+    // Gives visitors a reason to read all three as a path rather than three
+    // unrelated products.
+    stage: z.string().optional(),
+
+    // ---- Full curriculum detail, rendered on the /courses/mdcN page only ----
+    // All optional so an entry without them still validates.
+    //
+    // Checklist version of `idealFor`, for the full detail page.
+    idealForList: z.array(z.string()).optional(),
+    // Named blocks of topics, e.g. { title: "Risk Management Fundamentals",
+    // items: ["Position sizing", "Lot size calculation", ...] }.
+    curriculum: z
+      .array(
+        z.object({
+          title: z.string(),
+          items: z.array(z.string()),
+        })
+      )
+      .optional(),
+    // The named Money Door strategy models (PR, PC, EPR, EPC, GPR, GPC) —
+    // MDC2 and MDC3 only.
+    strategyModels: z
+      .array(
+        z.object({
+          abbr: z.string(), // "PR"
+          name: z.string(), // "Point of Reversal"
+          description: z.string(),
+        })
+      )
+      .optional(),
+    // What's included / bonuses. `description` optional for a one-line item.
+    //
+    // COMPLIANCE: never phrase a prop-firm account as "FREE $X" — that reads
+    // as a guaranteed cash value. Use "sponsored ... evaluation account,
+    // subject to academy terms and partner availability" instead, which is
+    // both accurate and doesn't collapse if a partner or offer changes.
+    included: z
+      .array(
+        z.object({
+          title: z.string(),
+          description: z.string().optional(),
+        })
+      )
+      .optional(),
   }),
 });
 

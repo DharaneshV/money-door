@@ -1,0 +1,177 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import Container from "../components/ui/Container.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import Icon from "../components/ui/Icon.astro";
+import Button from "../components/ui/Button.astro";
+import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
+import CertificateGallery from "../components/sections/CertificateGallery.astro";
+import { getCollection } from "astro:content";
+import certManifest from "../../public/achievements/manifest.json";
+
+// The headline stats are structural facts about the academy — years running,
+// students taught, programs offered, strategy models named. Never a win rate
+// or return figure.
+//
+// The certificate wall below is different: those are third-party-issued,
+// QR-verifiable credentials belonging to the Chief Trainer PERSONALLY. They
+// are framed as his own results, explicitly not student outcomes and not a
+// forecast — see CertificateGallery.astro for the full rule, and the
+// disclaimer block on this page, which is load-bearing rather than decorative.
+const certs = certManifest as { src: string; issuer: string; width: number; height: number }[];
+const milestones = [
+  { to: 18, suffix: "+", label: "Years of combined trading experience" },
+  { to: 2500, suffix: "+", label: "Students trained" },
+  { to: 3, suffix: "", label: "Structured program levels — MDC1 to MDC3" },
+  { to: 6, suffix: "", label: "Named strategy models — PR, PC, EPR, EPC, GPR & GPC" },
+];
+
+const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Our Achievements"
+  description="Money Door FX Academy's track record — years of trading experience, students trained, and the structured MDC1–MDC3 program path, taught by Chief Trainer Venkatesh M."
+>
+  <PageHero
+    eyebrow="Our Achievements"
+    title="Built on Experience, Measured in Students Taught"
+    subtitle="Every figure on this page is a fact about the academy itself — not a trading result. We teach a process; what you do with it, and what it earns you, is yours to build."
+  />
+
+  <section class="surface-gold py-section">
+    <Container width="wide">
+      <dl class="grid gap-x-[clamp(2rem,5vw,4rem)] gap-y-10 sm:grid-cols-2 lg:grid-cols-4" data-reveal-stagger>
+        {
+          milestones.map((stat) => (
+            <div class="flex flex-col gap-2">
+              <dt class="font-display text-[clamp(2.5rem,1.8rem+3vw,4.5rem)] font-medium leading-none tabular-nums text-gold-500">
+                <span data-count-to={stat.to} data-count-suffix={stat.suffix}>
+                  0
+                </span>
+              </dt>
+              <dd class="max-w-[16rem] text-sm leading-snug text-paper/70">{stat.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </Container>
+  </section>
+
+  <section class="surface-ink py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading eyebrow="The Trainer" index="01" title="18+ Years, One Chief Trainer" align="left" />
+          <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/70">
+            Every program at Money Door FX Academy is built around the trading experience of
+            Chief Trainer Venkatesh M — over 18 years across Forex, Commodities, Equities and
+            Gold, and the creator of the PR &amp; PC methodology this academy is named for.
+          </p>
+          <a
+            href="/chief-trainer/"
+            class="group mt-8 inline-flex w-fit items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper transition-colors hover:text-gold-300"
+          >
+            <span class="link-underline">Read the full bio</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="transition-transform duration-500 group-hover:translate-x-1.5" aria-hidden="true">
+              <path d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="surface-card-warm p-[clamp(1.5rem,2.5vw,2rem)]" data-reveal>
+          <span class="eyebrow text-gold-400">A Methodology, Not a Signal Service</span>
+          <p class="mt-4 text-sm leading-relaxed text-paper/75">
+            Money Door doesn't sell indicators or one-off signals. The PR, PC, EPR, EPC, GPR and
+            GPC framework taught across MDC2 and MDC3 is one decision-making process, refined over
+            18+ years and taught the same way to every student — so what you learn keeps working
+            after the course ends, not just while someone else is calling the trades.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {/* Certificate wall. The disclaimer directly under the heading is not
+      optional dressing — a grid of prop-firm certificates without it reads as
+      an implied promise of student outcomes. */}
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
+      <div data-reveal>
+        <SectionHeading
+          eyebrow="Verified Credentials"
+          index="02"
+          title="Prop Firm Certificates"
+          align="left"
+        />
+        <div class="mt-8 flex max-w-3xl flex-col gap-4">
+          <p class="text-base leading-relaxed text-paper/75">
+            Evaluation passes and funded-account certificates issued to our Chief Trainer by
+            FundingPips and NYS. Each carries a QR code you can scan to verify it directly with
+            the issuing firm — we'd rather you check than take our word for it.
+          </p>
+          <div class="surface-card flex items-start gap-3 p-[clamp(1rem,2vw,1.25rem)]">
+            <Icon name="shield-check" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
+            <p class="text-sm leading-relaxed text-paper/70">
+              <span class="font-semibold text-paper">These are one trader's personal results,
+              not student outcomes.</span>{" "}
+              They are shown to evidence the Chief Trainer's own experience with prop-firm
+              evaluations — the thing MDC3 prepares students for. They are not typical, not a
+              promise of similar results, and not a forecast. Most candidates fail prop firm
+              evaluations. Trading involves substantial risk of loss.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <CertificateGallery certs={certs} />
+    </Container>
+  </section>
+
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading
+        eyebrow="The Path"
+        index="03"
+        title="2,500+ Students, One Structured Path"
+        align="left"
+      />
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] lg:grid-cols-3" data-reveal-stagger>
+        {
+          programs.map((p) => (
+            <a
+              href={`/courses/${p.data.code.toLowerCase()}/`}
+              class="surface-card-warm card-lift group flex flex-col gap-3 p-[clamp(1.5rem,2.2vw,2rem)]"
+            >
+              <span class="section-index text-gold-300">{p.data.code}</span>
+              <h3 class="font-display text-[clamp(1.25rem,1rem+0.9vw,1.6rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                {p.data.name}
+              </h3>
+              <p class="text-sm leading-relaxed text-paper/65">{p.data.tagline}</p>
+              <span class="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-gold-400">
+                {p.data.duration}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col gap-8">
+      <RiskDisclaimer variant="full" />
+      <div class="flex flex-col items-center gap-4 text-center" data-reveal>
+        <h2 class="font-display text-[clamp(1.75rem,1.4rem+1.5vw,2.5rem)] font-medium text-paper">
+          Start building your own track record
+        </h2>
+        <p class="max-w-lg text-base text-paper/70">
+          MDC1 is free and takes one week — the same starting point every one of our 2,500+
+          students began at.
+        </p>
+        <Button href="/courses/mdc1/" arrow>Start with MDC1 (Free)</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

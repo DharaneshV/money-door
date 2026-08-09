@@ -1,0 +1,26 @@
+---
+// Named blocks of curriculum topics, rendered as a card grid. Shared across
+// all three MDC course pages — same shape, same rendering, only the data differs.
+interface Props {
+  sections: { title: string; items: string[] }[];
+}
+const { sections } = Astro.props;
+---
+
+<div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2" data-reveal-stagger>
+  {
+    sections.map((s) => (
+      <div class="surface-card p-[clamp(1.5rem,2.5vw,2rem)]">
+        <h3 class="font-heading text-base font-bold text-paper">{s.title}</h3>
+        <ul class="mt-4 flex flex-col gap-2.5">
+          {s.items.map((item) => (
+            <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/70">
+              <span class="mt-[0.55rem] h-1 w-1 flex-none rounded-full bg-gold-500" aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>

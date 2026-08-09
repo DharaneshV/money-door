@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Container from "../ui/Container.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
 import SpecList from "../ui/SpecList.astro";
 import Pill from "../ui/Pill.astro";
 import Button from "../ui/Button.astro";
@@ -8,6 +9,26 @@ import Button from "../ui/Button.astro";
 // Segmented plan-selector, borrowed in form from fundingpips.com and applied
 // to the three MDC programs. All copy comes from the `programs` content
 // collection — nothing is hardcoded here.
+//
+// This is the old /courses/ page's core UI. That page was folded into
+// /what-we-teach/, so the selector now carries its own heading rather than
+// relying on a PageHero above it.
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  index?: string;
+  /** Background tier, so the host page can keep its section alternation. */
+  surface?: "ink" | "ink-raised" | "gold";
+}
+const {
+  eyebrow,
+  title,
+  subtitle,
+  index,
+  surface = "ink",
+} = Astro.props;
+
 const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
 
 const specsFor = (d: (typeof programs)[number]["data"]) =>
@@ -20,8 +41,9 @@ const specsFor = (d: (typeof programs)[number]["data"]) =>
   ].filter(Boolean) as { icon: "wallet" | "clock" | "layers" | "users" | "award"; label: string; value: string }[];
 ---
 
-<section class="surface-ink py-section">
+<section class:list={[`surface-${surface}`, "py-section"]}>
   <Container class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+    {title && <SectionHeading eyebrow={eyebrow} index={index} title={title} subtitle={subtitle} align="left" />}
     <div class="program-tabs" data-tabs>
       {/* Hidden entirely without JS, so the tablist never advertises a widget
           that can't work — the panels below simply render stacked instead. */}

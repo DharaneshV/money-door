@@ -50,130 +50,151 @@ const statesJson = JSON.stringify(statesByCountry);
       </label>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      {/* placeholder=" " is load-bearing: the floating label uses
-          :not(:placeholder-shown) to detect a filled field without JS. */}
-      <div class="field-group">
-        <input type="text" id="rf-name" name="fullName" autocomplete="name" required
-          class="field peer" placeholder=" " />
-        <label class="field-label" for="rf-name">Full name *</label>
-        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
-      </div>
+    {/* Step 1 — who you are.
+        Labels sit above their field rather than floating inside it: with eight
+        controls, a floating label leaves every empty field looking identical
+        and the form reads as a wall of grey boxes. */}
+    <fieldset class="form-step">
+      <legend class="form-step__legend">
+        <span class="form-step__num">01</span>
+        Your details
+      </legend>
 
-      <div class="field-group">
-        <input type="email" id="rf-email" name="email" autocomplete="email" required
-          class="field peer" placeholder=" " />
-        <label class="field-label" for="rf-email">Email *</label>
-        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
-      </div>
-    </div>
+      <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+        <div class="field-row">
+          <label class="field-label" for="rf-name">Full name <span class="field-req">*</span></label>
+          <input type="text" id="rf-name" name="fullName" autocomplete="name" required
+            class="field" placeholder="Your full name" />
+          <span class="field-error hidden"></span>
+        </div>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div class="field-group">
-        <input type="tel" id="rf-phone" name="phone" autocomplete="tel" required
-          class="field peer" placeholder=" " />
-        <label class="field-label" for="rf-phone">Phone / WhatsApp *</label>
-        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
-      </div>
+        <div class="field-row">
+          <label class="field-label" for="rf-email">Email <span class="field-req">*</span></label>
+          <input type="email" id="rf-email" name="email" autocomplete="email" required
+            class="field" placeholder="you@example.com" />
+          <span class="field-error hidden"></span>
+        </div>
 
-      {/* Country — custom listbox over a real <select>. */}
-      <div>
-        <span class="mb-1.5 block text-xs font-medium uppercase tracking-[0.14em] text-paper/45">
-          Country *
+        <div class="field-row sm:col-span-2">
+          <label class="field-label" for="rf-phone">
+            Phone / WhatsApp <span class="field-req">*</span>
+          </label>
+          <input type="tel" id="rf-phone" name="phone" autocomplete="tel" required
+            class="field" placeholder="+91 XXXXX XXXXX" />
+          <span class="field-hint">We'll use this to reach you about your program.</span>
+          <span class="field-error hidden"></span>
+        </div>
+      </div>
+    </fieldset>
+
+    {/* Step 2 — where you are. Drives session-time suggestions, so it's framed
+        as useful rather than as bureaucratic data collection. */}
+    <fieldset class="form-step">
+      <legend class="form-step__legend">
+        <span class="form-step__num">02</span>
+        Where you're based
+      </legend>
+
+      <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+        {/* Country — custom listbox over a real <select>. */}
+        <div class="field-row">
+          <label class="field-label" for="register-country">
+            Country <span class="field-req">*</span>
+          </label>
+          <div class="select-shell" data-select data-searchable="true">
+            <select class="select-native field" id="register-country" name="country" required>
+              <option value="">Select your country</option>
+              <optgroup label="Most common">
+                {priority.map((c) => <option value={c.code}>{c.name}</option>)}
+              </optgroup>
+              <optgroup label="All countries">
+                {rest.map((c) => <option value={c.code}>{c.name}</option>)}
+              </optgroup>
+            </select>
+            <button type="button" class="select-button field" data-placeholder="true"
+              aria-haspopup="listbox" aria-expanded="false">
+              <span data-select-label>Select your country</span>
+              <svg class="select-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <div class="select-menu" role="listbox" tabindex="-1"></div>
+          </div>
+          <span class="field-error hidden"></span>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="register-state">
+            State / Region <span class="field-req">*</span>
+          </label>
+          {/* Two controls, one shown at a time: the listbox for countries with a
+              known subdivision list, a text input for the rest. Swapping to text
+              keeps the real answer instead of discarding it as "Other". */}
+          <div class="select-shell" data-select data-searchable="true" id="register-state-shell">
+            <select class="select-native field" id="register-state" name="state" required disabled>
+              <option value="">Select a country first</option>
+            </select>
+            <button type="button" class="select-button field" data-placeholder="true"
+              aria-haspopup="listbox" aria-expanded="false" disabled>
+              <span data-select-label>Select a country first</span>
+              <svg class="select-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <div class="select-menu" role="listbox" tabindex="-1"></div>
+          </div>
+          <div class="hidden" id="register-state-text-group">
+            <input type="text" id="rf-state-text" name="stateText" class="field"
+              placeholder="Your state or region" />
+          </div>
+          <span class="field-error hidden"></span>
+        </div>
+
+        <div class="field-row sm:col-span-2">
+          <label class="field-label" for="rf-city">City <span class="field-req">*</span></label>
+          <input type="text" id="rf-city" name="city" autocomplete="address-level2" required
+            class="field" placeholder="Your city" />
+          <span class="field-error hidden"></span>
+        </div>
+      </div>
+    </fieldset>
+
+    {/* Consent — visually separated so it reads as a deliberate choice rather
+        than another field to tab past. Required under the DPDP Act. */}
+    <div class="consent-box">
+      <label class="flex items-start gap-3 text-sm">
+        <input type="checkbox" name="consent" value="yes" required class="checkbox mt-0.5" />
+        {/* Explicit {" "} around the link: Astro collapses the surrounding
+            newlines, which otherwise renders "thePrivacy Policyand". */}
+        <span class="leading-relaxed text-paper/70">
+          I agree that Money Door FX Academy may store the details above and contact me about its
+          programs. I've read the{" "}
+          <a href="/privacy-policy/" class="text-gold-400 underline underline-offset-2 hover:text-gold-300">
+            Privacy Policy
+          </a>{" "}
+          and understand I can ask for my data to be deleted at any time.
+          <span class="field-req">*</span>
         </span>
-        <div class="select-shell" data-select data-searchable="true">
-          <select class="select-native field" id="register-country" name="country" required>
-            <option value="">Select your country</option>
-            <optgroup label="Most common">
-              {priority.map((c) => <option value={c.code}>{c.name}</option>)}
-            </optgroup>
-            <optgroup label="All countries">
-              {rest.map((c) => <option value={c.code}>{c.name}</option>)}
-            </optgroup>
-          </select>
-          <button type="button" class="select-button field" data-placeholder="true"
-            aria-haspopup="listbox" aria-expanded="false">
-            <span data-select-label>Select your country</span>
-            <svg class="select-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </button>
-          <div class="select-menu" role="listbox" tabindex="-1"></div>
-        </div>
-        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
-      </div>
+      </label>
+      <span id="consent-error" class="field-error hidden"></span>
     </div>
-
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div>
-        <span class="mb-1.5 block text-xs font-medium uppercase tracking-[0.14em] text-paper/45">
-          State / Region *
-        </span>
-        {/* Two controls, one shown at a time: the listbox for countries with a
-            known subdivision list, a text input for the rest. Swapping to text
-            keeps the real answer instead of discarding it as "Other". */}
-        <div class="select-shell" data-select data-searchable="true" id="register-state-shell">
-          <select class="select-native field" id="register-state" name="state" required disabled>
-            <option value="">Select a country first</option>
-          </select>
-          <button type="button" class="select-button field" data-placeholder="true"
-            aria-haspopup="listbox" aria-expanded="false" disabled>
-            <span data-select-label>Select a country first</span>
-            <svg class="select-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </button>
-          <div class="select-menu" role="listbox" tabindex="-1"></div>
-        </div>
-        <div class="field-group hidden" id="register-state-text-group">
-          <input type="text" id="rf-state-text" name="stateText" class="field peer" placeholder=" " />
-          <label class="field-label" for="rf-state-text">State / Region *</label>
-        </div>
-        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
-      </div>
-
-      <div class="field-group">
-        <input type="text" id="rf-city" name="city" autocomplete="address-level2" required
-          class="field peer" placeholder=" " />
-        <label class="field-label" for="rf-city">City *</label>
-        <span class="field-error hidden pt-1.5 text-xs text-market-down"></span>
-      </div>
-    </div>
-
-    <label class="mt-2 flex items-start gap-3 text-sm">
-      <input type="checkbox" name="consent" value="yes" required class="checkbox mt-0.5" />
-      {/* Explicit {" "} around the link: Astro collapses the surrounding
-          newlines, which otherwise renders "thePrivacy Policyand". */}
-      <span class="leading-relaxed text-paper/70">
-        I agree that Money Door FX Academy may store the details above and contact me about its
-        programs. I've read the{" "}
-        <a href="/privacy-policy/" class="text-gold-400 underline underline-offset-2 hover:text-gold-300">
-          Privacy Policy
-        </a>{" "}
-        and understand I can ask for my data to be deleted at any time.
-        <span class="text-gold-500">*</span>
-      </span>
-    </label>
-    <span id="consent-error" class="field-error hidden text-xs text-market-down"></span>
 
     {turnstileSiteKey && (
-      <div class="cf-turnstile mt-1" data-sitekey={turnstileSiteKey} data-theme="dark"></div>
+      <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="dark"></div>
     )}
 
     <p id="register-error" class="hidden text-sm leading-relaxed text-market-down" role="alert"></p>
 
-    <div class="mt-2">
-      <Button id="register-submit" type="submit" size="lg" class="w-full sm:w-fit">
-        <span id="register-submit-label">Create my account</span>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+      <Button id="register-submit" type="submit" size="lg" class="w-full sm:w-auto" arrow>
+        <span id="register-submit-label">Join Now</span>
       </Button>
+      <p class="text-xs leading-relaxed text-paper/40">
+        Free to join. No trading account is opened and no payment is taken.
+      </p>
     </div>
-
-    <p class="text-xs leading-relaxed text-paper/40">
-      Registration collects your details so we can contact you about programs. It does not open a
-      trading account and does not involve any payment.
-    </p>
   </form>
 </div>
 
@@ -426,10 +447,9 @@ const statesJson = JSON.stringify(statesByCountry);
         return;
       }
       field.setAttribute("aria-invalid", "true");
-      // Walk up to the wrapper that holds this field's error slot.
-      const holder = field.closest(".field-group, .select-shell, div")?.parentElement
-        ?.querySelector(".field-error")
-        ?? field.closest("div")?.querySelector(".field-error");
+      // Every control now lives in a .field-row that owns its own error slot,
+      // so this is a single hop rather than the previous parentElement walk.
+      const holder = field.closest(".field-row")?.querySelector(".field-error");
       if (holder) {
         holder.textContent = message;
         holder.classList.remove("hidden");
@@ -442,7 +462,7 @@ const statesJson = JSON.stringify(statesByCountry);
     function setBusy(busy) {
       submit.disabled = busy;
       submit.setAttribute("aria-busy", String(busy));
-      submitLabel.textContent = busy ? "Creating your account…" : "Create my account";
+      submitLabel.textContent = busy ? "Joining…" : "Join Now";
     }
 
     /* ---- Submit --------------------------------------------------------- */

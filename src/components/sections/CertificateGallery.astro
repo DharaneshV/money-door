@@ -1,0 +1,220 @@
+---
+import Container from "../ui/Container.astro";
+
+// Certificate wall for /our-achievements.
+//
+// COMPLIANCE — read before editing:
+//  • These are third-party-issued, QR-verifiable certificates belonging to the
+//    Chief Trainer personally. They are NOT student results and NOT a forecast.
+//    The disclaimer rendered below is not decoration — it is the thing that
+//    keeps a wall of dollar figures from reading as a performance promise.
+//  • Amounts stay INSIDE the images. Never transcribe a payout, ROI or win
+//    rate into HTML text here: text is indexable and would turn a verifiable
+//    credential into a marketing claim about returns.
+//  • The client's source folder also contained a "Performance Highlights"
+//    infographic (win rates) and copy-trading cards projecting "100% ROI in
+//    1-3 years". Both were deliberately excluded (client decision, 2026-08-09)
+//    and must not be added back without legal review.
+interface Cert {
+  src: string;
+  issuer: string;
+  width: number;
+  height: number;
+}
+interface Props {
+  certs: Cert[];
+}
+const { certs } = Astro.props;
+
+const issuerLabel: Record<string, string> = {
+  fundingpips: "FundingPips",
+  nys: "NYS (New York Session)",
+};
+---
+
+<Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
+  <div
+    class="grid grid-cols-2 gap-[clamp(0.75rem,1.6vw,1.25rem)] sm:grid-cols-3 lg:grid-cols-4"
+    data-reveal-stagger
+  >
+    {
+      certs.map((c, i) => (
+        <button
+          type="button"
+          class="cert-tile group relative overflow-hidden rounded-[var(--radius-card)] border border-paper/10 bg-ink-900 transition-colors duration-500 hover:border-gold-500/50"
+          data-cert-index={i}
+          aria-label={`View certificate ${i + 1} of ${certs.length} — ${issuerLabel[c.issuer] ?? c.issuer}`}
+        >
+          <img
+            src={c.src}
+            width={c.width}
+            height={c.height}
+            /* Amounts and dates live in the image itself; the alt text
+               deliberately describes the document rather than restating any
+               figure as indexable text. */
+            alt={`${issuerLabel[c.issuer] ?? c.issuer} certificate issued to Venkatesh M`}
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]"
+          />
+          <span class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/90 to-transparent p-3 text-left">
+            <span class="eyebrow text-[0.55rem] text-gold-400">
+              {issuerLabel[c.issuer] ?? c.issuer}
+            </span>
+          </span>
+        </button>
+      ))
+    }
+  </div>
+</Container>
+
+{/* Lightbox. Plain dialog-style overlay rather than a library — one image,
+    one close button, keyboard and backdrop dismiss. */}
+<div id="cert-lightbox" class="cert-lightbox" hidden>
+  <button type="button" class="cert-lightbox__backdrop" data-cert-close aria-label="Close"></button>
+  <div class="cert-lightbox__inner" role="dialog" aria-modal="true" aria-label="Certificate">
+    <img id="cert-lightbox-img" src="" alt="" />
+    <div class="cert-lightbox__bar">
+      <span id="cert-lightbox-caption" class="eyebrow text-gold-400"></span>
+      <button type="button" class="cert-lightbox__close" data-cert-close aria-label="Close certificate">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cert-tile {
+    display: block;
+    cursor: zoom-in;
+    padding: 0;
+    line-height: 0;
+  }
+  .cert-tile:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 3px;
+  }
+
+  .cert-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+  .cert-lightbox[hidden] {
+    display: none;
+  }
+  .cert-lightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    padding: 0;
+    background: rgb(0 0 0 / 0.85);
+    backdrop-filter: blur(6px);
+    cursor: zoom-out;
+  }
+  .cert-lightbox__inner {
+    position: relative;
+    display: flex;
+    max-height: 100%;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .cert-lightbox__inner img {
+    max-height: min(80vh, 900px);
+    width: auto;
+    max-width: 100%;
+    border-radius: var(--radius-card);
+    box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.9);
+  }
+  .cert-lightbox__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .cert-lightbox__close {
+    display: inline-flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-paper) 25%, transparent);
+    color: var(--color-paper);
+    transition: background-color 0.25s ease;
+  }
+  .cert-lightbox__close:hover {
+    background: color-mix(in srgb, var(--color-paper) 12%, transparent);
+  }
+</style>
+
+<script define:vars={{ certs, issuerLabel }}>
+  (function () {
+    function initCertGallery() {
+      var box = document.getElementById("cert-lightbox");
+      if (!box || box.dataset.bound) return;
+      box.dataset.bound = "1";
+
+      // Escape the host section's stacking context. `.surface-gold` (and the
+      // other surface tiers) set `isolation: isolate`, which scopes this
+      // overlay's z-index INSIDE that section — the sticky header then paints
+      // over the lightbox and eats clicks near the top of the screen. Moving
+      // the node to <body> puts it back in the root stacking context, where
+      // its z-index actually outranks the header.
+      if (box.parentElement !== document.body) document.body.appendChild(box);
+
+      var img = document.getElementById("cert-lightbox-img");
+      var caption = document.getElementById("cert-lightbox-caption");
+      var lastFocused = null;
+
+      function open(i) {
+        var c = certs[i];
+        if (!c) return;
+        lastFocused = document.activeElement;
+        img.src = c.src;
+        img.alt = (issuerLabel[c.issuer] || c.issuer) + " certificate issued to Venkatesh M";
+        caption.textContent = issuerLabel[c.issuer] || c.issuer;
+        box.hidden = false;
+        // Scroll lock while the overlay is up.
+        document.documentElement.style.overflow = "hidden";
+        box.querySelector(".cert-lightbox__close").focus();
+      }
+
+      function close() {
+        box.hidden = true;
+        document.documentElement.style.overflow = "";
+        img.src = "";
+        if (lastFocused && lastFocused.focus) lastFocused.focus();
+      }
+
+      document.addEventListener("click", function (e) {
+        var tile = e.target.closest && e.target.closest("[data-cert-index]");
+        if (tile) {
+          open(Number(tile.dataset.certIndex));
+          return;
+        }
+        if (e.target.closest && e.target.closest("[data-cert-close]")) close();
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !box.hidden) close();
+      });
+
+      // ClientRouter swaps the DOM without a reload — make sure the scroll
+      // lock can't survive a navigation while the overlay is open.
+      document.addEventListener("astro:before-swap", function () {
+        document.documentElement.style.overflow = "";
+      });
+    }
+
+    initCertGallery();
+    document.addEventListener("astro:page-load", initCertGallery);
+  })();
+</script>

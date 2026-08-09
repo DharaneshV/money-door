@@ -1,15 +1,20 @@
 ---
 import { getEntry, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/ui/PageHero.astro";
 import Container from "../../components/ui/Container.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
 import Button from "../../components/ui/Button.astro";
 import Icon from "../../components/ui/Icon.astro";
 import RiskDisclaimer from "../../components/ui/RiskDisclaimer.astro";
+import CurriculumGrid from "../../components/sections/CurriculumGrid.astro";
+import IncludedList from "../../components/sections/IncludedList.astro";
 
 const program = await getEntry("programs", "mdc1");
 if (!program) throw new Error("MDC1 program entry not found");
 const { Content } = await render(program);
-const { name, tagline, duration, priceLabel, idealFor, highlights, outcome } = program.data;
+const { name, tagline, duration, priceLabel, idealForList, highlights, outcome, curriculum, included } =
+  program.data;
 
 // Offers/price is deliberately omitted: schema.org expects ISO-4217 currency codes
 // and USDT is not one, so declaring it would produce invalid markup.
@@ -32,65 +37,122 @@ const courseSchema = {
   description={`MDC1 — ${name}: a free, ${duration.toLowerCase()} introduction to Forex & Gold trading from Money Door FX Academy. ${tagline}.`}
   schema={courseSchema}
 >
-  <section class="border-b border-paper/12 bg-ink-950 py-section">
-    <Container class="flex flex-col items-center gap-4 text-center" data-reveal>
-      <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">MDC1</span>
-      <h1 class="max-w-2xl font-heading text-4xl font-bold sm:text-5xl">{name}</h1>
-      <p class="max-w-xl text-lg text-paper/70">{tagline}</p>
-      <div class="mt-2 flex items-baseline gap-2">
-        <span class="font-heading text-4xl font-bold text-gold-400">{priceLabel}</span>
+  <PageHero eyebrow="MDC1 · Free · 1 Week" title={name} subtitle={tagline} />
+
+  <section class="surface-gold py-[clamp(2.5rem,5vw,4rem)]">
+    <Container
+      width="wide"
+      class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left"
+      data-reveal
+    >
+      <div class="flex items-baseline gap-3">
+        <span class="font-display text-[clamp(2rem,1.6rem+1.4vw,2.75rem)] font-medium leading-none text-gold-400">
+          {priceLabel}
+        </span>
         <span class="text-paper/50">/ {duration}</span>
       </div>
-      <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-        <Button href="/join/" size="lg" arrow>Book Free Consultation</Button>
-        <Button href="/courses/" size="lg" variant="secondary">Compare All Programs</Button>
-      </div>
-    </Container>
-  </section>
-
-  <section class="surface-ink-raised py-section">
-    <Container class="grid gap-10 lg:grid-cols-3">
-      <div class="lg:col-span-2" data-reveal>
-        <h2 class="font-heading text-2xl font-bold text-paper">About This Program</h2>
-        <div class="prose-content mt-4 flex flex-col gap-4 text-base leading-relaxed text-paper/70">
-          <Content />
-        </div>
-        <div class="mt-8  border border-paper/12 bg-ink-950 p-6">
-          <p class="text-sm font-semibold text-paper">Ideal for</p>
-          <p class="mt-1 text-sm text-paper/60">{idealFor}</p>
-        </div>
-      </div>
-      <div class="flex flex-col gap-4" data-reveal>
-        <div class=" border border-paper/12 bg-ink-950 p-6">
-          <h3 class="font-heading text-sm font-semibold uppercase tracking-wide text-gold-500">
-            What You'll Learn
-          </h3>
-          <ul class="mt-4 flex flex-col gap-3">
-            {
-              highlights.map((h: string) => (
-                <li class="flex items-start gap-2 text-sm text-paper/80">
-                  <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
-                  <span>{h}</span>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-        <div class=" border border-gold-500/30 bg-gold-500/5 p-6">
-          <h3 class="font-heading text-sm font-semibold uppercase tracking-wide text-gold-500">Outcome</h3>
-          <p class="mt-3 text-sm leading-relaxed text-paper/75">{outcome}</p>
-        </div>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <Button href="/join/" arrow>Start Free</Button>
+        <Button href="/what-we-teach/" variant="secondary">Compare All Programs</Button>
       </div>
     </Container>
   </section>
 
   <section class="surface-ink py-section">
-    <Container class="flex flex-col gap-8">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading eyebrow="About This Program" index="01" title="What MDC1 Covers" align="left" />
+          <div class="prose-content mt-8 flex max-w-xl flex-col gap-4 text-base leading-relaxed text-paper/70">
+            <Content />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-6" data-reveal>
+          <div class="surface-card p-[clamp(1.5rem,2.5vw,2rem)]">
+            <h3 class="eyebrow text-gold-500">What You'll Learn</h3>
+            <ul class="mt-4 flex flex-col gap-3">
+              {
+                highlights.map((h: string) => (
+                  <li class="flex items-start gap-2 text-sm text-paper/80">
+                    <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+                    <span>{h}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="surface-card-warm p-[clamp(1.5rem,2.5vw,2rem)]">
+            <h3 class="eyebrow text-gold-400">Outcome</h3>
+            <p class="mt-3 text-sm leading-relaxed text-paper/80">{outcome}</p>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {
+    curriculum && (
+      <section class="surface-gold py-section">
+        <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+          <SectionHeading
+            eyebrow="Curriculum"
+            index="02"
+            title="What You'll Learn, Week by Week"
+            align="left"
+          />
+          <CurriculumGrid sections={curriculum} />
+        </Container>
+      </section>
+    )
+  }
+
+  <section class="surface-ink py-section">
+    <Container width="wide" class="grid gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-[1fr_1fr]">
+      {
+        included && (
+          <div data-reveal>
+            <SectionHeading
+              eyebrow="Included"
+              index="03"
+              title="Every MDC1 Student Receives"
+              align="left"
+            />
+            <div class="mt-8">
+              <IncludedList items={included} />
+            </div>
+          </div>
+        )
+      }
+
+      {
+        idealForList && (
+          <div data-reveal>
+            <span class="eyebrow text-gold-500">Ideal For</span>
+            <ul class="mt-6 flex flex-col gap-3">
+              {idealForList.map((label) => (
+                <li class="flex items-start gap-2.5 text-base text-paper/80">
+                  <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
+                  <span>{label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </Container>
+  </section>
+
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col gap-8">
       <RiskDisclaimer />
-      <div class="flex flex-col items-center gap-4 text-center">
-        <h2 class="font-heading text-2xl font-bold sm:text-3xl">Ready for the next step?</h2>
+      <div class="flex flex-col items-center gap-4 text-center" data-reveal>
+        <h2 class="font-display text-[clamp(1.75rem,1.4rem+1.5vw,2.5rem)] font-medium text-paper">
+          Ready for the next step?
+        </h2>
         <p class="max-w-lg text-base text-paper/70">
-          After MDC1, most students move on to MDC2 — Professional Trader to learn the full PR &amp; PC methodology.
+          After MDC1, most students move on to MDC2 — Professional Trader to learn the full Money
+          Door strategy framework.
         </p>
         <Button href="/courses/mdc2/" arrow>View MDC2 — Professional Trader</Button>
       </div>
