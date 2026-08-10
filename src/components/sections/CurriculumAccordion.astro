@@ -1,0 +1,182 @@
+---
+import Icon from "../ui/Icon.astro";
+
+// Curriculum topics as expandable editorial rows, grouped by theme.
+//
+// Replaces a flat card grid: equally-weighted cards read as a wall and
+// forced the visitor to scan ~150 bullet points with no hierarchy. Collapsed
+// rows show the topic and its scope; the detail is one click away, and the
+// group headings give the list a shape.
+//
+// Rows carry an optional `href` so a topic that has its own page links to it.
+// That is also what keeps /gold-trading/, /forex-trading/ and /copy-trading/
+// reachable now that they're out of the footer — an orphaned page is one no
+// visitor can navigate to and one search engines steadily devalue.
+export interface Topic {
+  n: string;
+  title: string;
+  icon: Parameters<typeof Icon>[0]["name"];
+  items: string[];
+  href?: string;
+}
+export interface Group {
+  label: string;
+  blurb: string;
+  topics: Topic[];
+}
+
+interface Props {
+  groups: Group[];
+}
+const { groups } = Astro.props;
+---
+
+<div class="flex flex-col gap-[clamp(3rem,6vw,5rem)]" data-curriculum>
+  {
+    groups.map((group) => (
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,5rem)] gap-y-6 lg:grid-cols-[0.8fr_1.2fr]">
+        {/* Sticky on desktop so the theme stays visible while its topics are
+            being read; static on mobile where there's no room for it. */}
+        <div class="lg:sticky lg:top-32" data-reveal>
+          <h3 class="font-display text-[clamp(1.5rem,1.2rem+1.4vw,2.25rem)] font-medium leading-tight text-paper">
+            {group.label}
+          </h3>
+          <p class="mt-3 max-w-sm text-sm leading-relaxed text-paper/55">{group.blurb}</p>
+        </div>
+
+        <div class="flex flex-col" data-reveal>
+          {group.topics.map((t) => (
+            <div class="curriculum-row">
+              <button
+                type="button"
+                class="curriculum-toggle group"
+                aria-expanded="false"
+                aria-controls={`curriculum-panel-${t.n}`}
+              >
+                <span class="section-index flex-none text-gold-500">{t.n}</span>
+                <span class="flex flex-1 items-center gap-3">
+                  <Icon name={t.icon} class="h-5 w-5 flex-none text-gold-500/70" />
+                  <span class="font-display text-[clamp(1.05rem,0.9rem+0.7vw,1.4rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                    {t.title}
+                  </span>
+                </span>
+                {/* No item count here on purpose: a number next to every row
+                    frames the curriculum as a finite list of N things rather
+                    than as depth, and it goes stale the moment a topic grows. */}
+                <svg
+                  class="accordion-chevron h-4 w-4 flex-none text-gold-500"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </button>
+
+              <div id={`curriculum-panel-${t.n}`} class="accordion-panel">
+                <div>
+                  <div class="pb-6 pl-[calc(2.5rem+0.75rem)] pr-2">
+                    <ul class="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                      {t.items.map((item) => (
+                        <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/65">
+                          <span
+                            class="mt-[0.55rem] h-1 w-1 flex-none rounded-full bg-gold-500/70"
+                            aria-hidden="true"
+                          />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {t.href && (
+                      <a
+                        href={t.href}
+                        class="group/link mt-5 inline-flex items-center gap-2 font-heading text-xs font-semibold uppercase tracking-[0.16em] text-gold-400 transition-colors hover:text-gold-300"
+                      >
+                        <span class="link-underline">Read more</span>
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          class="transition-transform duration-500 group-hover/link:translate-x-1"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .curriculum-row {
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 12%, transparent);
+  }
+  .curriculum-row:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-paper) 12%, transparent);
+  }
+  .curriculum-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.75rem;
+    padding: clamp(1rem, 2vw, 1.4rem) 0.5rem clamp(1rem, 2vw, 1.4rem) 0;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.4s ease;
+  }
+  .curriculum-toggle:hover {
+    background: color-mix(in srgb, var(--color-gold-500) 5%, transparent);
+  }
+  .curriculum-toggle:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: -2px;
+  }
+  .curriculum-toggle[aria-expanded="true"] .accordion-chevron {
+    transform: rotate(45deg);
+  }
+  /* The index column is 2.5rem wide; keep it fixed so every row's title
+     starts on the same vertical line regardless of index digits. */
+  .curriculum-toggle > .section-index {
+    width: 2.5rem;
+  }
+</style>
+
+<script>
+  // Same open/close mechanism as the FAQ accordion (grid-template-rows, the
+  // one reliable way to animate to auto height) — but scoped to this
+  // component so the two can't fight over each other's markup.
+  function initCurriculum() {
+    document.querySelectorAll("[data-curriculum]").forEach((root) => {
+      if (root.hasAttribute("data-curriculum-bound")) return;
+      root.setAttribute("data-curriculum-bound", "1");
+
+      root.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const btn = target.closest(".curriculum-toggle");
+        if (!btn) return;
+        const panel = btn.parentElement?.querySelector(".accordion-panel");
+        const expanded = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!expanded));
+        panel?.classList.toggle("is-open", !expanded);
+      });
+    });
+  }
+  initCurriculum();
+  document.addEventListener("astro:page-load", initCurriculum);
+</script>

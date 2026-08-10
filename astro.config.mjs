@@ -30,9 +30,6 @@ export default defineConfig({
   // declaring both '/contact' and '/contact/' collides on the same route.
   redirects: {
     '/contact': { status: 301, destination: '/join/' },
-    // The Courses index was folded into What We Teach. The individual
-    // /courses/mdcN/ pages keep their own URLs; only this index moved.
-    '/courses': { status: 301, destination: '/what-we-teach/' },
   },
 
   vite: {

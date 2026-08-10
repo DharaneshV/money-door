@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/ui/PageHero.astro";
+import Container from "../../components/ui/Container.astro";
+import Button from "../../components/ui/Button.astro";
+import PartnerBands from "../../components/sections/PartnerBands.astro";
+import PartnerCaveats from "../../components/sections/PartnerCaveats.astro";
+import { partners, partnerGroups } from "../../data/site";
+
+// One page per partner category — /partnerships/cfd-brokers/ etc. — so the
+// Trading Partners nav dropdown can jump straight to a single category while
+// /partnerships/ still lists everything.
+export function getStaticPaths() {
+  return partnerGroups.map((g) => ({
+    params: { group: g.slug },
+    props: {
+      label: g.label,
+      blurb: g.blurb,
+      items: partners.filter((p) => p.group === g.label),
+    },
+  }));
+}
+
+const { label, blurb, items } = Astro.props;
+
+// Sibling categories, for cross-navigation at the foot of the page.
+const others = partnerGroups.filter((g) => g.label !== label);
+---
+
+<BaseLayout
+  title={`${label} — Trading Partners`}
+  description={`${blurb} Every link carries full referral disclosure — verify any firm's regulatory standing in your own country before you deposit.`}
+>
+  <PageHero eyebrow="Trading Partners" title={label} subtitle={blurb} />
+
+  {/* Headings are off: the page IS one category, so a heading above the bands
+      would just repeat the H1. */}
+  <PartnerBands groups={[{ label, items }]} showHeadings={false} />
+
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-8">
+      <span class="eyebrow text-gold-500">Other categories</span>
+      <div class="grid gap-[clamp(1rem,2vw,1.5rem)] sm:grid-cols-2">
+        {
+          others.map((g) => (
+            <a
+              href={`/partnerships/${g.slug}/`}
+              class="surface-card-warm card-lift group flex flex-col gap-2 p-[clamp(1.25rem,2.2vw,1.75rem)]"
+            >
+              <h2 class="font-display text-[clamp(1.2rem,1rem+0.8vw,1.6rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                {g.label}
+              </h2>
+              <p class="text-sm leading-relaxed text-paper/60">{g.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+      <div>
+        <Button href="/partnerships/" variant="secondary" arrow>See all trading partners</Button>
+      </div>
+    </Container>
+  </section>
+
+  <PartnerCaveats />
+</BaseLayout>

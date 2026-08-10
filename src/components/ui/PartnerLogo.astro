@@ -29,6 +29,14 @@ const dir = path.join(process.cwd(), "public", "partners");
 // runtime request will resolve: the static file server serving `public/` is
 // case-sensitive even when the filesystem underneath it isn't, so a mismatched
 // case 404s in the browser despite compiling clean.
+//
+// Separators are normalised too, so a file saved as "Delta Exchange.png" or
+// "delta_exchange.png" still matches the `delta-exchange` slug. Logos arrive
+// named however the partner's media kit had them, and a silent monogram
+// fallback is a hard failure to notice — better to be forgiving here than to
+// require an exact filename nobody documented at the point of saving.
+const normalise = (s: string) => s.toLowerCase().replace(/[\s_]+/g, "-");
+
 let logoSrc: string | null = null;
 let dirEntries: string[] = [];
 try {
@@ -37,10 +45,12 @@ try {
   // public/partners not created yet — every partner falls back to a monogram.
 }
 for (const ext of EXTS) {
-  const wanted = (slug + ext).toLowerCase();
-  const match = dirEntries.find((f) => f.toLowerCase() === wanted);
+  const wanted = normalise(slug + ext);
+  const match = dirEntries.find((f) => normalise(f) === wanted);
   if (match) {
-    logoSrc = `/partners/${match}`;
+    // encodeURI so a filename containing spaces produces a valid URL — an
+    // unencoded space here 404s in the browser.
+    logoSrc = encodeURI(`/partners/${match}`);
     break;
   }
 }

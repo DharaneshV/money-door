@@ -21,8 +21,16 @@ import Button from "../ui/Button.astro";
               {item.label}
             </a>
             {item.children && (
+              /* Drop only children that point at the parent's own href — the
+                 parent link above already covers those. Previously this was a
+                 blind `.slice(1)`, which assumed the first child was always
+                 that duplicate; when Courses' "All Courses" entry was removed
+                 the slice silently ate MDC1 instead, leaving no way to reach it
+                 on mobile. */
               <div class="ml-3 flex flex-col gap-1 border-l border-paper/12 pl-3">
-                {item.children.slice(1).map((child) => (
+                {item.children
+                  .filter((child) => child.href !== item.href)
+                  .map((child) => (
                   <a
                     href={child.href}
                     class="block  px-3 py-2 text-sm text-paper/70 transition-colors hover:text-gold-300"

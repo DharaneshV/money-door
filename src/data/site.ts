@@ -95,23 +95,36 @@ export type NavLink = {
 export const primaryNav: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about/" },
-  // "Courses" is no longer its own tab — What We Teach absorbed it and is now
-  // the dropdown parent the three MDC programs roll down from. The individual
-  // /courses/mdcN/ pages keep their URLs (already indexed, still linked here);
-  // only the /courses/ index was folded in, and it redirects to this page.
   {
-    label: "What We Teach",
-    href: "/what-we-teach/",
+    label: "Courses",
+    href: "/courses/",
+    // No "All Courses" child: the parent label already links to /courses/, so
+    // the first item was a duplicate of the thing being hovered.
     children: [
-      { label: "Full Curriculum", href: "/what-we-teach/", description: "All 16 areas we cover" },
       { label: "MDC1 — Foundation Trader", href: "/courses/mdc1/", description: "Free · 1 week" },
       { label: "MDC2 — Professional Trader", href: "/courses/mdc2/", description: "USDT 300 · 6 months" },
       { label: "MDC3 — Elite Master Trader", href: "/courses/mdc3/", description: "USDT 1,000 · 12 months" },
     ],
   },
+  // Deliberately a sibling of Courses, not a child: Courses is "which program
+  // do I buy", What We Teach is "what's actually in them". Folding the two
+  // together was tried and reverted.
+  { label: "What We Teach", href: "/what-we-teach/" },
   { label: "Daily Analysis", href: "/daily-market-analysis/" },
   { label: "Blog", href: "/blog/" },
-  { label: "Trading Partners", href: "/partnerships/" },
+  // Same shape as Courses: the parent shows every partner, each child filters
+  // to one category. Children are written out rather than derived from
+  // `partnerGroups` because that const is declared further down this file.
+  {
+    label: "Trading Partners",
+    href: "/partnerships/",
+    children: [
+      { label: "All Partners", href: "/partnerships/" },
+      { label: "CFD Brokers", href: "/partnerships/cfd-brokers/", description: "Gold & FX trading accounts" },
+      { label: "Prop Firms", href: "/partnerships/prop-firms/", description: "Funded account evaluations" },
+      { label: "Crypto Exchanges", href: "/partnerships/crypto-exchanges/", description: "Spot & derivatives" },
+    ],
+  },
   { label: "Our Achievements", href: "/our-achievements/" },
 ];
 
@@ -143,13 +156,11 @@ export const footerColumns: { heading: string; links: NavLink[] }[] = [
   {
     heading: "Trading",
     links: [
+      { label: "Courses", href: "/courses/" },
       { label: "What We Teach", href: "/what-we-teach/" },
       { label: "MDC1 — Foundation Trader", href: "/courses/mdc1/" },
       { label: "MDC2 — Professional Trader", href: "/courses/mdc2/" },
       { label: "MDC3 — Elite Master Trader", href: "/courses/mdc3/" },
-      { label: "Gold Trading", href: "/gold-trading/" },
-      { label: "Forex Trading", href: "/forex-trading/" },
-      { label: "Copy Trading", href: "/copy-trading/" },
       { label: "Funded Account Training", href: "/funded-account-training/" },
       { label: "Daily Market Analysis", href: "/daily-market-analysis/" },
       { label: "Economic Calendar", href: "/economic-calendar/" },
@@ -193,6 +204,36 @@ export type PartnerGroup = "CFD Brokers" | "Prop Firms" | "Crypto Exchanges";
 
 /** Display order for the group headings on /partnerships. */
 export const partnerGroupOrder: PartnerGroup[] = ["CFD Brokers", "Prop Firms", "Crypto Exchanges"];
+
+/**
+ * Each group also gets its own page at /partnerships/<slug>/, reachable from
+ * the Trading Partners nav dropdown. /partnerships/ still lists all of them;
+ * these are the filtered views.
+ */
+export const partnerGroups: {
+  label: PartnerGroup;
+  slug: string;
+  blurb: string;
+}[] = [
+  {
+    label: "CFD Brokers",
+    slug: "cfd-brokers",
+    blurb:
+      "Brokers offering Gold, FX majors and other CFD instruments through MT4, MT5 and their own platforms. Where a live trading account is actually opened.",
+  },
+  {
+    label: "Prop Firms",
+    slug: "prop-firms",
+    blurb:
+      "Proprietary trading firms running paid evaluations. Pass one and you trade the firm's capital under its risk rules — the environment our MDC3 funded-account training prepares for.",
+  },
+  {
+    label: "Crypto Exchanges",
+    slug: "crypto-exchanges",
+    blurb:
+      "Exchanges for spot and derivatives trading in digital assets. A different asset class and a different regulatory picture from the Gold and Forex markets our courses teach.",
+  },
+];
 
 export type Partner = {
   name: string;
@@ -273,10 +314,13 @@ export const partners: Partner[] = [
     name: "NYS Markets",
     slug: "nys-markets",
     group: "Prop Firms",
-    category: "Broker",
+    // Was "Broker" while this sat in the broker group; corrected when the
+    // client grouped it under Prop Firms. NYS runs two-step challenges and
+    // issues funded-trader accounts, so the prop-firm label is the accurate one.
+    category: "Funded Account Evaluations",
     blurb:
-      "A broker option students have asked about often enough that we list it here rather than leave people to search unaided. As with every firm on this page, verify its regulatory status in your own jurisdiction before depositing.",
-    pills: ["Gold & FX majors", "Multi-asset", "Verify locally"],
+      "A prop firm running two-step challenges on Gold and the FX majors, with funded accounts issued on a pass. Useful as a third rule set to compare against the others before paying for any challenge.",
+    pills: ["Two-step challenge", "Gold & FX majors", "Verify locally"],
     href: "https://nysmarkets.com/signup?cxd=Moneydoor",
   },
   {

@@ -1,0 +1,39 @@
+---
+import Container from "../ui/Container.astro";
+import RiskDisclaimer from "../ui/RiskDisclaimer.astro";
+
+// The "before you deposit anywhere" caveats. Shared by /partnerships/ and each
+// category page — a visitor who lands on a filtered page from the nav must see
+// the same warnings as one who lands on the full list, so this is deliberately
+// not something the index page owns alone.
+---
+
+<section class="surface-ink-raised py-section">
+  <Container width="wide" class="flex flex-col gap-8" data-reveal>
+    <h2 class="max-w-3xl font-display text-5xl font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+      Before You Sign Up Anywhere
+    </h2>
+    <div class="grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2">
+      {
+        [
+          "We are an education provider. Listing a firm here is not an endorsement of its financial soundness, nor advice that it suits your circumstances.",
+          "Check the firm's regulatory status with your own country's regulator before depositing. Rules on offshore brokers differ sharply by jurisdiction.",
+          "Read the fee schedule and withdrawal terms in full — spreads, commissions, swap charges and payout conditions all affect what you actually keep.",
+          "Never deposit money you cannot afford to lose. Every firm on this page provides access to leveraged products that can lose money rapidly.",
+        ].map((t, i) => (
+          <div class="edit-row group py-[clamp(1.5rem,3vw,2.25rem)]">
+            <div class="flex items-baseline gap-6">
+              <span class="section-index flex-none text-gold-500">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <p class="max-w-md text-sm leading-relaxed text-paper/70 transition-colors duration-500 group-hover:text-paper">
+                {t}
+              </p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <RiskDisclaimer />
+  </Container>
+</section>

@@ -4,6 +4,14 @@ import SectionHeading from "../ui/SectionHeading.astro";
 import StageConnector from "../ui/StageConnector.astro";
 import Pill from "../ui/Pill.astro";
 
+// Section index is a prop, not a constant: the numbers are a homepage device
+// where sections run 01-09 in sequence. On a page that has no such sequence a
+// lone "06" is meaningless, so callers outside the homepage simply omit it.
+interface Props {
+  index?: string;
+}
+const { index } = Astro.props;
+
 // The six original journey steps regrouped into three stages so they can be
 // read as a progression at a glance. No step was dropped — each stage carries
 // two of the original six as its bullets.
@@ -46,7 +54,7 @@ const stages = [
   <Container class="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
     <SectionHeading
       eyebrow="Our Learning Process"
-      index="06"
+      index={index}
       title="Your Journey to Becoming a Professional Trader"
       align="left"
     />

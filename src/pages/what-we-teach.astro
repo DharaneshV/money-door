@@ -6,15 +6,21 @@ import SectionHeading from "../components/ui/SectionHeading.astro";
 import Icon from "../components/ui/Icon.astro";
 import Button from "../components/ui/Button.astro";
 import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
-import ProgramSelector from "../components/sections/ProgramSelector.astro";
+import CurriculumAccordion from "../components/sections/CurriculumAccordion.astro";
+import type { Topic, Group } from "../components/sections/CurriculumAccordion.astro";
 
 // Full curriculum overview across all three MDC programs. Kept as a page-local
 // array (not a content collection) — this is one page, not a repeated entity
 // type, so a collection would be overhead without benefit.
-const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name"]; items: string[] }[] = [
+//
+// `href` on a topic points at its own dedicated page where one exists. Those
+// links are load-bearing: /gold-trading/, /forex-trading/ and /copy-trading/
+// are no longer in the footer, so this page is now their only route in.
+const topics: Topic[] = [
   {
     n: "01",
     title: "Gold Trading (XAUUSD)",
+    href: "/gold-trading/",
     icon: "trending-up",
     items: [
       "Gold market fundamentals",
@@ -31,6 +37,7 @@ const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name
   {
     n: "02",
     title: "Forex Trading",
+    href: "/forex-trading/",
     icon: "refresh",
     items: [
       "Forex market structure",
@@ -119,6 +126,7 @@ const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name
   {
     n: "07",
     title: "Prop Firm Trading",
+    href: "/funded-account-training/",
     icon: "award",
     items: [
       "Understanding prop firms",
@@ -136,6 +144,7 @@ const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name
   {
     n: "08",
     title: "Copy Trading",
+    href: "/copy-trading/",
     icon: "copy",
     items: [
       "What is copy trading?",
@@ -179,6 +188,7 @@ const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name
   {
     n: "11",
     title: "Economic News Analysis",
+    href: "/economic-calendar/",
     icon: "calendar",
     items: [
       "Economic calendar",
@@ -270,6 +280,60 @@ const topics: { n: string; title: string; icon: Parameters<typeof Icon>[0]["name
   },
 ];
 
+// A flat list of equally-weighted topics has no shape; themed groups do.
+// Grouping is
+// presentation only — every topic above appears exactly once below, and the
+// check at the end of this block fails the build if one is ever dropped or
+// duplicated while editing.
+const byNumber = new Map(topics.map((t) => [t.n, t]));
+const pick = (...ns: string[]) =>
+  ns.map((n) => {
+    const t = byNumber.get(n);
+    if (!t) throw new Error(`what-we-teach: no topic "${n}"`);
+    return t;
+  });
+
+const groups: Group[] = [
+  {
+    label: "The Markets",
+    blurb: "The instruments we specialise in, and how each one actually behaves.",
+    topics: pick("01", "02"),
+  },
+  {
+    label: "Reading the Chart",
+    blurb:
+      "The analysis layer — how price is interpreted, and the proprietary models that interpretation feeds.",
+    topics: pick("03", "04", "11"),
+  },
+  {
+    label: "Execution & Risk",
+    blurb:
+      "Turning analysis into placed trades, sized properly, on a platform you know well.",
+    topics: pick("05", "06", "13", "14", "12"),
+  },
+  {
+    label: "Capital & Accounts",
+    blurb:
+      "The routes to trading larger capital — evaluations, copy trading, and managed-account structures.",
+    topics: pick("07", "08", "09"),
+  },
+  {
+    label: "Mindset & Support",
+    blurb: "The parts that decide whether any of the above survives contact with a real market.",
+    topics: pick("10", "15", "16"),
+  },
+];
+
+// Build-time guard: grouping is hand-maintained, and a topic silently dropped
+// from the page is exactly the kind of omission nobody notices in review.
+const grouped = groups.flatMap((g) => g.topics.map((t) => t.n));
+if (grouped.length !== topics.length || new Set(grouped).size !== topics.length) {
+  throw new Error(
+    `what-we-teach: grouped ${grouped.length} topics (${new Set(grouped).size} unique) ` +
+      `but there are ${topics.length}. Every topic must appear in exactly one group.`
+  );
+}
+
 const whyChooseUs = [
   "18+ years of financial market experience",
   "Structured learning path (MDC1 → MDC2 → MDC3)",
@@ -302,56 +366,28 @@ const whyChooseUs = [
       </p>
       <p class="mt-4 text-base leading-relaxed text-paper/75 sm:text-lg">
         Whether you are a beginner or an experienced trader, our curriculum is designed to build
-        confidence through education, practice, and continuous learning — across sixteen areas of
-        the curriculum, taught progressively through MDC1, MDC2 and MDC3.
+        confidence through education, practice, and continuous learning — taught progressively
+        through MDC1, MDC2 and MDC3.
       </p>
     </Container>
   </section>
 
+  {/* Headline deliberately avoids counting the topics. A fixed number reads
+      as a ceiling ("only 16 things") rather than as depth, and it would need
+      updating every time the curriculum grows. */}
   <section class="surface-ink py-section">
     <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
       <SectionHeading
         eyebrow="Full Curriculum"
-        title="Sixteen Areas of Practical Trading Education"
+        title="What You'll Learn"
+        subtitle="Open any topic to see exactly what's covered inside it."
         align="left"
       />
-      <div class="grid gap-[clamp(1rem,2vw,1.5rem)] sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
-        {
-          topics.map((t) => (
-            <div class="surface-card flex flex-col gap-4 p-[clamp(1.5rem,2.2vw,2rem)]">
-              <div class="flex items-center gap-3">
-                <span class="icon-pop flex h-10 w-10 flex-none items-center justify-center rounded-full bg-gold-500/12 text-gold-500">
-                  <Icon name={t.icon} class="h-5 w-5" />
-                </span>
-                <span class="section-index text-gold-500">{t.n}</span>
-              </div>
-              <h3 class="font-heading text-base font-bold leading-snug text-paper">{t.title}</h3>
-              <ul class="flex flex-col gap-2">
-                {t.items.map((item) => (
-                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/65">
-                    <span class="mt-[0.55rem] h-1 w-1 flex-none rounded-full bg-gold-500/70" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
+      <CurriculumAccordion groups={groups} />
     </Container>
   </section>
 
-  {/* The old /courses/ page's tabbed selector, moved here when Courses was
-      folded into What We Teach. Same component, same content collection — the
-      programs shown can't drift from the individual course pages. */}
-  <ProgramSelector
-    surface="gold"
-    eyebrow="How It's Taught"
-    title="Learn. Apply. Master."
-    subtitle="Every topic above is delivered through three progressive programs. Each one is the next stage of becoming a professional trader — not a separate course."
-  />
-
-  {/* Prop-firm / funded-account training, pulled out of the sixteen-card grid
+  {/* Prop-firm / funded-account training, pulled out of the topic list
       into its own band. It's the outcome many students are actually here for,
       and it carries terms that shouldn't be reduced to a bullet. */}
   <section class="surface-ink py-section">

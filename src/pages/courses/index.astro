@@ -1,0 +1,172 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/ui/PageHero.astro";
+import Container from "../../components/ui/Container.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
+import RiskDisclaimer from "../../components/ui/RiskDisclaimer.astro";
+import Button from "../../components/ui/Button.astro";
+import Icon from "../../components/ui/Icon.astro";
+
+// This page is about the PROGRAMS — which one to take, what each costs, how
+// they run. The curriculum itself (what's taught inside them) lives on
+// /what-we-teach/ and is deliberately not duplicated here; the two pages
+// were merged once and separated again precisely because they answer
+// different questions.
+const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
+
+// How the programs are delivered — practical enrolment facts, not curriculum.
+const howItWorks = [
+  {
+    icon: "route" as const,
+    title: "Start where you fit",
+    body: "Most students begin at MDC1, but if you already trade you can start at MDC2. Not sure? A free consultation will place you.",
+  },
+  {
+    icon: "video" as const,
+    title: "Learn in live markets",
+    body: "Sessions run against real, moving charts rather than static screenshots — MDC2 and MDC3 include regular live market analysis.",
+  },
+  {
+    icon: "users" as const,
+    title: "Group, then one-to-one",
+    body: "MDC1 and MDC2 run as group sessions. MDC3 is delivered as private one-to-one mentorship with personal performance reviews.",
+  },
+  {
+    icon: "shield-check" as const,
+    title: "Risk management throughout",
+    body: "Every level pairs strategy with position sizing and loss limits. Capital protection is taught from week one, not bolted on at the end.",
+  },
+];
+---
+
+<BaseLayout
+  title="Trading Courses — MDC1, MDC2, MDC3"
+  description="Money Door FX Academy's structured trading courses: MDC1 Foundation Trader (free), MDC2 Professional Trader, and MDC3 Elite Master Trader."
+>
+  <PageHero
+    eyebrow="Our Programs"
+    title="Choose the Learning Path That Fits Your Goals"
+    subtitle="Three structured levels — from your first week in the markets to one-to-one mentorship for serious, long-term traders."
+  />
+
+  {/* Shortcuts straight to each program, with its key specs on the card. */}
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
+      <span class="eyebrow text-gold-500">Jump to a program</span>
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] lg:grid-cols-3" data-reveal-stagger>
+        {
+          programs.map((p) => (
+            <a
+              href={`/courses/${p.data.code.toLowerCase()}/`}
+              class="surface-card-warm card-lift group flex h-full flex-col gap-3 p-[clamp(1.5rem,2.5vw,2rem)]"
+            >
+              <div class="flex items-baseline justify-between gap-4">
+                <span class="section-index text-gold-300">{p.data.code}</span>
+                {p.data.stage && (
+                  <span class="inline-flex items-center rounded-full border border-gold-500/35 px-3 py-1 font-heading text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-gold-400">
+                    {p.data.stage}
+                  </span>
+                )}
+              </div>
+              <h2 class="font-display text-[clamp(1.35rem,1.1rem+1vw,1.85rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                {p.data.name}
+              </h2>
+              <p class="text-sm leading-relaxed text-paper/65">{p.data.tagline}</p>
+
+              {/* Key specs live on the card itself. They used to sit in a
+                  separate tabbed selector below, which listed the same three
+                  programs a second time on one page. */}
+              <dl class="mt-4 flex flex-col">
+                {[
+                  ["Level", p.data.level],
+                  ["Format", p.data.format],
+                  ["Mentorship", p.data.mentorship],
+                ]
+                  .filter(([, v]) => v)
+                  .map(([label, value]) => (
+                    <div class="flex items-baseline justify-between gap-4 border-t border-paper/10 py-2">
+                      <dt class="eyebrow text-paper/40">{label}</dt>
+                      <dd class="text-right text-xs leading-snug text-paper/70">{value}</dd>
+                    </div>
+                  ))}
+              </dl>
+
+              <div class="mt-auto flex items-baseline gap-3 pt-6">
+                <span class="font-display text-[clamp(1.25rem,1rem+0.9vw,1.6rem)] font-medium leading-none tabular-nums text-gold-400">
+                  {p.data.priceLabel ?? `${p.data.currency} ${p.data.price.toLocaleString("en-US")}`}
+                </span>
+                <span class="eyebrow text-paper/45">{p.data.duration}</span>
+              </div>
+              <span class="mt-4 inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper">
+                <span class="link-underline">View {p.data.code}</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="transition-transform duration-500 group-hover:translate-x-1.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="surface-ink py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading eyebrow="How It Works" title="How the Programs Run" align="left" />
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2" data-reveal-stagger>
+        {
+          howItWorks.map((h) => (
+            <div class="surface-card card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.5vw,2rem)]">
+              <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/12 text-gold-400">
+                <Icon name={h.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="font-heading text-base font-bold text-paper">{h.title}</h3>
+              <p class="text-sm leading-relaxed text-paper/65">{h.body}</p>
+            </div>
+          ))
+        }
+      </div>
+      {/* Pointer, not a duplicate: the curriculum itself lives on its own page. */}
+      <div class="flex flex-col items-start gap-4" data-reveal>
+        <p class="max-w-xl text-base leading-relaxed text-paper/70">
+          Looking for what's actually taught inside these programs — the markets, the analysis,
+          the strategy models and the risk framework?
+        </p>
+        <Button href="/what-we-teach/" variant="secondary" arrow>See the full curriculum</Button>
+      </div>
+    </Container>
+  </section>
+
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col gap-8">
+      <RiskDisclaimer />
+      <div class="flex flex-col items-center gap-4 text-center" data-reveal>
+        <span class="eyebrow text-gold-500">Not sure where to start?</span>
+        <h2 class="mt-2 max-w-3xl text-balance font-display text-[clamp(2rem,1.4rem+2.6vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+          We'll help you find the right starting point
+        </h2>
+        <p class="mt-2 max-w-xl text-base leading-relaxed text-paper/60">
+          Book a free consultation and we'll recommend a program based on your experience and
+          goals — no pressure, no obligation.
+        </p>
+        <div class="mt-6">
+          <Button href="/join/" size="lg" arrow>Book Free Consultation</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

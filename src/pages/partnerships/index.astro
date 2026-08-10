@@ -1,0 +1,87 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/ui/PageHero.astro";
+import Container from "../../components/ui/Container.astro";
+import PartnerBands from "../../components/sections/PartnerBands.astro";
+import PartnerCaveats from "../../components/sections/PartnerCaveats.astro";
+import { partners, partnerGroups } from "../../data/site";
+
+// The marquee needs the list twice: the track translates a full -100% and the
+// duplicate is what occupies the gap it leaves, so the loop reads as continuous
+// rather than snapping back to the start.
+const marqueeNames = [...partners, ...partners];
+
+// Every partner, clustered under its group heading. The filtered views live at
+// /partnerships/<slug>/ and are reachable from the nav dropdown.
+const grouped = partnerGroups
+  .map((g) => ({
+    label: g.label,
+    slug: g.slug,
+    blurb: g.blurb,
+    items: partners.filter((p) => p.group === g.label),
+  }))
+  .filter((g) => g.items.length > 0);
+---
+
+<BaseLayout
+  title="Trading Partners"
+  description="The brokers, prop firms and crypto exchanges Money Door FX Academy's desk actually uses — listed with full referral disclosure so you can evaluate each one yourself."
+>
+  <PageHero
+    eyebrow="Trading Partners"
+    title="Tools the Desk Actually Uses"
+    subtitle="These are the brokers, prop firms and platforms we work with day to day. Every link below is a referral link, and we say so on each one — verify any firm's regulatory standing in your own country before you deposit."
+  />
+
+  {/* Motion lives here, on non-interactive wordmarks, rather than on the CTAs
+      below. A referral button that slides away is a button that doesn't get
+      clicked, and auto-moving interactive content also fails WCAG 2.2.2. */}
+  <section class="surface-ink overflow-hidden py-[clamp(2rem,4vw,3.5rem)]">
+    <div class="marquee" aria-hidden="true">
+      {
+        [0, 1].map(() => (
+          <div class="marquee__track">
+            {marqueeNames.map((p) => (
+              <span class="flex flex-none items-center gap-[clamp(1.5rem,4vw,4rem)]">
+                <span class="font-display text-[clamp(1.25rem,1rem+1.2vw,2.25rem)] font-medium whitespace-nowrap text-paper/35">
+                  {p.name}
+                </span>
+                <span class="h-1 w-1 flex-none rounded-full bg-gold-500/50" />
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* Category jump-off, mirroring the nav dropdown. Someone who only wants a
+      broker shouldn't have to scroll past the prop firms to find one. */}
+  <section class="surface-gold py-[clamp(2.5rem,5vw,4rem)]">
+    <Container width="wide" class="flex flex-col gap-6">
+      <span class="eyebrow text-gold-500">Browse by category</span>
+      <div class="grid gap-[clamp(1rem,2vw,1.5rem)] md:grid-cols-3" data-reveal-stagger>
+        {
+          grouped.map((g) => (
+            <a
+              href={`/partnerships/${g.slug}/`}
+              class="surface-card-warm card-lift group flex flex-col gap-2 p-[clamp(1.25rem,2.2vw,1.75rem)]"
+            >
+              <div class="flex items-baseline justify-between gap-3">
+                <h2 class="font-display text-[clamp(1.2rem,1rem+0.8vw,1.6rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                  {g.label}
+                </h2>
+                <span class="eyebrow flex-none text-gold-400">{g.items.length}</span>
+              </div>
+              <p class="text-sm leading-relaxed text-paper/60">{g.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <PartnerBands groups={grouped} />
+
+  <PartnerCaveats />
+</BaseLayout>

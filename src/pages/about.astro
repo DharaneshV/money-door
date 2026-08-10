@@ -1,16 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/ui/PageHero.astro";
 import Container from "../components/ui/Container.astro";
 import SectionHeading from "../components/ui/SectionHeading.astro";
 import Button from "../components/ui/Button.astro";
 import Icon from "../components/ui/Icon.astro";
 
-const values = [
-  { title: "Integrity", description: "We believe honest education creates successful traders." },
-  { title: "Discipline", description: "Every successful trader follows a structured process." },
-  { title: "Consistency", description: "Long-term consistency is more important than short-term profits." },
-  { title: "Continuous Learning", description: "Financial markets evolve every day. Traders should evolve too." },
-  { title: "Professionalism", description: "We maintain the highest standards in education, communication, and student support." },
+// Rebuilt on the site's current design system. The previous version predated
+// the gold/black palette pass and still used centred `font-heading` headings,
+// five-column card grids, and a `light` prop that no longer exists — plus
+// `text-ink-800` (the card surface colour) as body text on a dark card, which
+// rendered the entire philosophy list invisible.
+
+const stats = [
+  { to: 18, suffix: "+", label: "Years of trading experience" },
+  { to: 2500, suffix: "+", label: "Students trained" },
+  { to: 3, suffix: "", label: "Structured program levels" },
+  { to: 6, suffix: "", label: "Named strategy models" },
 ];
 
 const beliefs = [
@@ -39,6 +45,14 @@ const teachingSteps = [
   { title: "Grow", description: "Build the consistency and confidence of an independent trader." },
 ];
 
+const values = [
+  { title: "Integrity", description: "We believe honest education creates successful traders." },
+  { title: "Discipline", description: "Every successful trader follows a structured process." },
+  { title: "Consistency", description: "Long-term consistency is more important than short-term profits." },
+  { title: "Continuous Learning", description: "Financial markets evolve every day. Traders should evolve too." },
+  { title: "Professionalism", description: "We maintain the highest standards in education, communication, and student support." },
+];
+
 const audiences = [
   { title: "Beginner Traders", description: "People who want to learn trading from scratch." },
   { title: "Working Professionals", description: "Individuals looking for an additional skill or income opportunity." },
@@ -48,14 +62,14 @@ const audiences = [
 ];
 
 const whyUs = [
-  "Structured Learning Roadmap",
-  "Gold Trading Specialization",
-  "Live Market Sessions",
-  "Practical Trading Education",
-  "Focus on Risk Management",
-  "One-on-One Mentorship",
-  "Supportive Learning Community",
-  "Continuous Skill Development",
+  "Structured learning roadmap",
+  "Gold trading specialization",
+  "Live market sessions",
+  "Practical trading education",
+  "Focus on risk management",
+  "One-on-one mentorship",
+  "Supportive learning community",
+  "Continuous skill development",
 ];
 ---
 
@@ -63,89 +77,103 @@ const whyUs = [
   title="About Us"
   description="Money Door FX Academy is a premium Gold (XAU/USD) & Forex trading education company. Learn about our story, mission, values, and teaching approach."
 >
-  <section class="relative isolate overflow-hidden border-b border-paper/12 bg-ink-950 py-section text-center">
-    <div
-      class="pointer-events-none absolute right-0 top-0 h-[min(24rem,70vw)] w-[min(24rem,70vw)] translate-x-1/3 -translate-y-1/3 rounded-full bg-gold-500/10 blur-3xl"
-      aria-hidden="true"
-    >
-    </div>
-    <Container class="relative flex flex-col items-center gap-4" data-reveal>
-      <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">
-        About Money Door FX Academy
-      </span>
-      <h1 class="max-w-3xl font-heading text-4xl font-bold sm:text-5xl">Learn Trading the Right Way</h1>
-      <p class="max-w-2xl text-lg text-paper/70">
-        At Money Door FX Academy, we believe successful trading is built on education, discipline,
-        consistency, and continuous learning — not shortcuts or false promises.
-      </p>
-    </Container>
-  </section>
+  <PageHero
+    eyebrow="About Money Door FX Academy"
+    title="Learn Trading the Right Way"
+    subtitle="We believe successful trading is built on education, discipline, consistency, and continuous learning — not shortcuts or false promises."
+  />
 
+  {/* Story, set against the numbers rather than running as one centred column. */}
   <section class="surface-gold py-section">
-    <Container class="mx-auto flex max-w-3xl flex-col gap-5 text-center" data-reveal>
-      <span class="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">
-        Our Story
-      </span>
-      <h2 class="font-heading text-3xl font-bold text-paper sm:text-4xl">A Journey Built on Experience</h2>
-      <div class="flex flex-col gap-4 text-left text-base leading-relaxed text-paper/70">
-        <p>
-          Money Door FX Academy was founded with a simple purpose: to help aspiring traders develop
-          the knowledge, discipline, and confidence needed to navigate the financial markets
-          responsibly.
-        </p>
-        <p>
-          After spending more than 18 years studying and trading across Forex, Commodities,
-          Equities, and other financial markets, we recognized that many aspiring traders struggled
-          — not because they lacked potential, but because they lacked structured education and
-          proper guidance.
-        </p>
-        <p>
-          Many beginners enter the markets with unrealistic expectations, relying on random tips,
-          social media, or unverified trading signals. While some experience short-term success,
-          many struggle to achieve consistency.
-        </p>
-        <p>
-          Money Door FX Academy was created to bridge that gap by providing a structured learning
-          experience that emphasizes market understanding, disciplined execution, and continuous
-          improvement. Our goal is not simply to teach trading strategies but to help students
-          develop the mindset and habits of professional traders.
-        </p>
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-[1fr_1fr]">
+        <div data-reveal>
+          <SectionHeading eyebrow="Our Story" index="01" title="A Journey Built on Experience" align="left" />
+          <div class="mt-8 flex max-w-xl flex-col gap-4 text-base leading-relaxed text-paper/70">
+            <p>
+              Money Door FX Academy was founded with a simple purpose: to help aspiring traders
+              develop the knowledge, discipline, and confidence needed to navigate the financial
+              markets responsibly.
+            </p>
+            <p>
+              After more than 18 years studying and trading across Forex, Commodities, Equities and
+              other financial markets, we recognised that many aspiring traders struggled — not
+              because they lacked potential, but because they lacked structured education and
+              proper guidance.
+            </p>
+            <p>
+              Many beginners enter the markets with unrealistic expectations, relying on random
+              tips, social media, or unverified trading signals. While some experience short-term
+              success, many struggle to achieve consistency.
+            </p>
+            <p>
+              We exist to bridge that gap — with a structured learning experience that emphasises
+              market understanding, disciplined execution, and continuous improvement. Our goal is
+              not simply to teach strategies, but to help students develop the mindset and habits
+              of professional traders.
+            </p>
+          </div>
+        </div>
+
+        <dl class="flex flex-col self-center" data-reveal-stagger>
+          {
+            stats.map((s) => (
+              <div class="edit-row flex items-baseline justify-between gap-6 py-[clamp(1.25rem,2.5vw,2rem)]">
+                <dt class="font-display text-[clamp(2rem,1.4rem+2.4vw,3.5rem)] font-medium leading-none tabular-nums text-gold-500">
+                  <span data-count-to={s.to} data-count-suffix={s.suffix}>0</span>
+                </dt>
+                <dd class="max-w-[14rem] text-right text-sm leading-snug text-paper/70">{s.label}</dd>
+              </div>
+            ))
+          }
+        </dl>
       </div>
     </Container>
   </section>
 
   <section class="surface-ink py-section">
-    <Container class="grid gap-8 lg:grid-cols-2" data-reveal-stagger>
-      <div class="surface-card card-lift flex flex-col gap-3 p-8">
-        <h2 class="font-heading text-2xl font-bold text-gold-400">Our Vision</h2>
+    <Container width="wide" class="grid gap-[clamp(1.5rem,3vw,2.5rem)] lg:grid-cols-2" data-reveal-stagger>
+      <div class="surface-card-warm card-lift flex flex-col gap-4 p-[clamp(1.75rem,3vw,2.75rem)]">
+        <span class="eyebrow text-gold-400">Our Vision</span>
+        <h2 class="font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.1rem)] font-medium leading-tight text-paper">
+          India's most trusted Gold trading academy
+        </h2>
         <p class="text-base leading-relaxed text-paper/70">
-          To become India's most trusted Gold Trading Academy and one of the world's leading
-          trading education brands — empowering traders through knowledge, discipline, and
-          practical experience, and helping them make informed decisions with confidence.
+          To become one of the world's leading trading education brands — empowering traders
+          through knowledge, discipline and practical experience, and helping them make informed
+          decisions with confidence.
         </p>
       </div>
-      <div class="surface-card card-lift flex flex-col gap-3 p-8">
-        <h2 class="font-heading text-2xl font-bold text-gold-400">Our Mission</h2>
+      <div class="surface-card-warm card-lift flex flex-col gap-4 p-[clamp(1.75rem,3vw,2.75rem)]">
+        <span class="eyebrow text-gold-400">Our Mission</span>
+        <h2 class="font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.1rem)] font-medium leading-tight text-paper">
+          We build traders — not followers
+        </h2>
         <p class="text-base leading-relaxed text-paper/70">
-          To provide world-class trading education that combines professional market knowledge,
-          proven trading strategies, practical live market training, risk management, and trading
-          psychology. We aim to build traders — not followers.
+          To provide world-class trading education combining professional market knowledge, proven
+          strategies, practical live market training, risk management and trading psychology.
         </p>
       </div>
     </Container>
   </section>
 
+  {/* Beliefs as numbered editorial rows — the site's own language, and legible,
+      which the previous dark-on-dark card version was not. */}
   <section class="surface-gold py-section">
-    <Container class="flex flex-col gap-10">
-      <div data-reveal>
-        <SectionHeading eyebrow="Our Philosophy" title="We Believe..." light />
-      </div>
-      <div class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2" data-reveal-stagger>
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading eyebrow="Our Philosophy" index="02" title="What We Believe" align="left" />
+      <div class="grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2" data-reveal-stagger>
         {
-          beliefs.map((b) => (
-            <div class="surface-card card-lift flex items-start gap-3 p-4">
-              <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-600" />
-              <span class="text-sm text-ink-800">{b}</span>
+          beliefs.map((b, i) => (
+            <div class="edit-row group py-[clamp(1.25rem,2.5vw,1.85rem)]">
+              <div class="flex items-baseline gap-6">
+                <span class="section-index flex-none text-gold-500">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p class="max-w-md font-display text-[clamp(1.05rem,0.9rem+0.6vw,1.35rem)] font-medium leading-snug text-paper transition-colors duration-500 group-hover:text-gold-300">
+                  {b}
+                </p>
+              </div>
             </div>
           ))
         }
@@ -154,19 +182,20 @@ const whyUs = [
   </section>
 
   <section class="surface-ink py-section">
-    <Container class="flex flex-col gap-10">
-      <div data-reveal>
-        <SectionHeading eyebrow="What We Teach" title="Our Areas of Expertise" />
-      </div>
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-reveal-stagger>
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading eyebrow="Our Expertise" index="03" title="Areas We Specialise In" align="left" />
+      {/* Three columns, not five — five made every card a narrow sliver. */}
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
         {
           expertise.map((e) => (
-            <div class="surface-card card-lift flex flex-col gap-3 p-6">
-              <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/10 text-gold-500">
+            <div class="surface-card card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.5vw,2rem)]">
+              <span class="icon-pop flex h-12 w-12 items-center justify-center rounded-full bg-gold-500/12 text-gold-500">
                 <Icon name={e.icon} class="h-5 w-5" />
               </span>
-              <h3 class="font-heading text-base font-bold text-paper">{e.title}</h3>
-              <p class="text-sm text-paper/60">{e.description}</p>
+              <h3 class="font-display text-[clamp(1.15rem,1rem+0.6vw,1.45rem)] font-medium leading-tight text-paper">
+                {e.title}
+              </h3>
+              <p class="text-sm leading-relaxed text-paper/65">{e.description}</p>
             </div>
           ))
         }
@@ -174,110 +203,109 @@ const whyUs = [
     </Container>
   </section>
 
-  <section class="surface-ink-raised py-section">
-    <Container class="flex flex-col gap-10">
-      <div data-reveal>
-        <SectionHeading eyebrow="How We Teach" title="Our Teaching Approach" />
-      </div>
-      <div class="grid gap-6 sm:grid-cols-5" data-reveal-stagger>
+  {/* Teaching approach as a connected sequence rather than five loose columns. */}
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading eyebrow="How We Teach" index="04" title="Learn, Observe, Practice, Improve, Grow" align="left" />
+      <ol class="grid gap-[clamp(1rem,2vw,1.5rem)] sm:grid-cols-2 lg:grid-cols-5" data-reveal-stagger>
         {
           teachingSteps.map((step, i) => (
-            <div class="flex flex-col items-center gap-3 text-center">
-              <span class="flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/40 font-heading text-lg font-bold text-gold-400">
-                {i + 1}
+            <li class="surface-card-warm relative flex flex-col gap-3 p-[clamp(1.25rem,2.2vw,1.75rem)]">
+              <span class="font-display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] font-medium leading-none text-gold-400/40">
+                {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 class="font-heading text-base font-bold text-paper">{step.title}</h3>
-              <p class="text-sm text-paper/60">{step.description}</p>
-            </div>
+              <h3 class="font-display text-[clamp(1.15rem,1rem+0.6vw,1.4rem)] font-medium leading-tight text-paper">
+                {step.title}
+              </h3>
+              <p class="text-sm leading-relaxed text-paper/65">{step.description}</p>
+            </li>
           ))
         }
-      </div>
-    </Container>
-  </section>
-
-  <section class="surface-gold py-section">
-    <Container class="flex flex-col gap-10">
-      <div data-reveal>
-        <SectionHeading eyebrow="Our Core Values" title="What Guides Everything We Do" light />
-      </div>
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-reveal-stagger>
-        {
-          values.map((v) => (
-            <div class="surface-card card-lift p-6">
-              <h3 class="font-heading text-base font-bold text-paper">{v.title}</h3>
-              <p class="mt-2 text-sm text-paper/70">{v.description}</p>
-            </div>
-          ))
-        }
-      </div>
+      </ol>
     </Container>
   </section>
 
   <section class="surface-ink py-section">
-    <Container class="flex flex-col items-center gap-6 text-center" data-reveal>
-      <span class="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">
-        Brand Promise
-      </span>
-      <p class="max-w-2xl font-heading text-2xl font-semibold leading-snug text-paper sm:text-3xl">
-        "We don't promise profits. We promise to teach a professional trading process that helps
-        traders improve their decision-making through education, discipline, and consistent
-        practice."
-      </p>
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading eyebrow="Our Core Values" index="05" title="What Guides Everything We Do" align="left" />
+      <div class="flex flex-col" data-reveal-stagger>
+        {
+          values.map((v) => (
+            <div class="edit-row group flex flex-col gap-2 py-[clamp(1.5rem,3vw,2.25rem)] md:flex-row md:items-baseline md:gap-12">
+              <h3 class="w-full max-w-xs font-display text-[clamp(1.35rem,1.1rem+1.1vw,2rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                {v.title}
+              </h3>
+              <p class="max-w-xl text-base leading-relaxed text-paper/65">{v.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  {/* Brand promise as a full-bleed pull quote — the single most important
+      sentence on the page, and the compliance stance in one line. */}
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-8" data-reveal>
+      <span class="eyebrow text-gold-500">Our Promise</span>
+      <blockquote class="max-w-5xl border-l-2 border-gold-500 pl-[clamp(1.25rem,3vw,2.5rem)]">
+        <p class="font-display text-[clamp(1.5rem,1.1rem+2vw,3rem)] font-medium leading-[1.15] tracking-[-0.01em] text-paper">
+          We don't promise profits. We promise to teach a professional trading process that helps
+          traders improve their decision-making through education, discipline, and consistent
+          practice.
+        </p>
+      </blockquote>
+    </Container>
+  </section>
+
+  <section class="surface-ink py-section">
+    <Container width="wide">
+      <div class="grid items-start gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-[1.15fr_0.85fr]">
+        <div data-reveal>
+          <SectionHeading eyebrow="Who We Help" index="06" title="Who This Academy Is For" align="left" />
+          <div class="mt-8 flex flex-col">
+            {
+              audiences.map((a) => (
+                <div class="edit-row group py-[clamp(1.1rem,2.2vw,1.6rem)]">
+                  <h3 class="font-display text-[clamp(1.1rem,0.95rem+0.7vw,1.45rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                    {a.title}
+                  </h3>
+                  <p class="mt-1.5 max-w-md text-sm leading-relaxed text-paper/60">{a.description}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="surface-card-warm p-[clamp(1.5rem,2.5vw,2rem)]" data-reveal>
+          <span class="eyebrow text-gold-400">What You Get as a Student</span>
+          <ul class="mt-6 flex flex-col gap-3">
+            {
+              whyUs.map((w) => (
+                <li class="flex items-start gap-3 text-sm leading-relaxed text-paper/75">
+                  <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+                  <span>{w}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
     </Container>
   </section>
 
   <section class="surface-ink-raised py-section">
-    <Container class="flex flex-col gap-10">
-      <div data-reveal>
-        <SectionHeading eyebrow="Who We Help" title="Who Money Door FX Academy Is For" />
-      </div>
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-reveal-stagger>
-        {
-          audiences.map((a) => (
-            <div class="card-lift flex flex-col gap-2  border border-paper/12 bg-ink-950 p-6 hover:border-gold-500/40">
-              <h3 class="font-heading text-base font-bold text-gold-400">{a.title}</h3>
-              <p class="text-sm text-paper/60">{a.description}</p>
-            </div>
-          ))
-        }
-      </div>
-    </Container>
-  </section>
-
-  <section class="surface-ink py-section">
-    <Container class="flex flex-col gap-10">
-      <div data-reveal>
-        <SectionHeading eyebrow="Why Students Choose Us" title="What You Get as a Student" />
-      </div>
-      <div class="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4" data-reveal-stagger>
-        {
-          whyUs.map((w) => (
-            <div class="surface-card flex items-start gap-2 p-4">
-              <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
-              <span class="text-sm text-paper/75">{w}</span>
-            </div>
-          ))
-        }
-      </div>
-    </Container>
-  </section>
-
-  <section class="relative isolate overflow-hidden bg-ink-900 py-section">
-    <div
-      class="pointer-events-none absolute left-1/2 top-0 h-72 w-[min(42rem,120vw)] -translate-x-1/2 rounded-full bg-gold-500/10 blur-3xl"
-      aria-hidden="true"
-    >
-    </div>
-    <Container class="relative flex flex-col items-center gap-6 text-center" data-reveal>
-      <h2 class="max-w-2xl font-heading text-3xl font-bold sm:text-4xl">Start Your Learning Journey</h2>
-      <p class="max-w-xl text-base text-paper/70">
-        Whether you are taking your first steps in trading or looking to refine your existing
-        skills, Money Door FX Academy is here to support your journey with structured education,
-        practical guidance, and a commitment to long-term growth. Your journey toward disciplined
-        trading starts here.
+    <Container width="wide" class="flex flex-col items-center gap-6 text-center" data-reveal>
+      <h2 class="max-w-3xl font-display text-[clamp(2rem,1.5rem+2.2vw,3.5rem)] font-medium leading-[1.05] tracking-[-0.015em] text-paper">
+        Start Your Learning Journey
+      </h2>
+      <p class="max-w-xl text-base leading-relaxed text-paper/65 sm:text-lg">
+        Whether you're taking your first steps in trading or refining existing skills, we're here
+        to support your journey with structured education, practical guidance, and a commitment to
+        long-term growth.
       </p>
-      <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap sm:justify-center">
-        <Button href="/what-we-teach/" size="lg" arrow>Explore Our Courses</Button>
+      <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+        <Button href="/courses/" size="lg" arrow>Explore Our Courses</Button>
         <Button href="/join/" size="lg" variant="secondary">Book a Free Consultation</Button>
       </div>
     </Container>
