@@ -15,6 +15,11 @@ import Icon from "../../components/ui/Icon.astro";
 // different questions.
 const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
 
+// MDC2 is the recommended tier. Three visually identical cards make a visitor
+// do the ranking themselves; a pricing page should answer "which one" before
+// it answers "what's in it".
+const FEATURED = "MDC2";
+
 // How the programs are delivered — practical enrolment facts, not curriculum.
 const howItWorks = [
   {
@@ -50,103 +55,148 @@ const howItWorks = [
     subtitle="Three structured levels — from your first week in the markets to one-to-one mentorship for serious, long-term traders."
   />
 
-  {/* Shortcuts straight to each program, with its key specs on the card. */}
-  <section class="surface-gold py-section">
-    <Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
-      <span class="eyebrow text-gold-500">Jump to a program</span>
-      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] lg:grid-cols-3" data-reveal-stagger>
+  {/* Orientation journey: the three programs are one path, not three unrelated
+      products. Each step links to its program, so this doubles as navigation
+      rather than being decoration the visitor has to scroll past. */}
+  <section class="surface-gold py-[clamp(2.5rem,5vw,4rem)]">
+    <Container width="wide">
+      <ol class="journey" data-reveal-stagger>
         {
-          programs.map((p) => (
-            <a
-              href={`/courses/${p.data.code.toLowerCase()}/`}
-              class="surface-card-warm card-lift group flex h-full flex-col gap-3 p-[clamp(1.5rem,2.5vw,2rem)]"
-            >
-              <div class="flex items-baseline justify-between gap-4">
-                <span class="section-index text-gold-300">{p.data.code}</span>
-                {p.data.stage && (
-                  <span class="inline-flex items-center rounded-full border border-gold-500/35 px-3 py-1 font-heading text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-gold-400">
-                    {p.data.stage}
-                  </span>
-                )}
-              </div>
-              <h2 class="font-display text-[clamp(1.35rem,1.1rem+1vw,1.85rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
-                {p.data.name}
-              </h2>
-              <p class="text-sm leading-relaxed text-paper/65">{p.data.tagline}</p>
-
-              {/* Key specs live on the card itself. They used to sit in a
-                  separate tabbed selector below, which listed the same three
-                  programs a second time on one page. */}
-              <dl class="mt-4 flex flex-col">
-                {[
-                  ["Level", p.data.level],
-                  ["Format", p.data.format],
-                  ["Mentorship", p.data.mentorship],
-                ]
-                  .filter(([, v]) => v)
-                  .map(([label, value]) => (
-                    <div class="flex items-baseline justify-between gap-4 border-t border-paper/10 py-2">
-                      <dt class="eyebrow text-paper/40">{label}</dt>
-                      <dd class="text-right text-xs leading-snug text-paper/70">{value}</dd>
-                    </div>
-                  ))}
-              </dl>
-
-              <div class="mt-auto flex items-baseline gap-3 pt-6">
-                <span class="font-display text-[clamp(1.25rem,1rem+0.9vw,1.6rem)] font-medium leading-none tabular-nums text-gold-400">
-                  {p.data.priceLabel ?? `${p.data.currency} ${p.data.price.toLocaleString("en-US")}`}
+          programs.map((p, i) => (
+            <li class="journey__step">
+              <a href={`/courses/${p.data.code.toLowerCase()}/`} class="journey__link group">
+                <span class="journey__medal" aria-hidden="true">
+                  <span class="journey__num">{String(i + 1).padStart(2, "0")}</span>
                 </span>
-                <span class="eyebrow text-paper/45">{p.data.duration}</span>
-              </div>
-              <span class="mt-4 inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-paper">
-                <span class="link-underline">View {p.data.code}</span>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  class="transition-transform duration-500 group-hover:translate-x-1.5"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
-                    stroke="currentColor"
-                    stroke-width="1.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </span>
-            </a>
+                <span class="journey__body">
+                  <span class="journey__stage">{p.data.stage}</span>
+                  <span class="journey__code">{p.data.code}</span>
+                  <span class="journey__name">{p.data.name}</span>
+                  <span class="journey__meta">
+                    <Icon name="clock" class="h-3.5 w-3.5 flex-none" />
+                    {p.data.duration}
+                  </span>
+                </span>
+              </a>
+            </li>
           ))
         }
-      </div>
+      </ol>
     </Container>
   </section>
 
   <section class="surface-ink py-section">
     <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading
+        eyebrow="The Programs"
+        title="Pick Your Level"
+        subtitle="Every level includes the one before it. Fees are one-off, not subscriptions."
+        align="left"
+      />
+
+      {/* items-stretch + mt-auto on the footer keeps all three CTAs on the
+          same baseline regardless of how much copy each card carries. */}
+      <div class="grid items-stretch gap-[clamp(1.25rem,2.5vw,2rem)] lg:grid-cols-3" data-reveal-stagger>
+        {
+          programs.map((p) => {
+            const d = p.data;
+            const featured = d.code === FEATURED;
+            const href = `/courses/${d.code.toLowerCase()}/`;
+            const price = d.priceLabel ?? `${d.currency} ${d.price.toLocaleString("en-US")}`;
+            return (
+              <article
+                class:list={[
+                  "program-card group flex h-full flex-col p-[clamp(1.5rem,2.5vw,2.25rem)]",
+                  featured ? "program-card--featured surface-card-warm" : "surface-card",
+                ]}
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <span class="section-index text-gold-400">{d.code}</span>
+                  {featured ? (
+                    <span class="program-card__ribbon">Most chosen</span>
+                  ) : (
+                    d.stage && <span class="program-card__stage">{d.stage}</span>
+                  )}
+                </div>
+
+                <h3 class="mt-5 font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.1rem)] font-medium leading-tight text-paper transition-colors duration-500 group-hover:text-gold-300">
+                  {d.name}
+                </h3>
+                <p class="mt-3 text-sm leading-relaxed text-paper/60">{d.tagline}</p>
+
+                {/* nowrap on the price and a wrapping row: "USDT 1,000" is
+                    wide enough to break mid-figure in a third-width card,
+                    which read as two separate numbers. */}
+                <div class="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span class="whitespace-nowrap font-display text-[clamp(1.85rem,1.5rem+1.4vw,2.6rem)] font-medium leading-none tabular-nums text-gold-400">
+                    {price}
+                  </span>
+                  <span class="eyebrow whitespace-nowrap text-paper/45">{d.duration}</span>
+                </div>
+
+                <ul class="mt-7 flex flex-col gap-2.5">
+                  {d.highlights.slice(0, 4).map((h) => (
+                    <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/70">
+                      <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <dl class="mt-7 flex flex-col">
+                  {[
+                    ["Level", d.level],
+                    ["Format", d.format],
+                  ]
+                    .filter(([, v]) => v)
+                    .map(([label, value]) => (
+                      <div class="flex items-baseline justify-between gap-4 border-t border-paper/10 py-2.5">
+                        <dt class="eyebrow text-paper/40">{label}</dt>
+                        <dd class="text-right text-xs leading-snug text-paper/70">{value}</dd>
+                      </div>
+                    ))}
+                </dl>
+
+                <div class="mt-auto pt-8">
+                  <Button href={href} variant={featured ? "primary" : "secondary"} class="w-full" arrow>
+                    View {d.code}
+                  </Button>
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+
+      <p class="text-sm leading-relaxed text-paper/50" data-reveal>
+        Want to see what's actually taught inside these programs?{" "}
+        <a href="/what-we-teach/" class="text-gold-400 underline underline-offset-4 hover:text-gold-300">
+          Read the full curriculum
+        </a>.
+      </p>
+    </Container>
+  </section>
+
+  <section class="surface-gold py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
       <SectionHeading eyebrow="How It Works" title="How the Programs Run" align="left" />
       <div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2" data-reveal-stagger>
         {
-          howItWorks.map((h) => (
-            <div class="surface-card card-lift flex flex-col gap-3 p-[clamp(1.5rem,2.5vw,2rem)]">
-              <span class="icon-pop flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/12 text-gold-400">
-                <Icon name={h.icon} class="h-5 w-5" />
+          howItWorks.map((h, i) => (
+            <div class="surface-card-warm card-lift flex gap-5 p-[clamp(1.5rem,2.5vw,2rem)]">
+              <span class="font-display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] font-medium leading-none text-gold-400/35">
+                {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 class="font-heading text-base font-bold text-paper">{h.title}</h3>
-              <p class="text-sm leading-relaxed text-paper/65">{h.body}</p>
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-3">
+                  <Icon name={h.icon} class="h-5 w-5 flex-none text-gold-400" />
+                  <h3 class="font-heading text-base font-bold text-paper">{h.title}</h3>
+                </div>
+                <p class="text-sm leading-relaxed text-paper/65">{h.body}</p>
+              </div>
             </div>
           ))
         }
-      </div>
-      {/* Pointer, not a duplicate: the curriculum itself lives on its own page. */}
-      <div class="flex flex-col items-start gap-4" data-reveal>
-        <p class="max-w-xl text-base leading-relaxed text-paper/70">
-          Looking for what's actually taught inside these programs — the markets, the analysis,
-          the strategy models and the risk framework?
-        </p>
-        <Button href="/what-we-teach/" variant="secondary" arrow>See the full curriculum</Button>
       </div>
     </Container>
   </section>
@@ -170,3 +220,235 @@ const howItWorks = [
     </Container>
   </section>
 </BaseLayout>
+
+<style>
+  /* ---- Journey ------------------------------------------------------------
+     Replaces a hairline with three small dots, which read as a stray bullet
+     list rather than a progression. Numbered medallions on a connecting rail
+     carry far more weight and give each step a real click target. */
+  .journey {
+    display: grid;
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .journey {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .journey__step {
+    position: relative;
+  }
+
+  /* The connecting rail is drawn per-step rather than once across the row, so
+     it survives the switch to a vertical stack on mobile without a second
+     absolutely-positioned element to keep in sync. */
+  .journey__step::before {
+    content: "";
+    position: absolute;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-gold-500) 55%, transparent),
+      color-mix(in srgb, var(--color-gold-500) 15%, transparent)
+    );
+    /* vertical rail, mobile */
+    left: calc(clamp(2.75rem, 3vw, 3.25rem) / 2);
+    top: clamp(2.75rem, 3vw, 3.25rem);
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-1px);
+  }
+  .journey__step:last-child::before {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .journey__step::before {
+      /* horizontal rail, desktop */
+      left: clamp(2.75rem, 3vw, 3.25rem);
+      right: 0;
+      top: calc(clamp(2.75rem, 3vw, 3.25rem) / 2);
+      bottom: auto;
+      width: auto;
+      height: 2px;
+      transform: translateY(-1px);
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-gold-500) 55%, transparent),
+        color-mix(in srgb, var(--color-gold-500) 15%, transparent)
+      );
+    }
+  }
+
+  .journey__link {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 1rem;
+    padding: 0 1.25rem clamp(1.75rem, 3vw, 2.25rem) 0;
+  }
+  @media (min-width: 768px) {
+    .journey__link {
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+      padding: 0 1.5rem 0 0;
+    }
+  }
+
+  .journey__medal {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    height: clamp(2.75rem, 3vw, 3.25rem);
+    width: clamp(2.75rem, 3vw, 3.25rem);
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 45%, transparent);
+    /* Opaque fill so the rail passes behind the medallion, not through it. */
+    background: radial-gradient(
+        circle at 30% 25%,
+        color-mix(in srgb, var(--color-gold-500) 22%, transparent),
+        transparent 70%
+      ),
+      #100d06;
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-gold-500) 7%, transparent);
+    transition:
+      border-color 0.45s ease,
+      box-shadow 0.45s ease,
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .journey__link:hover .journey__medal {
+    border-color: var(--color-gold-500);
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-gold-500) 14%, transparent);
+    transform: scale(1.06);
+  }
+  .journey__link:focus-visible .journey__medal {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 4px;
+  }
+
+  .journey__num {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-gold-400);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .journey__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .journey__stage {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-gold-500);
+  }
+  .journey__code {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
+    font-weight: 500;
+    line-height: 1.05;
+    color: var(--color-paper);
+    transition: color 0.45s ease;
+  }
+  .journey__link:hover .journey__code {
+    color: var(--color-gold-300);
+  }
+  .journey__name {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--color-paper) 62%, transparent);
+  }
+  .journey__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-paper) 40%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .journey__medal,
+    .journey__link:hover .journey__medal {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* ---- Program card ------------------------------------------------------ */
+  .program-card {
+    position: relative;
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s ease;
+  }
+  .program-card:hover {
+    transform: translateY(-4px);
+  }
+
+  /* The recommended tier reads as the default choice: a gold edge, a ribbon,
+     and a small lift above the other two on desktop. */
+  .program-card--featured {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 55%, transparent),
+      0 24px 60px -28px rgb(0 0 0 / 0.8);
+  }
+  @media (min-width: 1024px) {
+    .program-card--featured {
+      transform: translateY(-0.75rem);
+    }
+    .program-card--featured:hover {
+      transform: translateY(-1.15rem);
+    }
+  }
+
+  .program-card__ribbon {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    padding: 0.3rem 0.8rem;
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-950);
+  }
+  .program-card__stage {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-gold-500) 35%, transparent);
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-gold-400);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .program-card,
+    .program-card:hover,
+    .program-card--featured,
+    .program-card--featured:hover {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

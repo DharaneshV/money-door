@@ -54,37 +54,69 @@ import Button from "../ui/Button.astro";
 </div>
 
 <script>
-  const toggle = document.getElementById("mobile-menu-toggle");
-  const panel = document.getElementById("mobile-menu-panel");
-  const openIcon = document.getElementById("menu-icon-open");
-  const closeIcon = document.getElementById("menu-icon-close");
+  // Elements are looked up on every page load, never captured once into
+  // module scope.
+  //
+  // This previously bound `toggle` at module-execution time. Module scripts
+  // run once per document, but ClientRouter replaces the header node on a
+  // view transition — so after the first navigation the listener belonged to
+  // a discarded node and the button did nothing. On a phone the burger IS the
+  // only navigation, so that stranded the visitor on whatever page they
+  // landed on. Every other script here already re-inits on `astro:page-load`;
+  // this one didn't.
+  function els() {
+    return {
+      toggle: document.getElementById("mobile-menu-toggle"),
+      panel: document.getElementById("mobile-menu-panel"),
+      openIcon: document.getElementById("menu-icon-open"),
+      closeIcon: document.getElementById("menu-icon-close"),
+    };
+  }
 
   function closeMenu() {
+    const { toggle, panel, openIcon, closeIcon } = els();
     panel?.classList.remove("is-open");
     toggle?.setAttribute("aria-expanded", "false");
     openIcon?.classList.remove("hidden");
     closeIcon?.classList.add("hidden");
   }
+
   function openMenu() {
+    const { toggle, panel, openIcon, closeIcon } = els();
     panel?.classList.add("is-open");
     toggle?.setAttribute("aria-expanded", "true");
     openIcon?.classList.add("hidden");
     closeIcon?.classList.remove("hidden");
   }
 
-  toggle?.addEventListener("click", () => {
-    const isOpen = toggle.getAttribute("aria-expanded") === "true";
-    if (isOpen) closeMenu();
-    else openMenu();
-  });
+  function initMobileNav() {
+    const { toggle, panel } = els();
+    if (!toggle || !panel) return;
+    // Per-element guard: if this exact node is already wired, a second bind
+    // would toggle twice per click and the menu would appear dead again.
+    if (toggle.dataset.navBound) return;
+    toggle.dataset.navBound = "1";
 
-  panel?.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
+    toggle.addEventListener("click", () => {
+      if (toggle.getAttribute("aria-expanded") === "true") closeMenu();
+      else openMenu();
+    });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
-  });
+    panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
+  }
 
-  // Header persists across page transitions (transition:persist), so close
-  // the menu on navigation rather than leaving it open over the new page.
-  document.addEventListener("astro:before-preparation", closeMenu);
+  // Document-level listeners survive view transitions, so they are bound once
+  // for the lifetime of the tab rather than per page load — re-adding them on
+  // every navigation would stack duplicates.
+  if (!(window as any).__mdMobileNavDocBound) {
+    (window as any).__mdMobileNavDocBound = true;
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+    // Close on navigation rather than leaving the panel open over the new page.
+    document.addEventListener("astro:before-preparation", closeMenu);
+  }
+
+  initMobileNav();
+  document.addEventListener("astro:page-load", initMobileNav);
 </script>

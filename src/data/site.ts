@@ -30,22 +30,6 @@ export const announcement = {
   href: "/courses/mdc1/",
 } as const;
 
-// Full-screen homepage intro.
-//
-// `src` null → the built-in CSS-animated bull sequence plays (a single static
-// frame sold with camera motion). Drop a file into `public/` and set `src` to
-// its path (e.g. "/intro.mp4") to play a real video instead — nothing else
-// needs changing. Keep it short, silent and muted: it blocks first view of the
-// page, browsers refuse to autoplay anything with sound, and it is skippable.
-//
-// `maxDurationMs` is the ceiling the overlay is allowed to stay up. It drives
-// the safety timeouts as well, so a video that stalls or never fires `ended`
-// can still never trap the viewer behind the curtain.
-export const introVideo = {
-  src: null as string | null,
-  maxDurationMs: 2600,
-} as const;
-
 export const contact = {
   // Two numbers appear in the source materials; this one is the mockup's primary contact.
   // TODO: confirm with client whether both should be public and which is WhatsApp-active.
@@ -53,19 +37,21 @@ export const contact = {
   primaryPhoneE164: "919159988000", // used for tel: and wa.me links
   secondaryPhoneDisplay: "+91 95009 30700",
   secondaryPhoneE164: "919500930700",
-  whatsappMessage: "Hi Money Door FX Academy, I'd like to know more about your courses.",
+  whatsappMessage:
+    "Hi Money Door FX Academy, I'd like to know more about your courses.",
   // TODO: swap to a branded support@ inbox once the domain + Zoho/Workspace mail is set up.
   email: "moneydoorchennai@gmail.com",
   addressLine: "Chennai, Tamil Nadu, India",
 } as const;
 
 export const whatsappHref = `https://wa.me/${contact.primaryPhoneE164}?text=${encodeURIComponent(
-  contact.whatsappMessage
+  contact.whatsappMessage,
 )}`;
 
 // Broadcast-only WhatsApp Channel (separate from the 1:1 chat number above) —
 // for market updates/announcements rather than direct conversation.
-export const whatsappChannelUrl = "https://whatsapp.com/channel/0029VbAlxyC1NCrL77kXNR30";
+export const whatsappChannelUrl =
+  "https://whatsapp.com/channel/0029VbAlxyC1NCrL77kXNR30";
 
 // TODO: every URL here is a placeholder (null) until the client provides real handles —
 // components must skip rendering any social link whose url is null rather than linking to "#".
@@ -101,9 +87,21 @@ export const primaryNav: NavLink[] = [
     // No "All Courses" child: the parent label already links to /courses/, so
     // the first item was a duplicate of the thing being hovered.
     children: [
-      { label: "MDC1 — Foundation Trader", href: "/courses/mdc1/", description: "Free · 1 week" },
-      { label: "MDC2 — Professional Trader", href: "/courses/mdc2/", description: "USDT 300 · 6 months" },
-      { label: "MDC3 — Elite Master Trader", href: "/courses/mdc3/", description: "USDT 1,000 · 12 months" },
+      {
+        label: "MDC1 — Foundation Trader",
+        href: "/courses/mdc1/",
+        description: "Free · 1 week",
+      },
+      {
+        label: "MDC2 — Professional Trader",
+        href: "/courses/mdc2/",
+        description: "USDT 300 · 6 months",
+      },
+      {
+        label: "MDC3 — Elite Master Trader",
+        href: "/courses/mdc3/",
+        description: "USDT 1,000 · 12 months",
+      },
     ],
   },
   // Deliberately a sibling of Courses, not a child: Courses is "which program
@@ -120,9 +118,21 @@ export const primaryNav: NavLink[] = [
     href: "/partnerships/",
     children: [
       { label: "All Partners", href: "/partnerships/" },
-      { label: "CFD Brokers", href: "/partnerships/cfd-brokers/", description: "Gold & FX trading accounts" },
-      { label: "Prop Firms", href: "/partnerships/prop-firms/", description: "Funded account evaluations" },
-      { label: "Crypto Exchanges", href: "/partnerships/crypto-exchanges/", description: "Spot & derivatives" },
+      {
+        label: "CFD Brokers",
+        href: "/partnerships/cfd-brokers/",
+        description: "Gold & FX trading accounts",
+      },
+      {
+        label: "Prop Firms",
+        href: "/partnerships/prop-firms/",
+        description: "Funded account evaluations",
+      },
+      {
+        label: "Crypto Exchanges",
+        href: "/partnerships/crypto-exchanges/",
+        description: "Spot & derivatives",
+      },
     ],
   },
   { label: "Our Achievements", href: "/our-achievements/" },
@@ -203,7 +213,11 @@ export const partnerDisclosure =
 export type PartnerGroup = "CFD Brokers" | "Prop Firms" | "Crypto Exchanges";
 
 /** Display order for the group headings on /partnerships. */
-export const partnerGroupOrder: PartnerGroup[] = ["CFD Brokers", "Prop Firms", "Crypto Exchanges"];
+export const partnerGroupOrder: PartnerGroup[] = [
+  "CFD Brokers",
+  "Prop Firms",
+  "Crypto Exchanges",
+];
 
 /**
  * Each group also gets its own page at /partnerships/<slug>/, reachable from

@@ -76,14 +76,16 @@ const { groups } = Astro.props;
               <div id={`curriculum-panel-${t.n}`} class="accordion-panel">
                 <div>
                   <div class="pb-6 pl-[calc(2.5rem+0.75rem)] pr-2">
-                    <ul class="grid gap-x-8 gap-y-2 sm:grid-cols-2">
-                      {t.items.map((item) => (
-                        <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/65">
-                          <span
-                            class="mt-[0.55rem] h-1 w-1 flex-none rounded-full bg-gold-500/70"
-                            aria-hidden="true"
-                          />
-                          <span>{item}</span>
+                    {/* Numbered hairline rows rather than dot bullets, matching
+                        CurriculumGrid on the course pages — a dot in front of
+                        every line turned these panels into plain documents. */}
+                    <ul class="grid gap-x-10 sm:grid-cols-2">
+                      {t.items.map((item, ii) => (
+                        <li class="panel-row">
+                          <span class="panel-row__num" aria-hidden="true">
+                            {String(ii + 1).padStart(2, "0")}
+                          </span>
+                          <span class="panel-row__text">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -153,6 +155,44 @@ const { groups } = Astro.props;
      starts on the same vertical line regardless of index digits. */
   .curriculum-toggle > .section-index {
     width: 2.5rem;
+  }
+
+  /* Expanded-panel items — same numbered-row language as CurriculumGrid. */
+  .panel-row {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    align-items: baseline;
+    gap: 0.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 7%, transparent);
+    padding: 0.55rem 0.25rem 0.55rem 0;
+    transition: background-color 0.3s ease;
+  }
+  .panel-row:hover {
+    background: color-mix(in srgb, var(--color-gold-500) 6%, transparent);
+  }
+  .panel-row__num {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    font-variant-numeric: tabular-nums;
+    color: color-mix(in srgb, var(--color-gold-500) 60%, transparent);
+  }
+  .panel-row__text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-paper) 68%, transparent);
+    transition: color 0.3s ease;
+  }
+  .panel-row:hover .panel-row__text {
+    color: var(--color-paper);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel-row,
+    .panel-row__text {
+      transition: none;
+    }
   }
 </style>
 

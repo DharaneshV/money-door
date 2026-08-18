@@ -1,26 +1,172 @@
 ---
-// Named blocks of curriculum topics, rendered as a card grid. Shared across
-// all three MDC course pages — same shape, same rendering, only the data differs.
+// Named blocks of curriculum topics. Shared across all three MDC course pages
+// — same shape, same rendering, only the data differs.
+//
+// Items are hairline-separated rows rather than dot bullets. A dot in front of
+// every line is the plainest possible treatment and, stacked six or seven deep
+// across eight cards, the page turned into one long bulleted document. Rows
+// give each item its own band, a hover state, and room for a numeral — which
+// is also the editorial language the rest of this site already uses.
 interface Props {
   sections: { title: string; items: string[] }[];
 }
 const { sections } = Astro.props;
 ---
 
-<div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2" data-reveal-stagger>
+<div class="curriculum-grid" data-reveal-stagger>
   {
-    sections.map((s) => (
-      <div class="surface-card p-[clamp(1.5rem,2.5vw,2rem)]">
-        <h3 class="font-heading text-base font-bold text-paper">{s.title}</h3>
-        <ul class="mt-4 flex flex-col gap-2.5">
-          {s.items.map((item) => (
-            <li class="flex items-start gap-2.5 text-sm leading-relaxed text-paper/70">
-              <span class="mt-[0.55rem] h-1 w-1 flex-none rounded-full bg-gold-500" aria-hidden="true" />
-              <span>{item}</span>
+    sections.map((s, si) => (
+      <section class="curriculum-card">
+        <header class="curriculum-card__head">
+          <span class="curriculum-card__index" aria-hidden="true">
+            {String(si + 1).padStart(2, "0")}
+          </span>
+          <h3 class="curriculum-card__title">{s.title}</h3>
+        </header>
+
+        <ul class="curriculum-card__list">
+          {s.items.map((item, ii) => (
+            <li class="curriculum-row">
+              <span class="curriculum-row__num" aria-hidden="true">
+                {String(ii + 1).padStart(2, "0")}
+              </span>
+              <span class="curriculum-row__text">{item}</span>
             </li>
           ))}
         </ul>
-      </div>
+      </section>
     ))
   }
 </div>
+
+<style>
+  .curriculum-grid {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+  @media (min-width: 640px) {
+    .curriculum-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .curriculum-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background-image: linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--color-paper) 5%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(180deg, var(--color-ink-900), var(--color-ink-950));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 9%, transparent);
+    padding: clamp(1.4rem, 2.4vw, 2rem);
+    transition: box-shadow 0.45s ease;
+  }
+  /* Gold spine down the left edge — grows on hover so the whole card responds,
+     not just the row under the cursor. */
+  .curriculum-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      var(--color-gold-500),
+      color-mix(in srgb, var(--color-gold-700) 40%, transparent)
+    );
+    transform: scaleY(0.35);
+    transform-origin: top;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .curriculum-card:hover {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+  }
+  .curriculum-card:hover::before {
+    transform: scaleY(1);
+  }
+
+  .curriculum-card__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    padding-bottom: clamp(0.9rem, 1.8vw, 1.15rem);
+  }
+  .curriculum-card__index {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    /* Outlined numeral: present enough to anchor the card, quiet enough not to
+       compete with the title beside it. */
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--color-gold-500) 55%, transparent);
+  }
+  .curriculum-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-paper);
+  }
+
+  .curriculum-card__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .curriculum-row {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    align-items: baseline;
+    gap: 0.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 8%, transparent);
+    padding: 0.65rem 0.5rem 0.65rem 0;
+    transition:
+      background-color 0.3s ease,
+      padding-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .curriculum-row:hover {
+    background: color-mix(in srgb, var(--color-gold-500) 6%, transparent);
+    padding-left: 0.4rem;
+  }
+  .curriculum-row__num {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    font-variant-numeric: tabular-nums;
+    color: color-mix(in srgb, var(--color-gold-500) 65%, transparent);
+    transition: color 0.3s ease;
+  }
+  .curriculum-row:hover .curriculum-row__num {
+    color: var(--color-gold-400);
+  }
+  .curriculum-row__text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-paper) 72%, transparent);
+    transition: color 0.3s ease;
+  }
+  .curriculum-row:hover .curriculum-row__text {
+    color: var(--color-paper);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .curriculum-card::before {
+      transform: scaleY(1);
+      transition: none;
+    }
+    .curriculum-card,
+    .curriculum-row {
+      transition: none;
+    }
+    .curriculum-row:hover {
+      padding-left: 0;
+    }
+  }
+</style>

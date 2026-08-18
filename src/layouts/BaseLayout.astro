@@ -6,8 +6,7 @@ import Footer from "../components/layout/Footer.astro";
 import WhatsAppButton from "../components/layout/WhatsAppButton.astro";
 import SeoHead from "../components/seo/SeoHead.astro";
 import StructuredData from "../components/seo/StructuredData.astro";
-import SiteIntro from "../components/layout/SiteIntro.astro";
-import { announcement, introVideo } from "../data/site";
+import { announcement } from "../data/site";
 
 interface Props {
   title: string;
@@ -36,64 +35,32 @@ const isHome = Astro.url.pathname === "/";
     <ClientRouter />
     {/* Runs synchronously before first paint. Sets the `.js` flag (all
         animation/hiding CSS is scoped to it, so with JS off nothing is ever
-        hidden), restores a dismissed announcement without a flash, and arms
-        the homepage intro. */}
-    <script
-      is:inline
-      define:vars={{ annId: announcement.id, isHome, introMaxMs: introVideo.maxDurationMs }}
-    >
+        hidden) and restores a dismissed announcement without a flash. */}
+    <script is:inline define:vars={{ annId: announcement.id }}>
       (function () {
         var html = document.documentElement;
-        html.classList.add("js");
 
-        try {
-          if (localStorage.getItem("md:ann") === annId) html.classList.add("ann-dismissed");
-        } catch (e) {
-          /* storage unavailable — bar just stays visible */
+        function applyFlags() {
+          html.classList.add("js");
+          try {
+            if (localStorage.getItem("md:ann") === annId) html.classList.add("ann-dismissed");
+          } catch (e) {
+            /* storage unavailable — bar just stays visible */
+          }
         }
+        applyFlags();
 
-        // --- Homepage intro gate -------------------------------------------
-        // Four independent gates, all of which must pass:
-        //  1. homepage only (isHome, decided at build time)
-        //  2. window sentinel — this head script RE-EXECUTES on every
-        //     ClientRouter swap, so `window` (which survives swaps within the
-        //     same document) is what actually prevents a replay on
-        //     client-side navigation back to `/`. sessionStorage alone cannot.
-        //  3. sessionStorage, written on ARM not on completion, so a reload
-        //     mid-intro doesn't replay it
-        //  4. reduced-motion is never subjected to it
-        if (!isHome) return;
-        if (window.__mdIntroArmed) return;
-        var reduced = false;
-        try {
-          reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        } catch (e) {}
-        if (reduced) return;
-        try {
-          if (sessionStorage.getItem("md:intro:v1")) return;
-          sessionStorage.setItem("md:intro:v1", "1");
-        } catch (e) {
-          return; // no storage → don't risk replaying it on every load
-        }
-
-        window.__mdIntroArmed = true;
-        html.classList.add("intro-active");
-
-        // Dead-man switch. Registered here, in the same synchronous script
-        // that applied the scroll lock — so the lock can never outlive it,
-        // even if the intro's own module fails to load. Sits beyond the
-        // intro's own max duration plus its curtain animation, so it only
-        // ever fires when something has genuinely gone wrong.
-        setTimeout(function () {
-          html.classList.remove("intro-active", "intro-closing");
-        }, introMaxMs + 1800);
+        // ClientRouter copies the incoming document's <html> attributes over
+        // the live ones, and it will not re-execute an inline head script it
+        // considers unchanged — so both flags are wiped on every client-side
+        // navigation unless they're re-applied here. Without this the site
+        // loses all of its scroll-reveal motion after the first link click,
+        // and a dismissed announcement bar comes back.
+        document.addEventListener("astro:after-swap", applyFlags);
       })();
     </script>
   </head>
   <body class="flex min-h-screen flex-col">
-    {/* Homepage only, and deliberately not transition:persist-ed — it's a
-        per-load artifact that must not survive a client-side navigation. */}
-    {isHome && <SiteIntro />}
     <div id="route-progress" aria-hidden="true"></div>
     <Header transition:persist />
     <main class="flex-1">
@@ -163,9 +130,6 @@ const isHome = Astro.url.pathname === "/";
       // transition (astro:page-load fires on both), since transitioned-in
       // content is new DOM the original observer never saw.
       function initReveal() {
-        // Behind the intro overlay these would play out and finish unseen,
-        // wasting the hero's signature motion. Deferred to `md:intro-done`.
-        if (document.documentElement.classList.contains("intro-active")) return;
         var els = document.querySelectorAll(
           "[data-reveal], [data-reveal-stagger], [data-reveal-lines]"
         );
@@ -216,7 +180,6 @@ const isHome = Astro.url.pathname === "/";
       // Animated count-up for stat numbers (e.g. "18+", "2,500+"). Starts once
       // the number actually scrolls into view, not on page load.
       function initCountUp() {
-        if (document.documentElement.classList.contains("intro-active")) return;
         var els = document.querySelectorAll("[data-count-to]:not([data-counted])");
         if (!els.length) return;
         var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -263,12 +226,6 @@ const isHome = Astro.url.pathname === "/";
       initReveal();
       initHeaderScrollState();
       initCountUp();
-      // Fired by SiteIntro as the curtain lifts, so the hero's line reveals
-      // and count-ups run for a viewer who can actually see them.
-      document.addEventListener("md:intro-done", function () {
-        initReveal();
-        initCountUp();
-      });
       document.addEventListener("astro:page-load", function () {
         initReveal();
         initHeaderScrollState();

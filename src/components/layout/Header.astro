@@ -135,3 +135,37 @@ const isActive = (href: string) =>
     <MobileNav />
   </Container>
 </header>
+
+<style>
+  /* Compact nav band (1280–1599px).
+     ------------------------------------------------------------------
+     The desktop nav turns on at `xl` (1280px) and now carries eight
+     long uppercase labels — several of them client-specified, so they
+     can't be shortened. At the comfortable `2xl` spacing that row is
+     ~290px too wide for a 1280px viewport: the pill is a nowrap flex
+     row, so the excess didn't push the page wider (the layout uses
+     `overflow-x: clip`, which is why the route audit never flagged it)
+     — it simply pushed the "Join Now" CTA off the right edge, entirely
+     invisible at 1280, 1366 and 1440px, the three commonest laptop
+     widths. Tightening tracking and gaps in this band brings the whole
+     row back inside the pill; 1600px and up keeps the roomier spacing. */
+  @media (min-width: 1280px) and (max-width: 1599px) {
+    .nav-pill {
+      gap: 1rem;
+      padding-inline: 1rem;
+    }
+    .nav-pill nav {
+      gap: 0.75rem;
+    }
+    /* `.eyebrow` sets 0.28em tracking — luxurious for a standalone
+       label, ruinous across ~79 characters of navigation. */
+    .nav-pill nav :global(.eyebrow) {
+      letter-spacing: 0.11em;
+    }
+    .nav-pill > :global(a[href="/join-now/"]),
+    .nav-pill > :global(a.eyebrow:last-of-type) {
+      padding-inline: 1.15rem;
+      letter-spacing: 0.11em;
+    }
+  }
+</style>
