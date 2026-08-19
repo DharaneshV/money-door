@@ -464,6 +464,21 @@
   /* ---- Consent ------------------------------------------------
      Boxed so the DPDP consent reads as a deliberate decision rather than one
      more field to tab past. */
+  /* Shown at the top of a dedicated enrolment form so the visitor can see which
+     program they are signing up for without scrolling back to the heading. */
+  .interest-banner {
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-gold-500) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+    padding: 1rem 1.25rem;
+  }
+  .interest-banner__value {
+    margin-top: 0.4rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
+    color: var(--color-gold-300);
+  }
+
   .consent-box {
     margin-top: 2rem;
     border-radius: var(--radius-field);
@@ -523,7 +538,11 @@
 
   .select-menu {
     position: absolute;
-    z-index: 40;
+    /* Above the fixed WhatsApp button (z-40), which is painted later in the
+       document and so won this on tie-break — it sat on top of the open
+       country list on a phone. Still below the sticky header (z-50), which
+       position() already keeps the menu clear of. */
+    z-index: 45;
     left: 0;
     right: 0;
     margin-top: 0.4rem;
@@ -539,15 +558,23 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(-0.35rem);
+    /* `visibility` is stepped, not eased: delayed on close so the fade is
+       still seen, immediate on open so the search box can take focus. While
+       it was transitioned symmetrically the menu was still `hidden` when
+       open() called .focus(), and the focus was silently dropped. */
     transition:
       opacity 0.22s ease,
       transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-      visibility 0.22s;
+      visibility 0s linear 0.22s;
   }
   .select-shell.is-open .select-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    transition:
+      opacity 0.22s ease,
+      transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s;
   }
   /* Opens upward when there isn't room below. */
   .select-shell.is-up .select-menu {
@@ -580,6 +607,13 @@
     transition:
       background-color 0.18s ease,
       color 0.18s ease;
+  }
+  /* Touch devices get a taller row so each option clears the 44px minimum
+     tap target; a mouse pointer doesn't need the extra height. */
+  @media (pointer: coarse) {
+    .select-option {
+      padding-block: 0.8rem;
+    }
   }
   /* Both states styled: pointer hover and keyboard-driven "active" index. */
   .select-option:hover,
@@ -793,13 +827,25 @@
 
   /* Tiny uppercase micro-label — the counterpoint that makes oversized type
      read as deliberate editorial rather than merely big. */
+  /* Used for section labels, nav items and button text, so its floor is the
+     single biggest lever on mobile readability. The old clamp bottomed out at
+     10px on a phone and only reached its 11.5px maximum on a desktop — exactly
+     backwards. The floor now starts at 11px; the desktop end is unchanged. */
   .eyebrow {
     font-family: var(--font-heading);
-    font-size: clamp(0.625rem, 0.58rem + 0.16vw, 0.72rem);
+    font-size: clamp(0.6875rem, 0.62rem + 0.18vw, 0.72rem);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.28em;
     line-height: 1;
+  }
+  /* 0.28em is a lot of air at 11px on a 390px-wide screen — it spaces short
+     labels into something that reads letter-by-letter. Tightening also makes
+     every label narrower, so it can only reduce overflow pressure. */
+  @media (max-width: 640px) {
+    .eyebrow {
+      letter-spacing: 0.18em;
+    }
   }
 
   /* Editorial section numbering (01 / 02 / 03), used in place of icon badges. */
@@ -840,6 +886,16 @@
   .link-underline {
     position: relative;
     display: inline-block;
+  }
+  /* Inline text CTAs ("Book Free Consultation", "Read more", "Read the full
+     bio") are only as tall as their type — about 16px, well under the 44px
+     minimum for a thumb. Pad the link on touch and pull the same amount back
+     as margin, so the hit area grows without moving anything on the page. */
+  @media (pointer: coarse) {
+    a:has(> .link-underline) {
+      padding-block: 0.875rem;
+      margin-block: -0.875rem;
+    }
   }
   .link-underline::after {
     content: "";
@@ -920,6 +976,14 @@
   .js [data-reveal-lines] .reveal-line {
     display: block;
     overflow: hidden;
+    /* The display face is set at a line-height just under 1 (82.32px at 84px),
+       which is what gives the headline its tight editorial setting — but it
+       means descenders sit *below* the line box, and `overflow: hidden` (needed
+       for the mask) sliced the tail off the "g" in "Trading Academy".
+       Extending the clip box downward and pulling the same amount back as
+       margin gives descenders room without moving anything on the page. */
+    padding-bottom: 0.18em;
+    margin-bottom: -0.18em;
   }
   .js [data-reveal-lines] .reveal-line > span {
     display: block;
@@ -1118,6 +1182,18 @@
     grid-template-rows: 1fr;
     opacity: 1;
   }
+  /* The panel lives inside the sticky header, so it can never be scrolled
+     into view: anything past the fold is unreachable at every scroll
+     position. Unconstrained it runs ~795px tall, which left six items —
+     "Join Now" among them — permanently off-screen on a 568px phone.
+     Cap it to the space under the header and let it scroll on its own.
+     `dvh` so the mobile URL bar collapsing doesn't change the maths. */
+  #mobile-menu-panel.is-open > div {
+    max-height: calc(100vh - 10rem);
+    max-height: calc(100dvh - 10rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 
   /* ============================================================
      PHASE 2 — structural patterns borrowed from fundingpips.com,
@@ -1174,7 +1250,7 @@
     border: 1px solid color-mix(in srgb, var(--color-paper) 18%, transparent);
     padding: 0.45rem 0.9rem;
     font-family: var(--font-heading);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;

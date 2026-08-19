@@ -1,0 +1,253 @@
+---
+import { priceView, FUNDED_DISCLAIMER } from "../../lib/pricing";
+
+// The fee + discount + included-benefits block for a single MDC course.
+//
+// Three things have to be legible at a glance: what the course normally costs,
+// what it costs today, and what comes with it at no extra charge. Anything
+// depending on a third-party prop firm is marked with an asterisk and carries
+// the funded-account disclaimer immediately below — the benefit is access to an
+// evaluation, never a promise of funding.
+interface Bonus {
+  title: string;
+  value: string;
+  description?: string;
+  conditional?: boolean;
+}
+interface Props {
+  code: string;
+  price: number;
+  listPrice?: number;
+  currency?: string;
+  priceLabel?: string;
+  bonuses?: Bonus[];
+  ctaHref?: string;
+}
+const {
+  code,
+  price,
+  listPrice,
+  currency = "USD",
+  priceLabel,
+  bonuses = [],
+  ctaHref = `/join/${code.toLowerCase()}/`,
+} = Astro.props;
+
+const pv = priceView(price, listPrice, currency, priceLabel);
+const hasConditional = bonuses.some((b) => b.conditional);
+---
+
+<div class="offer" data-reveal>
+  <div class="offer__price">
+    <span class="eyebrow text-gold-500">Enrolment fee</span>
+    <div class="offer__figures">
+      {pv.was && <span class="offer__was">{pv.was}</span>}
+      <span class="offer__now">{pv.now}</span>
+      {pv.discountLabel && <span class="offer__badge">{pv.discountLabel}</span>}
+    </div>
+    {
+      pv.saving && (
+        <p class="offer__saving">
+          You save {pv.saving} on the course fee.
+        </p>
+      )
+    }
+    <a href={ctaHref} class="offer__cta">
+      Enrol in {code} — {pv.now}
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M3.5 8h9M8.5 3.5 13 8l-4.5 4.5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+    </a>
+    {/* Advisor route is the consultation form, not this course's enrolment form —
+        someone still deciding shouldn't be dropped into a checkout-shaped page. */}
+    <a href="/join/consultation/" class="offer__cta-secondary">
+      Talk to a course advisor — free 1-hour session
+    </a>
+  </div>
+
+  {
+    bonuses.length > 0 && (
+      <div class="offer__bonuses">
+        <span class="eyebrow text-gold-500">Included at no extra charge</span>
+        <ul class="offer__list">
+          {bonuses.map((b) => (
+            <li class="offer__item">
+              <div class="offer__item-head">
+                <span class="offer__item-title">
+                  {b.title}
+                  {b.conditional && <sup class="offer__ast">*</sup>}
+                </span>
+                <span class="offer__item-value">{b.value}</span>
+              </div>
+              {b.description && <p class="offer__item-desc">{b.description}</p>}
+            </li>
+          ))}
+        </ul>
+        {hasConditional && <p class="offer__disclaimer">*{FUNDED_DISCLAIMER}</p>}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .offer {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .offer {
+      grid-template-columns: 0.85fr 1.15fr;
+    }
+  }
+
+  .offer__price {
+    border-radius: var(--radius-card);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    background-image: linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--color-gold-500) 12%, transparent),
+        transparent 60%
+      ),
+      linear-gradient(180deg, var(--color-ink-900), var(--color-ink-950));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 28%, transparent);
+  }
+  .offer__figures {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem;
+    margin-top: 0.9rem;
+  }
+  .offer__was {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem);
+    color: color-mix(in srgb, var(--color-paper) 40%, transparent);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .offer__now {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 1.9rem + 2.4vw, 3.6rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-gold-400);
+  }
+  .offer__badge {
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    padding: 0.3rem 0.7rem;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-950);
+  }
+  .offer__saving {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-paper) 60%, transparent);
+  }
+
+  .offer__cta {
+    margin-top: 1.5rem;
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    padding: 0.85rem 1.4rem;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-950);
+    transition:
+      background-color 0.3s ease,
+      transform 0.3s ease;
+  }
+  .offer__cta:hover {
+    background: var(--color-gold-400);
+    transform: translateY(-1px);
+  }
+  .offer__cta-secondary {
+    margin-top: 0.75rem;
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-paper) 60%, transparent);
+    transition: color 0.3s ease;
+  }
+  .offer__cta-secondary:hover {
+    color: var(--color-gold-400);
+  }
+
+  .offer__list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .offer__item {
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 10%, transparent);
+    padding: 0.95rem 0;
+  }
+  .offer__item:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-paper) 10%, transparent);
+  }
+  .offer__item-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .offer__item-title {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+    color: var(--color-paper);
+  }
+  .offer__ast {
+    color: var(--color-gold-500);
+  }
+  .offer__item-value {
+    flex: none;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--color-gold-500) 16%, transparent);
+    padding: 0.28rem 0.65rem;
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gold-300);
+    white-space: nowrap;
+  }
+  .offer__item-desc {
+    margin-top: 0.45rem;
+    max-width: 60ch;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-paper) 62%, transparent);
+  }
+  .offer__disclaimer {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-paper) 45%, transparent);
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+import { formatPrice, FUNDED_DISCLAIMER } from "../../lib/pricing";
+import type { CollectionEntry } from "astro:content";
+
+// Quick comparison of the three MDC programs.
+//
+// Renders as a real <table> on desktop, where side-by-side columns are the
+// whole point, and collapses to one card per program below 900px. A six-column
+// table inside a 390px screen is either unreadably small or forces a sideways
+// scroll — and this site is used mostly on phones, so the stacked form is the
+// primary layout rather than an afterthought.
+//
+// Every figure is derived from the programs collection, so the table can never
+// disagree with the course pages it summarises.
+interface Props {
+  programs: CollectionEntry<"programs">[];
+  index?: string;
+}
+const { programs, index } = Astro.props;
+
+const rows = programs
+  .filter((p) => p.data.comparison)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => {
+    const d = p.data;
+    return {
+      code: d.code,
+      name: d.name,
+      href: `/courses/${d.code.toLowerCase()}/`,
+      listPrice: d.listPrice ? formatPrice(d.listPrice, d.currency) : "—",
+      price: d.priceLabel ?? formatPrice(d.price, d.currency),
+      ...d.comparison!,
+    };
+  });
+
+const COLS = [
+  { key: "listPrice", label: "Actual fee" },
+  { key: "price", label: "Offer fee" },
+  { key: "copyTradingFee", label: "Copy Trading fee" },
+  { key: "fundedAccount", label: "Funded account" },
+  { key: "propFirmTraining", label: "Prop firm training" },
+] as const;
+---
+
+<div class="cmp" data-reveal>
+  {/* Desktop: a genuine table, so it is announced as one to screen readers. */}
+  <table class="cmp__table">
+    <caption class="sr-only">
+      Comparison of MDC1, MDC2 and MDC3 fees and included benefits
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Program</th>
+        {COLS.map((c) => <th scope="col">{c.label}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr>
+            <th scope="row">
+              <a href={r.href} class="cmp__prog">
+                <span class="cmp__code">{r.code}</span>
+                <span class="cmp__name">{r.name}</span>
+              </a>
+            </th>
+            <td class="cmp__was">{r.listPrice}</td>
+            <td class="cmp__now">{r.price}</td>
+            <td>{r.copyTradingFee}</td>
+            <td>{r.fundedAccount}</td>
+            <td>{r.propFirmTraining}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  {/* Phone: one card per program — same data, no sideways scroll. */}
+  <div class="cmp__cards">
+    {
+      rows.map((r) => (
+        <article class="cmp__card">
+          <a href={r.href} class="cmp__card-head">
+            <span class="cmp__code">{r.code}</span>
+            <span class="cmp__name">{r.name}</span>
+          </a>
+          <dl class="cmp__dl">
+            {COLS.map((c) => (
+              <div class="cmp__pair">
+                <dt>{c.label}</dt>
+                <dd
+                  class:list={[
+                    c.key === "listPrice" && "cmp__was",
+                    c.key === "price" && "cmp__now",
+                  ]}
+                >
+                  {r[c.key]}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="cmp__note">*{FUNDED_DISCLAIMER}</p>
+</div>
+
+<style>
+  /* ---- shared bits ---- */
+  .cmp__code {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-gold-500);
+  }
+  .cmp__name {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--color-paper);
+  }
+  .cmp__was {
+    color: color-mix(in srgb, var(--color-paper) 42%, transparent);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .cmp__now {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--color-gold-400);
+  }
+  .cmp__note {
+    margin-top: 1.25rem;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-paper) 45%, transparent);
+  }
+
+  /* ---- table base (shown from 900px, see the end of this block) ---- */
+  .cmp__table {
+    display: none;
+  }
+
+  /* ---- cards (< 900px) ---- */
+  .cmp__cards {
+    display: grid;
+    gap: 1rem;
+  }
+  .cmp__card {
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    background-image: linear-gradient(180deg, var(--color-ink-900), var(--color-ink-950));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 10%, transparent);
+  }
+  .cmp__card-head {
+    display: block;
+    padding-bottom: 0.9rem;
+  }
+  .cmp__dl {
+    display: flex;
+    flex-direction: column;
+  }
+  .cmp__pair {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 9%, transparent);
+    padding: 0.7rem 0;
+  }
+  .cmp__pair dt {
+    font-family: var(--font-heading);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-paper) 50%, transparent);
+  }
+  .cmp__pair dd {
+    text-align: right;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--color-paper) 78%, transparent);
+  }
+
+  /* ---- layout swap ------------------------------------------------------
+     Declared last, after every base rule above. An earlier version put the
+     `.cmp__cards { display: grid }` base rule *after* this query, so at equal
+     specificity it won and both the table and the cards rendered at desktop. */
+  @media (min-width: 900px) {
+    .cmp__cards {
+      display: none;
+    }
+    .cmp__table {
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .cmp__table th,
+    .cmp__table td {
+      padding: 1.1rem 1rem;
+      vertical-align: middle;
+    }
+    .cmp__table thead th {
+      border-bottom: 1px solid color-mix(in srgb, var(--color-gold-500) 30%, transparent);
+      font-family: var(--font-heading);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--color-paper) 55%, transparent);
+    }
+    .cmp__table tbody tr {
+      border-bottom: 1px solid color-mix(in srgb, var(--color-paper) 9%, transparent);
+      transition: background-color 0.3s ease;
+    }
+    .cmp__table tbody tr:hover {
+      background: color-mix(in srgb, var(--color-gold-500) 6%, transparent);
+    }
+    .cmp__table td {
+      font-size: 0.9rem;
+      color: color-mix(in srgb, var(--color-paper) 72%, transparent);
+    }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import Container from "../ui/Container.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Button from "../ui/Button.astro";
+import EconomicCalendarWidget from "./EconomicCalendarWidget.astro";
+
+// Live economic calendar, promoted onto the homepage.
+//
+// This is the only genuinely live thing on the site, and it is the one section
+// that gives a returning visitor a reason to open the homepage on a weekday.
+// Sits high — directly after the programs — rather than being buried near the
+// footer next to the blog.
+interface Props {
+  index?: string;
+}
+const { index } = Astro.props;
+---
+
+<section class="surface-ink py-section">
+  <Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
+    <SectionHeading
+      eyebrow="This Week's Market"
+      index={index}
+      title="Live Economic Calendar"
+      subtitle="High-impact releases move Gold and the major pairs sharply. Knowing when they land is part of managing risk — and part of the daily routine we teach."
+      align="left"
+    />
+
+    <div class="surface-card p-3 sm:p-4" data-reveal>
+      <EconomicCalendarWidget height={520} />
+    </div>
+
+    <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <p class="max-w-2xl text-sm leading-relaxed text-paper/55">
+        Data provided by TradingView. Money Door FX Academy does not produce, verify or guarantee
+        the accuracy of this third-party data, and shares it for educational reference only.
+      </p>
+      <Button href="/economic-calendar/" variant="secondary" arrow>Open Full Calendar</Button>
+    </div>
+  </Container>
+</section>

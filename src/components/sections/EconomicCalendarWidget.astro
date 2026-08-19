@@ -1,0 +1,118 @@
+---
+// TradingView's economic-events embed, wrapped so it can be used on more than
+// one page and so it survives client-side navigation.
+//
+// Two things were wrong with the inline version this replaces:
+//
+// 1. The config passed `height: "100%"`. TradingView's script writes that value
+//    onto the container as an inline style, which then has no definite parent
+//    height to resolve against — so the widget collapsed to its content height
+//    (~150px, about two rows) inside a 660px box, leaving a large empty gap.
+//    A pixel height is passed instead.
+//
+// 2. The embed is a plain inline <script>. Astro's ClientRouter does not
+//    re-execute those on a client-side navigation, so arriving at the page from
+//    an in-site link left an empty container. The script is now (re)created on
+//    every astro:page-load.
+interface Props {
+  height?: number;
+  /** ISO country codes shown in the feed. */
+  countries?: string;
+  /** "0,1" = medium and high impact. "-1,0,1" adds low. */
+  importance?: string;
+  class?: string;
+}
+const {
+  height = 600,
+  countries = "us,eu,gb,jp,in,cn",
+  importance = "0,1",
+  class: className,
+} = Astro.props;
+
+const config = JSON.stringify({
+  colorTheme: "dark",
+  isTransparent: true,
+  locale: "en",
+  countryFilter: countries,
+  importanceFilter: importance,
+  width: "100%",
+  height,
+});
+---
+
+<div
+  class:list={["tv-events", className]}
+  data-tv-events
+  data-tv-config={config}
+  style={`min-height:${height}px`}
+>
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+  </div>
+  {/* The widget renders release times in the viewer's own timezone but never
+      says which one — "11:30" alone is ambiguous, and a missed high-impact
+      release is exactly the risk this calendar exists to prevent. Filled in
+      client-side because the timezone is only knowable in the browser. */}
+  <p class="tv-events__tz" data-tv-tz aria-live="polite"></p>
+</div>
+
+<style>
+  /* The embed paints its own dark surface; this just reserves the space so the
+     section doesn't visibly reflow when the iframe arrives. */
+  .tv-events {
+    width: 100%;
+  }
+  .tv-events__tz {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-paper) 45%, transparent);
+  }
+  .tv-events :global(.tradingview-widget-container),
+  .tv-events :global(iframe) {
+    width: 100% !important;
+  }
+</style>
+
+<script>
+  // Builds the embed on first load and again after every ClientRouter swap.
+  // Guarded per element so re-running never stacks two iframes in one container.
+  function initTvEvents() {
+    document.querySelectorAll<HTMLElement>("[data-tv-events]").forEach((root) => {
+      if (root.dataset.tvBound === "1") return;
+      root.dataset.tvBound = "1";
+
+      const mount = root.querySelector(".tradingview-widget-container__widget");
+      if (!mount) return;
+      mount.innerHTML = "";
+
+      const tz = root.querySelector<HTMLElement>("[data-tv-tz]");
+      if (tz) {
+        try {
+          const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          // Offset as the reader would write it: +05:30, not the -330 that
+          // getTimezoneOffset() returns.
+          const mins = -new Date().getTimezoneOffset();
+          const sign = mins < 0 ? "-" : "+";
+          const abs = Math.abs(mins);
+          const off = `${sign}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
+          tz.textContent = `Release times are shown in your device's timezone — ${zone} (UTC${off}).`;
+        } catch {
+          tz.textContent = "Release times are shown in your device's local timezone.";
+        }
+      }
+
+      const s = document.createElement("script");
+      s.src = "https://s3.tradingview.com/external-embedding/embed-widget-events.js";
+      s.async = true;
+      s.type = "text/javascript";
+      s.innerHTML = root.dataset.tvConfig || "{}";
+      mount.parentElement?.appendChild(s);
+    });
+  }
+
+  initTvEvents();
+  document.addEventListener("astro:page-load", initTvEvents);
+  // A transitioned-in page brings fresh DOM whose dataset flag is unset, so the
+  // guard above lets it initialise while leaving an already-built one alone.
+</script>

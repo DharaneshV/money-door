@@ -7,6 +7,8 @@ import SectionHeading from "../../components/ui/SectionHeading.astro";
 import RiskDisclaimer from "../../components/ui/RiskDisclaimer.astro";
 import Button from "../../components/ui/Button.astro";
 import Icon from "../../components/ui/Icon.astro";
+import { priceView } from "../../lib/pricing";
+import CourseComparison from "../../components/sections/CourseComparison.astro";
 
 // This page is about the PROGRAMS — which one to take, what each costs, how
 // they run. The curriculum itself (what's taught inside them) lives on
@@ -47,7 +49,7 @@ const howItWorks = [
 
 <BaseLayout
   title="Trading Courses — MDC1, MDC2, MDC3"
-  description="Money Door FX Academy's structured trading courses: MDC1 Foundation Trader (free), MDC2 Professional Trader, and MDC3 Elite Master Trader."
+  description="Money Door FX Academy's structured trading courses — MDC1 Foundation Trader, MDC2 Professional Trader and MDC3 Elite Master Trader, all currently 50% off."
 >
   <PageHero
     eyebrow="Our Programs"
@@ -102,7 +104,8 @@ const howItWorks = [
             const d = p.data;
             const featured = d.code === FEATURED;
             const href = `/courses/${d.code.toLowerCase()}/`;
-            const price = d.priceLabel ?? `${d.currency} ${d.price.toLocaleString("en-US")}`;
+            const pv = priceView(d.price, d.listPrice, d.currency, d.priceLabel);
+            const price = pv.now;
             return (
               <article
                 class:list={[
@@ -128,10 +131,20 @@ const howItWorks = [
                     wide enough to break mid-figure in a third-width card,
                     which read as two separate numbers. */}
                 <div class="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  {pv.was && (
+                    <span class="whitespace-nowrap font-display text-lg text-paper/40 line-through">
+                      {pv.was}
+                    </span>
+                  )}
                   <span class="whitespace-nowrap font-display text-[clamp(1.85rem,1.5rem+1.4vw,2.6rem)] font-medium leading-none tabular-nums text-gold-400">
                     {price}
                   </span>
                   <span class="eyebrow whitespace-nowrap text-paper/45">{d.duration}</span>
+                  {pv.discountLabel && (
+                    <span class="rounded-full bg-gold-500 px-2.5 py-1 font-heading text-[0.62rem] font-bold uppercase tracking-[0.12em] text-ink-950">
+                      {pv.discountLabel}
+                    </span>
+                  )}
                 </div>
 
                 <ul class="mt-7 flex flex-col gap-2.5">
@@ -177,6 +190,21 @@ const howItWorks = [
     </Container>
   </section>
 
+  {/* Fees and included benefits side by side. Sits directly under the three
+      program cards, which is where the "so which one, and what does it
+      actually cost?" question gets asked. */}
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
+      <SectionHeading
+        eyebrow="Fees & Benefits"
+        title="Quick Course Comparison"
+        subtitle="Every program currently carries a 50% discount, and every program includes the $100 Money Door Copy Trading Strategy account fee at no charge."
+        align="left"
+      />
+      <CourseComparison programs={programs} />
+    </Container>
+  </section>
+
   <section class="surface-gold py-section">
     <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
       <SectionHeading eyebrow="How It Works" title="How the Programs Run" align="left" />
@@ -214,7 +242,7 @@ const howItWorks = [
           goals — no pressure, no obligation.
         </p>
         <div class="mt-6">
-          <Button href="/join/" size="lg" arrow>Book Free Consultation</Button>
+          <Button href="/join/consultation/" size="lg" arrow>Book a Free 1-Hour Consultation</Button>
         </div>
       </div>
     </Container>

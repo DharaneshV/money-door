@@ -11,6 +11,7 @@ import StudentJourney from "../components/sections/StudentJourney.astro";
 import ComparisonSection from "../components/sections/ComparisonSection.astro";
 import TestimonialsSection from "../components/sections/TestimonialsSection.astro";
 import BlogTeaser from "../components/sections/BlogTeaser.astro";
+import EconomicCalendarTeaser from "../components/sections/EconomicCalendarTeaser.astro";
 ---
 
 <BaseLayout
@@ -20,13 +21,16 @@ import BlogTeaser from "../components/sections/BlogTeaser.astro";
   <Hero />
   <MarqueeBand />
   <PathCards />
+  {/* Promoted to the top third: the one live section on the site, and the
+      reason a returning student opens the homepage on a weekday. */}
+  <EconomicCalendarTeaser index="02" />
   <AboutTeaser />
   <WhyChooseUs />
   {/* Sits directly after WhyChooseUs so the "why us" case runs as one block:
       the practical reasons first, then the methodology that backs them. */}
-  <DecisionFramework index="04" />
+  <DecisionFramework index="05" />
   <ChiefTrainerTeaser />
-  <StudentJourney index="06" />
+  <StudentJourney index="07" />
   <ComparisonSection />
   <MarqueeBand items={["Gold XAU/USD", "Forex Majors", "Risk Management", "Trading Psychology"]} variant="gold" />
   <TestimonialsSection />

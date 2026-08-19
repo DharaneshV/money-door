@@ -24,7 +24,7 @@ const milestones = [
   { to: 18, suffix: "+", label: "Years of combined trading experience" },
   { to: 2500, suffix: "+", label: "Students trained" },
   { to: 3, suffix: "", label: "Structured program levels — MDC1 to MDC3" },
-  { to: 6, suffix: "", label: "Named strategy models — PR, PC, EPR, EPC, GPR & GPC" },
+  { to: 6, suffix: "", label: "Named strategy models — DPR, DPC, EPR, EPC, GPR & GPC" },
 ];
 
 const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
@@ -83,8 +83,8 @@ const programs = (await getCollection("programs")).sort((a, b) => a.data.order -
         <div class="surface-card-warm p-[clamp(1.5rem,2.5vw,2rem)]" data-reveal>
           <span class="eyebrow text-gold-400">A Methodology, Not a Signal Service</span>
           <p class="mt-4 text-sm leading-relaxed text-paper/75">
-            Money Door doesn't sell indicators or one-off signals. The PR, PC, EPR, EPC, GPR and
-            GPC framework taught across MDC2 and MDC3 is one decision-making process, refined over
+            Money Door doesn't sell indicators or one-off signals. The PR &amp; PC framework — DPR, DPC, EPR, EPC, GPR and
+            GPC — taught across MDC2 and MDC3 is one decision-making process, refined over
             18+ years and taught the same way to every student — so what you learn keeps working
             after the course ends, not just while someone else is calling the trades.
           </p>
@@ -167,10 +167,10 @@ const programs = (await getCollection("programs")).sort((a, b) => a.data.order -
           Start building your own track record
         </h2>
         <p class="max-w-lg text-base text-paper/70">
-          MDC1 is free and takes one week — the same starting point every one of our 2,500+
+          MDC1 takes one month and is $100 with the current 50% offer — the same starting point every one of our 2,500+
           students began at.
         </p>
-        <Button href="/courses/mdc1/" arrow>Start with MDC1 (Free)</Button>
+        <Button href="/courses/mdc1/" arrow>Start with MDC1 — $100</Button>
       </div>
     </Container>
   </section>

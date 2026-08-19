@@ -7,6 +7,8 @@
 import { isValidCountry, isValidState, countryName } from "../../data/geo";
 
 export type RegisterInput = {
+  /** Which program (or a consultation) the form was submitted from. */
+  interest: string;
   fullName: string;
   email: string;
   phone: string;
@@ -19,6 +21,8 @@ export type RegisterInput = {
 };
 
 export type ValidRegistration = {
+  /** Human-readable label for what they registered for. */
+  interest: string;
   fullName: string;
   email: string;
   phone: string;
@@ -43,12 +47,26 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const MAX = { fullName: 100, email: 254, phone: 20, state: 100, city: 100 };
 
+// Closed set — the interest arrives from a hidden field or a select, so an
+// unrecognised value means a hand-crafted POST, not a real visitor. Falling
+// back rather than rejecting keeps a genuine lead if a form is ever renamed.
+const INTERESTS: Record<string, string> = {
+  MDC1: "MDC1 — Foundation Trader",
+  MDC2: "MDC2 — Professional Trader",
+  MDC3: "MDC3 — Elite Master Trader",
+  CONSULTATION: "Free 1-hour consultation",
+  GENERAL: "General enquiry",
+};
+
 function clean(v: unknown): string {
   return typeof v === "string" ? v.trim().replace(/\s+/g, " ") : "";
 }
 
 export function validate(raw: Partial<RegisterInput>): ValidationResult {
   const fieldErrors: Record<string, string> = {};
+
+  const interestKey = clean(raw.interest).toUpperCase();
+  const interest = INTERESTS[interestKey] ?? INTERESTS.GENERAL;
 
   const fullName = clean(raw.fullName);
   const email = clean(raw.email).toLowerCase();
@@ -94,6 +112,7 @@ export function validate(raw: Partial<RegisterInput>): ValidationResult {
   return {
     ok: true,
     value: {
+      interest,
       fullName,
       email,
       phone,

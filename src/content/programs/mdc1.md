@@ -2,10 +2,10 @@
 code: "MDC1"
 name: "Foundation Trader"
 tagline: "Start your trading journey the right way"
-duration: "1 Week"
-price: 0
-currency: "USDT"
-priceLabel: "Free"
+duration: "1 Month"
+price: 100
+listPrice: 200
+currency: "USD"
 order: 1
 idealFor: "Complete beginners, students, and working professionals with no prior trading experience"
 highlights:
@@ -79,12 +79,22 @@ included:
   - title: "Market cheat sheets"
   - title: "Risk management templates"
   - title: "Trade journal template"
+comparison:
+  copyTradingFee: "$100 FREE"
+  fundedAccount: "—"
+  propFirmTraining: "Foundation"
+
+bonuses:
+  - title: "Money Door Copy Trading Strategy account fee"
+    value: "$100 FREE"
+    description: "The $100 account activation fee for the Money Door Copy Trading Strategy is waived as part of the MDC1 enrolment offer."
+
 ---
 
 MDC1 is where every Money Door FX Academy student starts — a short, no-cost introduction built for people who are completely new to trading, or who've dabbled without ever learning the fundamentals properly.
 
 Whether you're completely new to financial markets or have already lost money trying random strategies, MDC1 gives you the foundation every professional trader must understand before placing a trade. This course eliminates confusion and builds a solid understanding of how the markets truly work.
 
-Over the course of one week, you'll get set up on the same platforms professional traders use, learn how to read a price chart without the jargon, and take your first guided steps on a demo account — before any real money is involved. You'll also be introduced to the same technical framework — EMA 24, ATR 24, W.D. Gann 45° angles, price action, Smart Money Concepts and ICT concepts — that the full Money Door methodology is built on in MDC2, so you understand how professional traders actually read a chart instead of relying on indicators.
+Over the course of one month, you'll get set up on the same platforms professional traders use, learn how to read a price chart without the jargon, and take your first guided steps on a demo account — before any real money is involved. You'll also be introduced to the same technical framework — EMA 24, ATR 24, W.D. Gann 45° angles, price action, Smart Money Concepts and ICT concepts — that the full Money Door methodology is built on in MDC2, so you understand how professional traders actually read a chart instead of relying on indicators.
 
 There's no pressure to continue afterward. MDC1 exists so you can make an informed decision about whether structured trading education is right for you.

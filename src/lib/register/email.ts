@@ -65,7 +65,7 @@ export async function sendWelcome(record: StoredRegistration): Promise<SendResul
       from the team will be in touch personally about the right starting point for you.
     </p>
     <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:rgba(250,249,247,.75);">
-      In the meantime, MDC1 &mdash; Foundation Trader is our free one-week introduction to the Gold
+      In the meantime, MDC1 &mdash; Foundation Trader is our one-month introduction to the Gold
       and Forex markets. It's the best place to begin.
     </p>
     <a href="https://moneydoorfxacademy.com/courses/mdc1/"
@@ -109,6 +109,7 @@ export async function sendOwnerNotification(
   const html = SHELL(`
     <h1 style="margin:0 0 20px;font-size:20px;line-height:1.3;">New registration</h1>
     <table style="width:100%;border-collapse:collapse;">
+      ${row("Registering for", record.interest)}
       ${row("Name", record.fullName)}
       ${row("Email", record.email)}
       ${row("Phone", record.phone)}
@@ -131,7 +132,7 @@ export async function sendOwnerNotification(
       to: OWNER_EMAIL,
       // Replying to the notification reaches the registrant, not yourself.
       replyTo: record.email,
-      subject: `New registration — ${record.fullName} (${record.city}, ${record.countryName})`,
+      subject: `New registration — ${record.interest} — ${record.fullName} (${record.city}, ${record.countryName})`,
       html,
     });
     if (error) return { ok: false, error: String(error.message || error) };

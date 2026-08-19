@@ -3,8 +3,9 @@ code: "MDC3"
 name: "Elite Master Trader"
 tagline: "The complete professional trader development program"
 duration: "12 Months"
-price: 1000
-currency: "USDT"
+price: 500
+listPrice: 1000
+currency: "USD"
 order: 3
 idealFor: "MDC2 graduates and experienced traders preparing for funded/prop-firm accounts or long-term independent trading"
 highlights:
@@ -78,11 +79,11 @@ curriculum:
       - "A long-term wealth mindset"
 
 strategyModels:
-  - abbr: "PR"
-    name: "Point of Reversal"
+  - abbr: "DPR"
+    name: "Day Point of Reversal"
     description: "Identifying high-probability market reversals before they occur."
-  - abbr: "PC"
-    name: "Point of Continuation"
+  - abbr: "DPC"
+    name: "Day Point of Continuation"
     description: "Trading continuation moves with greater confidence."
   - abbr: "EPR"
     name: "EMA Point of Reversal"
@@ -108,6 +109,23 @@ included:
     description: "Direct guidance throughout the program."
   - title: "Lifetime alumni community access"
     description: "Stay connected with fellow traders, receive updates, and continue learning after completing the program."
+comparison:
+  copyTradingFee: "$100 FREE"
+  fundedAccount: "$10,000*"
+  propFirmTraining: "Advanced"
+
+bonuses:
+  - title: "Money Door Copy Trading Strategy account fee"
+    value: "$100 FREE"
+    description: "The $100 account activation fee for the Money Door Copy Trading Strategy is waived as part of the MDC3 enrolment offer."
+  - title: "$10,000 funded account"
+    value: "Included FREE"
+    description: "Eligible MDC3 students receive access to a $10,000 funded-account programme at no additional course charge."
+    conditional: true
+  - title: "Advanced & personalised training"
+    value: "Included"
+    description: "One-to-one training and support, advanced live-market guidance, fund-management education and prop-firm account management training."
+
 ---
 
 MDC3 is Money Door FX Academy's most intensive program — a 12-month, one-to-one mentorship for students who want to trade professionally, manage larger capital, pass prop firm evaluations, and build long-term consistency. This is not just another trading course; it is a complete trader transformation program built on everything taught in MDC2, plus a level of individual mentorship group sessions can't provide.

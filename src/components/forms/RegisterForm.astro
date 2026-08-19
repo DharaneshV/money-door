@@ -7,6 +7,31 @@ import { countries, statesByCountry, priorityCountryCodes } from "../../data/geo
 // keep working before the Cloudflare keys exist.
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
+// One form, four entry points. `interest` is what distinguishes an MDC1
+// enrolment from an MDC3 one or a consultation booking: it is posted with the
+// submission, shown to the visitor so they can see what they are signing up
+// for, and put in the owner notification's subject line so enquiries can be
+// triaged without opening them.
+//
+// Left undefined (the general /join/ page) the visitor picks from a select
+// instead, so no one is ever forced to guess which form they landed on.
+interface Props {
+  interest?: "MDC1" | "MDC2" | "MDC3" | "CONSULTATION";
+  /** Overrides the default submit-button text. */
+  submitLabel?: string;
+  /** Small print under the submit button. */
+  footnote?: string;
+}
+const { interest, submitLabel, footnote } = Astro.props;
+
+const INTEREST_LABELS: Record<string, string> = {
+  MDC1: "MDC1 — Foundation Trader",
+  MDC2: "MDC2 — Professional Trader",
+  MDC3: "MDC3 — Elite Master Trader",
+  CONSULTATION: "Free 1-hour consultation",
+};
+const interestLabel = interest ? INTEREST_LABELS[interest] : undefined;
+
 const priority = priorityCountryCodes
   .map((code) => countries.find((c) => c.code === code))
   .filter(Boolean) as typeof countries;
@@ -49,6 +74,34 @@ const statesJson = JSON.stringify(statesByCountry);
         <input type="text" name="company" tabindex="-1" autocomplete="off" />
       </label>
     </div>
+
+    {/* What this submission is for. A fixed hidden value on the dedicated
+        MDC/consultation pages, a visible choice on the general one. */}
+    {
+      interest ? (
+        <>
+          <input type="hidden" name="interest" value={interest} />
+          <div class="interest-banner">
+            <span class="eyebrow text-gold-500">You're registering for</span>
+            <p class="interest-banner__value">{interestLabel}</p>
+          </div>
+        </>
+      ) : (
+        <div class="field-row">
+          <label class="field-label" for="rf-interest">
+            What are you interested in? <span class="field-req">*</span>
+          </label>
+          <select id="rf-interest" name="interest" required class="field">
+            <option value="CONSULTATION">Free 1-hour consultation</option>
+            <option value="MDC1">MDC1 — Foundation Trader</option>
+            <option value="MDC2">MDC2 — Professional Trader</option>
+            <option value="MDC3">MDC3 — Elite Master Trader</option>
+            <option value="GENERAL">Something else</option>
+          </select>
+          <span class="field-error hidden"></span>
+        </div>
+      )
+    }
 
     {/* Step 1 — who you are.
         Labels sit above their field rather than floating inside it: with eight
@@ -119,7 +172,11 @@ const statesJson = JSON.stringify(statesByCountry);
                   stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <div class="select-menu" role="listbox" tabindex="-1"></div>
+            {/* data-lenis-prevent: Lenis smooth-scroll captures every wheel event on
+                the document, so without this the mouse wheel scrolled the page
+                behind the open country list instead of the list itself — the list
+                could only be moved by dragging its scrollbar. */}
+            <div class="select-menu" role="listbox" tabindex="-1" data-lenis-prevent></div>
           </div>
           <span class="field-error hidden"></span>
         </div>
@@ -143,7 +200,11 @@ const statesJson = JSON.stringify(statesByCountry);
                   stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <div class="select-menu" role="listbox" tabindex="-1"></div>
+            {/* data-lenis-prevent: Lenis smooth-scroll captures every wheel event on
+                the document, so without this the mouse wheel scrolled the page
+                behind the open country list instead of the list itself — the list
+                could only be moved by dragging its scrollbar. */}
+            <div class="select-menu" role="listbox" tabindex="-1" data-lenis-prevent></div>
           </div>
           <div class="hidden" id="register-state-text-group">
             <input type="text" id="rf-state-text" name="stateText" class="field"
@@ -189,10 +250,10 @@ const statesJson = JSON.stringify(statesByCountry);
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
       <Button id="register-submit" type="submit" size="lg" class="w-full sm:w-auto" arrow>
-        <span id="register-submit-label">Join Now</span>
+        <span id="register-submit-label">{submitLabel ?? "Join Now"}</span>
       </Button>
       <p class="text-xs leading-relaxed text-paper/40">
-        Free to join. No trading account is opened and no payment is taken.
+        {footnote ?? "Free to join. No trading account is opened and no payment is taken."}
       </p>
     </div>
   </form>
@@ -322,16 +383,67 @@ const statesJson = JSON.stringify(statesByCountry);
 
       function open() {
         if (button.disabled) return;
-        // Flip upward when the menu wouldn't fit below.
-        const spaceBelow = window.innerHeight - button.getBoundingClientRect().bottom;
-        shell.classList.toggle("is-up", spaceBelow < 300);
+        position();
         buildMenu("");
         shell.classList.add("is-open");
         button.setAttribute("aria-expanded", "true");
         const search = menu.querySelector(".select-search input");
-        if (search) search.focus();
+        // Focusing the search box raises the on-screen keyboard, which halves
+        // the visual viewport the menu was just measured against and buries
+        // most of the list. On touch the list is browsable by thumb, so the
+        // keyboard only appears if the user taps the search box themselves.
+        const coarse = window.matchMedia("(pointer: coarse)").matches;
+        if (search && !coarse) search.focus();
         else { menu.focus(); const sel = options.findIndex((o) => o.getAttribute("aria-selected") === "true"); setActive(sel >= 0 ? sel : 0); }
       }
+
+      // Decides which way the menu opens and how tall it may be.
+      //
+      // The old version compared only `innerHeight - button.bottom` against a
+      // hardcoded 300 and left the height at a fixed 17rem. Neither knows about
+      // the sticky header, so flipping upward pushed the top of the list
+      // underneath it — 19px on a phone at rest, and 94px once the keyboard was
+      // up, all of it unreachable because the menu scrolls internally and the
+      // header eats the drag. Measure both gaps for real and cap to whichever
+      // side we open into.
+      function position() {
+        const r = button.getBoundingClientRect();
+        const header = document.getElementById("site-header");
+        const ceiling = header ? header.getBoundingClientRect().bottom : 0;
+        const GAP = 12;
+        const below = window.innerHeight - r.bottom - GAP;
+        const above = r.top - ceiling - GAP;
+        // Prefer opening downward while there's a reasonable amount of room;
+        // only flip when the other side is genuinely roomier.
+        const up = below < 220 && above > below;
+        shell.classList.toggle("is-up", up);
+        const space = Math.floor(up ? above : below);
+        // Never exceed the space actually measured. An earlier version floored
+        // this at 160px, which quietly reintroduced the original bug: with the
+        // keyboard up there can be less than that on either side, and forcing
+        // the height pushed the top of the list back under the header.
+        // A short list that fits beats a tall one you can't reach.
+        menu.style.maxHeight = Math.max(72, space) + "px";
+      }
+
+      // The keyboard appearing, an orientation change or the sticky header
+      // condensing all move the goalposts while the menu is open. If the field
+      // the menu is anchored to has itself been pushed out of the visible band,
+      // no amount of repositioning helps — the menu is orphaned, so close it
+      // rather than leave a list floating next to nothing.
+      const reposition = () => {
+        if (!shell.classList.contains("is-open")) return;
+        const r = button.getBoundingClientRect();
+        // Only when the field has left the viewport entirely. "Tucked under the
+        // sticky header" is not orphaned — position() handles that by opening
+        // downward instead, and closing on it would slam the menu shut during
+        // ordinary scrolling.
+        if (r.bottom < 0 || r.top > window.innerHeight) { close(); return; }
+        position();
+      };
+      window.addEventListener("resize", reposition);
+      window.addEventListener("scroll", reposition, { passive: true });
+      if (window.visualViewport) window.visualViewport.addEventListener("resize", reposition);
 
       function close() {
         shell.classList.remove("is-open");
@@ -476,6 +588,7 @@ const statesJson = JSON.stringify(statesByCountry);
       const state = usingText ? String(fd.get("stateText") || "") : String(fd.get("state") || "");
 
       const payload = {
+        interest: String(fd.get("interest") || "GENERAL"),
         fullName: String(fd.get("fullName") || "").trim(),
         email: String(fd.get("email") || "").trim(),
         phone: String(fd.get("phone") || "").trim(),

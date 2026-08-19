@@ -23,7 +23,7 @@ import { announcement } from "../../data/site";
         type="button"
         data-ann-id={announcement.id}
         aria-label="Dismiss announcement"
-        class="ml-1 flex h-6 w-6 flex-none items-center justify-center rounded-full transition-colors hover:bg-ink-950/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-950"
+        class="relative ml-1 flex h-6 w-6 flex-none items-center justify-center rounded-full transition-colors after:absolute after:left-1/2 after:top-1/2 after:h-11 after:w-11 after:-translate-x-1/2 after:-translate-y-1/2 after:content-[''] hover:bg-ink-950/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-950"
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />

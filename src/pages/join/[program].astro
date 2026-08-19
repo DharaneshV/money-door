@@ -1,0 +1,195 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/ui/PageHero.astro";
+import Container from "../../components/ui/Container.astro";
+import RegisterForm from "../../components/forms/RegisterForm.astro";
+import JoinAside from "../../components/sections/JoinAside.astro";
+import Icon from "../../components/ui/Icon.astro";
+import { priceView, FUNDED_DISCLAIMER } from "../../lib/pricing";
+
+// A dedicated enrolment form per program, plus one for the free consultation.
+//
+// Previously every CTA on the site pointed at a single /join/ form, so an
+// owner notification gave no clue whether the lead wanted the $100 foundation
+// course or the $500 elite program. Each of these posts a distinct `interest`,
+// which lands in the notification's subject line.
+//
+// Built from the programs collection so a fee or duration change here is a
+// content edit, not a code edit.
+export async function getStaticPaths() {
+  const programs = await getCollection("programs");
+
+  const courses = programs
+    .sort((a, b) => a.data.order - b.data.order)
+    .map((p) => {
+      const d = p.data;
+      const pv = priceView(d.price, d.listPrice, d.currency, d.priceLabel);
+      return {
+        params: { program: d.code.toLowerCase() },
+        props: {
+          interest: d.code as "MDC1" | "MDC2" | "MDC3",
+          eyebrow: `${d.code} · ${d.duration}`,
+          title: `Enrol in ${d.code}`,
+          heading: `${d.code} — ${d.name}`,
+          blurb: d.tagline,
+          pv,
+          duration: d.duration,
+          bonuses: d.bonuses ?? [],
+          submitLabel: `Enrol in ${d.code} — ${pv.now}`,
+          footnote:
+            "Submitting this form doesn't take payment or open a trading account — we'll contact you to confirm your place and arrange the fee.",
+          metaTitle: `Enrol in ${d.code} — ${d.name}`,
+          metaDescription: `Enrol in ${d.code} — ${d.name} at Money Door FX Academy. ${pv.was ? `${pv.was} ${pv.now} with the current ${pv.discountLabel}.` : pv.now} ${d.tagline}.`,
+          courseHref: `/courses/${d.code.toLowerCase()}/`,
+        },
+      };
+    });
+
+  return [
+    ...courses,
+    {
+      params: { program: "consultation" },
+      props: {
+        interest: "CONSULTATION" as const,
+        eyebrow: "Free · 1 hour",
+        title: "Book Your Free Consultation",
+        heading: "Free 1-hour consultation",
+        blurb:
+          "A full hour with the Money Door team, at no cost and with no obligation — to work out where you actually are as a trader and which program fits.",
+        pv: null,
+        duration: "1 hour",
+        bonuses: [],
+        submitLabel: "Book my free consultation",
+        footnote:
+          "Completely free. No payment is taken, no trading account is opened, and there is no obligation to enrol.",
+        metaTitle: "Book a Free 1-Hour Consultation",
+        metaDescription:
+          "Book a free, no-obligation 1-hour consultation with Money Door FX Academy to find the right Gold & Forex trading program for your experience level.",
+        courseHref: "/courses/",
+      },
+    },
+  ];
+}
+
+const {
+  interest,
+  eyebrow,
+  title,
+  heading,
+  blurb,
+  pv,
+  duration,
+  bonuses,
+  submitLabel,
+  footnote,
+  metaTitle,
+  metaDescription,
+  courseHref,
+} = Astro.props;
+
+const isConsultation = interest === "CONSULTATION";
+const hasConditional = bonuses.some((b: { conditional?: boolean }) => b.conditional);
+
+// What the visitor gets — the course bonuses, or what the hour actually covers.
+const consultationCovers = [
+  "A review of your current trading experience and results",
+  "Which MDC program matches your level, and why",
+  "How the PR & PC framework is taught and applied",
+  "How prop firm evaluations work, and whether you're ready for one",
+  "Any questions about fees, schedule, format or support",
+];
+---
+
+<BaseLayout title={metaTitle} description={metaDescription}>
+  <PageHero eyebrow={eyebrow} title={title} subtitle={blurb} />
+
+  <section class="surface-ink py-section">
+    <Container width="wide" class="grid gap-12 lg:grid-cols-3">
+      <div class="flex flex-col gap-8 lg:col-span-2">
+        {/* What they're signing up for, before the form asks for anything. */}
+        <div class="surface-card p-[clamp(1.5rem,3vw,2.5rem)]" data-reveal>
+          <h2
+            class="font-display text-[clamp(1.4rem,1.15rem+1.1vw,2rem)] font-medium leading-tight text-paper"
+          >
+            {heading}
+          </h2>
+
+          {
+            pv && (
+              <div class="mt-5 flex flex-wrap items-baseline gap-3">
+                {pv.was && <span class="text-lg text-paper/40 line-through">{pv.was}</span>}
+                <span class="font-display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] font-medium leading-none text-gold-400">
+                  {pv.now}
+                </span>
+                {pv.discountLabel && (
+                  <span class="rounded-full bg-gold-500 px-2.5 py-1 font-heading text-[0.62rem] font-bold uppercase tracking-[0.12em] text-ink-950">
+                    {pv.discountLabel}
+                  </span>
+                )}
+                <span class="eyebrow text-paper/45">{duration}</span>
+              </div>
+            )
+          }
+
+          <ul class="mt-6 flex flex-col gap-3">
+            {
+              isConsultation
+                ? consultationCovers.map((c) => (
+                    <li class="flex items-start gap-3 text-sm leading-relaxed text-paper/75">
+                      <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+                      <span>{c}</span>
+                    </li>
+                  ))
+                : bonuses.map((b: { title: string; value: string; conditional?: boolean }) => (
+                    <li class="flex items-start justify-between gap-4 text-sm leading-relaxed text-paper/75">
+                      <span class="flex items-start gap-3">
+                        <Icon name="check" class="mt-0.5 h-4 w-4 flex-none text-gold-500" />
+                        <span>
+                          {b.title}
+                          {b.conditional && <sup class="text-gold-500">*</sup>}
+                        </span>
+                      </span>
+                      <span class="flex-none whitespace-nowrap font-heading text-[0.62rem] font-bold uppercase tracking-[0.1em] text-gold-300">
+                        {b.value}
+                      </span>
+                    </li>
+                  ))
+            }
+          </ul>
+
+          {hasConditional && <p class="mt-5 text-xs leading-relaxed text-paper/45">*{FUNDED_DISCLAIMER}</p>}
+
+          <a
+            href={courseHref}
+            class="mt-6 inline-flex items-center gap-2 font-heading text-xs font-semibold uppercase tracking-[0.16em] text-gold-400 transition-colors hover:text-gold-300"
+          >
+            <span class="link-underline">
+              {isConsultation ? "Compare all programs" : "Read the full curriculum"}
+            </span>
+          </a>
+        </div>
+
+        <div id="register" class="surface-card p-[clamp(1.5rem,3vw,2.75rem)]">
+          <h2
+            class="font-display text-[clamp(1.4rem,1.15rem+1.1vw,2rem)] font-medium leading-tight text-paper"
+          >
+            {isConsultation ? "Book your session" : "Your details"}
+          </h2>
+          <p class="mt-3 max-w-md text-sm leading-relaxed text-paper/60">
+            {
+              isConsultation
+                ? "Tell us how to reach you and we'll arrange a time that works."
+                : "Two short steps. We'll confirm your place and the next intake date personally."
+            }
+          </p>
+          <div class="mt-8">
+            <RegisterForm interest={interest} submitLabel={submitLabel} footnote={footnote} />
+          </div>
+        </div>
+      </div>
+
+      <JoinAside />
+    </Container>
+  </section>
+</BaseLayout>

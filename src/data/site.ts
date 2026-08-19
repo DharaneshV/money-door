@@ -24,8 +24,8 @@ export const siteConfig = {
 // Bump `id` whenever the copy changes — the dismissal is remembered against
 // this value, so a new id resurfaces the bar for people who dismissed the old one.
 export const announcement = {
-  id: "mdc1-free-v1",
-  text: "MDC1 Foundation Trader — a free, one-week introduction to Gold & Forex markets.",
+  id: "mdc1-offer-v2",
+  text: "50% off every MDC program — MDC1 from $100, plus a free Copy Trading Strategy account.",
   linkLabel: "Start free",
   href: "/courses/mdc1/",
 } as const;
@@ -53,14 +53,24 @@ export const whatsappHref = `https://wa.me/${contact.primaryPhoneE164}?text=${en
 export const whatsappChannelUrl =
   "https://whatsapp.com/channel/0029VbAlxyC1NCrL77kXNR30";
 
-// TODO: every URL here is a placeholder (null) until the client provides real handles —
-// components must skip rendering any social link whose url is null rather than linking to "#".
+// Official channels, supplied by the client 2026-08-19.
+//
+// `icon` is separate from `name` because there are two YouTube channels — the
+// main one and the Tamil one — so the icon can't be looked up by name any more.
+// A null url is still skipped rather than linked to "#", so an unconfirmed
+// channel can sit here without shipping a dead link.
 export const socials = [
-  { name: "YouTube", url: null as string | null },
-  { name: "Instagram", url: null as string | null },
-  { name: "Facebook", url: null as string | null },
-  { name: "Telegram", url: null as string | null },
-  { name: "LinkedIn", url: null as string | null },
+  {
+    name: "YouTube",
+    icon: "youtube",
+    // Supplied as http://; forced to https so the link isn't an insecure hop.
+    url: "https://www.youtube.com/@moneydoorfxacademy" as string | null,
+  },
+  { name: "YouTube (Tamil)", icon: "youtube", url: "https://www.youtube.com/@MoneyDoorFXTamil" as string | null },
+  { name: "Instagram", icon: "instagram", url: "https://www.instagram.com/moneydooracademy/" as string | null },
+  { name: "Facebook", icon: "facebook", url: "https://www.facebook.com/moneydoorfxacademy/" as string | null },
+  { name: "Telegram", icon: "telegram", url: "https://t.me/moneydooracademy" as string | null },
+  { name: "X", icon: "x", url: "https://x.com/MoneyDoorFX" as string | null },
 ];
 
 export type NavLink = {
@@ -87,20 +97,23 @@ export const primaryNav: NavLink[] = [
     // No "All Courses" child: the parent label already links to /courses/, so
     // the first item was a duplicate of the thing being hovered.
     children: [
+      // Deliberately no price here: a discounted fee shown in the nav has to be
+      // kept in step with the programs collection on every offer change, and it
+      // was already stale (USDT, pre-discount). The course pages own the money.
       {
         label: "MDC1 — Foundation Trader",
         href: "/courses/mdc1/",
-        description: "Free · 1 week",
+        description: "1 month · Foundation",
       },
       {
         label: "MDC2 — Professional Trader",
         href: "/courses/mdc2/",
-        description: "USDT 300 · 6 months",
+        description: "6 months · Intermediate",
       },
       {
         label: "MDC3 — Elite Master Trader",
         href: "/courses/mdc3/",
-        description: "USDT 1,000 · 12 months",
+        description: "12 months · Advanced",
       },
     ],
   },

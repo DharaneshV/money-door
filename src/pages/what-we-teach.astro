@@ -7,6 +7,8 @@ import Icon from "../components/ui/Icon.astro";
 import Button from "../components/ui/Button.astro";
 import RiskDisclaimer from "../components/ui/RiskDisclaimer.astro";
 import CurriculumAccordion from "../components/sections/CurriculumAccordion.astro";
+import CourseComparison from "../components/sections/CourseComparison.astro";
+import { getCollection } from "astro:content";
 import type { Topic, Group } from "../components/sections/CurriculumAccordion.astro";
 
 // Full curriculum overview across all three MDC programs. Kept as a page-local
@@ -79,15 +81,18 @@ const topics: Topic[] = [
   },
   {
     n: "04",
-    title: "PR & PC Trading Strategy",
+    title: "PR & PC",
     icon: "target",
+    // The six models sit under PR & PC as sub-headings. Names are taken from
+    // the programs collection so this list can't drift from the course pages —
+    // EPR/EPC previously read "Entry Point ..." here and "EMA Point ..." there.
     items: [
-      "Point of Reversal (PR)",
-      "Point of Continuation (PC)",
-      "Entry Point Reversal (EPR)",
-      "Entry Point Continuation (EPC)",
-      "Gann Point Reversal (GPR)",
-      "Gann Point Continuation (GPC)",
+      "DPR — Day Point of Reversal",
+      "DPC — Day Point of Continuation",
+      "EPR — EMA Point of Reversal",
+      "EPC — EMA Point of Continuation",
+      "GPR — Gann Point of Reversal",
+      "GPC — Gann Point of Continuation",
       "Combining EMA 24, ATR 24, Gann angles, price action, SMC and ICT into one structured approach",
     ],
   },
@@ -334,6 +339,22 @@ if (grouped.length !== topics.length || new Set(grouped).size !== topics.length)
   );
 }
 
+// Display numbers are derived from the order topics are actually rendered in,
+// not the order they happen to be authored in above.
+//
+// The numbers used to be hand-written on each topic and the grouping was added
+// later, so the page counted 01 02 | 03 04 11 | 05 06 13 14 12 | 07 08 09 |
+// 10 15 16 — visibly scrambled, and out of sequence even inside a single group.
+// Deriving them means regrouping or adding a topic renumbers the page for free.
+// Safe to mutate: the guard above has just proved each topic appears exactly
+// once, and the `pick()` lookups by original number have all resolved.
+let seq = 0;
+for (const group of groups) {
+  for (const topic of group.topics) {
+    topic.n = String(++seq).padStart(2, "0");
+  }
+}
+
 const whyChooseUs = [
   "18+ years of financial market experience",
   "Structured learning path (MDC1 → MDC2 → MDC3)",
@@ -344,6 +365,8 @@ const whyChooseUs = [
   "Strong focus on risk management",
   "Professional trading discipline",
 ];
+const programs = (await getCollection("programs")).sort((a, b) => a.data.order - b.data.order);
+
 ---
 
 <BaseLayout
@@ -452,6 +475,20 @@ const whyChooseUs = [
     </Container>
   </section>
 
+  {/* The curriculum above answers "what is taught"; this answers "what does it
+      cost and what comes with it" without sending the reader to another page. */}
+  <section class="surface-ink-raised py-section">
+    <Container width="wide" class="flex flex-col gap-[clamp(2rem,4vw,3rem)]">
+      <SectionHeading
+        eyebrow="Fees & Benefits"
+        title="Quick Course Comparison"
+        subtitle="All three programs currently carry a 50% discount, and each includes the $100 Money Door Copy Trading Strategy account fee at no charge."
+        align="left"
+      />
+      <CourseComparison programs={programs} />
+    </Container>
+  </section>
+
   <section class="surface-gold py-section">
     <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
       <SectionHeading
@@ -480,12 +517,12 @@ const whyChooseUs = [
           Ready to start learning?
         </h2>
         <p class="max-w-lg text-base text-paper/70">
-          MDC1 — Foundation Trader is free and takes one week. It's the place every Money Door
+          MDC1 — Foundation Trader takes one month and is $100 with the current 50% offer. It's the place every Money Door
           student starts.
         </p>
         <div class="flex flex-col gap-3 sm:flex-row">
-          <Button href="/courses/mdc1/" arrow>Start with MDC1 (Free)</Button>
-          <Button href="/join/" variant="secondary">Book Free Consultation</Button>
+          <Button href="/courses/mdc1/" arrow>Start with MDC1 — $100</Button>
+          <Button href="/join/consultation/" variant="secondary">Book a Free 1-Hour Consultation</Button>
         </div>
       </div>
     </Container>

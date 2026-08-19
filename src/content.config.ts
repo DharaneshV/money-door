@@ -7,10 +7,14 @@ const programs = defineCollection({
     code: z.enum(["MDC1", "MDC2", "MDC3"]),
     name: z.string(), // e.g. "Foundation Trader"
     tagline: z.string(),
-    duration: z.string(), // "1 Week" / "6 Months" / "12 Months"
-    price: z.number(), // 0 / 300 / 1000
-    currency: z.string().default("USDT"),
-    priceLabel: z.string().optional(), // e.g. "Free" override for MDC1
+    duration: z.string(), // "1 Month" / "6 Months" / "12 Months"
+    // What the student actually pays today, after the standing discount.
+    price: z.number(),
+    // The undiscounted fee. Rendered struck-through beside `price` so the
+    // saving is visible. Omit on a program that isn't discounted.
+    listPrice: z.number().optional(),
+    currency: z.string().default("USD"),
+    priceLabel: z.string().optional(), // e.g. "Free" override
     order: z.number(),
     // Short single-line version — used by the compact tab selector.
     idealFor: z.string().optional(),
@@ -41,7 +45,7 @@ const programs = defineCollection({
         })
       )
       .optional(),
-    // The named Money Door strategy models (PR, PC, EPR, EPC, GPR, GPC) —
+    // The named Money Door strategy models (DPR, DPC, EPR, EPC, GPR, GPC) —
     // MDC2 and MDC3 only.
     strategyModels: z
       .array(
@@ -63,6 +67,35 @@ const programs = defineCollection({
         z.object({
           title: z.string(),
           description: z.string().optional(),
+        })
+      )
+      .optional(),
+
+    // Enrolment benefits carrying a headline money value — the "free
+    // giveaways" shown in the offer block and the comparison table.
+    //
+    // COMPLIANCE: `conditional` marks a benefit that depends on a third-party
+    // prop firm honouring its own evaluation rules. Anything flagged here is
+    // rendered with an asterisk and the funded-account disclaimer, and must
+    // never be described as guaranteed funding, guaranteed profit or risk-free.
+    // Terse cell values for the Quick Course Comparison table. Held separately
+    // from `bonuses` because the table needs short labels ("$5,000 two-step")
+    // where the offer block needs a full explanatory sentence.
+    comparison: z
+      .object({
+        copyTradingFee: z.string(),
+        fundedAccount: z.string(),
+        propFirmTraining: z.string(),
+      })
+      .optional(),
+
+    bonuses: z
+      .array(
+        z.object({
+          title: z.string(),
+          value: z.string(), // "$100 FREE", "Included"
+          description: z.string().optional(),
+          conditional: z.boolean().default(false),
         })
       )
       .optional(),

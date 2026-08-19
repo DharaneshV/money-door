@@ -10,12 +10,13 @@ import RiskDisclaimer from "../../components/ui/RiskDisclaimer.astro";
 import CurriculumGrid from "../../components/sections/CurriculumGrid.astro";
 import StrategyModelGrid from "../../components/sections/StrategyModelGrid.astro";
 import IncludedList from "../../components/sections/IncludedList.astro";
+import CourseOffer from "../../components/sections/CourseOffer.astro";
+import { formatPrice } from "../../lib/pricing";
 
 const program = await getEntry("programs", "mdc2");
 if (!program) throw new Error("MDC2 program entry not found");
-const { Content } = await render(program);
 const {
-  name,
+  Content } = await render(program); const {   name,
   tagline,
   duration,
   price,
@@ -26,8 +27,11 @@ const {
   curriculum,
   strategyModels,
   included,
+  listPrice,
+  priceLabel,
+  bonuses,
 } = program.data;
-const priceDisplay = `${currency} ${price.toLocaleString("en-US")}`;
+const priceDisplay = formatPrice(price, currency);
 
 // Offers/price is deliberately omitted: schema.org expects ISO-4217 currency codes
 // and USDT is not one, so declaring it would produce invalid markup.
@@ -47,27 +51,23 @@ const courseSchema = {
 
 <BaseLayout
   title={`MDC2 — ${name}`}
-  description={`MDC2 — ${name}: Money Door FX Academy's core ${duration.toLowerCase()} program teaching the PR, PC, EPR, EPC, GPR & GPC trading models. ${tagline}.`}
+  description={`MDC2 — ${name}: Money Door FX Academy's core ${duration.toLowerCase()} program teaching the DPR, DPC, EPR, EPC, GPR & GPC trading models. ${tagline}.`}
   schema={courseSchema}
 >
   <PageHero eyebrow={`MDC2 · ${priceDisplay} · ${duration}`} title={name} subtitle={tagline} />
 
+  {/* Fee, standing discount and included benefits. Replaces the old single
+      price strip, which had room for one number and none of the offer. */}
   <section class="surface-gold py-[clamp(2.5rem,5vw,4rem)]">
-    <Container
-      width="wide"
-      class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left"
-      data-reveal
-    >
-      <div class="flex items-baseline gap-3">
-        <span class="font-display text-[clamp(2rem,1.6rem+1.4vw,2.75rem)] font-medium leading-none text-gold-400">
-          {priceDisplay}
-        </span>
-        <span class="text-paper/50">/ {duration}</span>
-      </div>
-      <div class="flex flex-col gap-3 sm:flex-row">
-        <Button href="/join/" arrow>Book Free Consultation</Button>
-        <Button href="/courses/" variant="secondary">Compare All Programs</Button>
-      </div>
+    <Container width="wide">
+      <CourseOffer
+        code="MDC2"
+        price={price}
+        listPrice={listPrice}
+        currency={currency}
+        priceLabel={priceLabel}
+        bonuses={bonuses}
+      />
     </Container>
   </section>
 
@@ -116,8 +116,8 @@ const courseSchema = {
           <SectionHeading
             eyebrow="Exclusive Money Door Strategies"
             index="02"
-            title="The Six Models Behind Every Trade"
-            subtitle="EMA 24, ATR 24, W.D. Gann 45° angle analysis, advanced price action, Smart Money Concepts and ICT concepts work together to validate each of these."
+            title="PR &amp; PC"
+            subtitle="The six models that sit under PR &amp; PC. EMA 24, ATR 24, W.D. Gann 45° angle analysis, advanced price action, Smart Money Concepts and ICT concepts work together to validate each of them."
             align="left"
           />
           <StrategyModelGrid models={strategyModels} />
@@ -130,7 +130,7 @@ const courseSchema = {
     curriculum && (
       <section class="surface-ink py-section">
         <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
-          <SectionHeading eyebrow="Technical Mastery" index="03" title="Beyond the Six Models" align="left" />
+          <SectionHeading eyebrow="Technical Mastery" index="03" title="Beyond PR &amp; PC" align="left" />
           <CurriculumGrid sections={curriculum} />
           <RiskDisclaimer />
         </Container>

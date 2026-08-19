@@ -4,7 +4,8 @@ name: "Professional Trader"
 tagline: "Learn the professional strategy used at Money Door FX Academy"
 duration: "6 Months"
 price: 300
-currency: "USDT"
+listPrice: 600
+currency: "USD"
 order: 2
 idealFor: "Students who've completed MDC1 (or already have basic market knowledge) and want a structured, strategy-driven curriculum"
 highlights:
@@ -57,11 +58,11 @@ curriculum:
       - "Daily trading routine"
 
 strategyModels:
-  - abbr: "PR"
-    name: "Point of Reversal"
+  - abbr: "DPR"
+    name: "Day Point of Reversal"
     description: "Learn how to identify high-probability market reversals before they occur."
-  - abbr: "PC"
-    name: "Point of Continuation"
+  - abbr: "DPC"
+    name: "Day Point of Continuation"
     description: "Trade continuation moves with greater confidence."
   - abbr: "EPR"
     name: "EMA Point of Reversal"
@@ -83,11 +84,28 @@ included:
     description: "Our custom-built 45° Gann support & resistance calculator, designed exclusively for Money Door FX Academy students."
   - title: "Sponsored prop firm evaluation account"
     description: "Eligible students receive a sponsored prop firm evaluation account, subject to academy terms and partner availability."
+comparison:
+  copyTradingFee: "$100 FREE"
+  fundedAccount: "$5,000 two-step*"
+  propFirmTraining: "Yes"
+
+bonuses:
+  - title: "Money Door Copy Trading Strategy account fee"
+    value: "$100 FREE"
+    description: "The $100 account activation fee for the Money Door Copy Trading Strategy is waived as part of the MDC2 enrolment offer."
+  - title: "$5,000 two-step funded account"
+    value: "Included FREE"
+    description: "Eligible MDC2 students receive access to a $5,000 two-step funded-account programme at no additional course charge."
+    conditional: true
+  - title: "Complete prop firm training"
+    value: "Included"
+    description: "Prop-firm models, how two-step evaluations work, evaluation rules and objectives, risk management for funded accounts, trading within drawdown limits, account protection, strategy execution under evaluation conditions, and the common mistakes that end most evaluations."
+
 ---
 
 MDC2 is the core of the Money Door FX Academy curriculum — a six-month program where students move beyond theory and begin learning the complete Money Door Professional Trading Framework.
 
-Instead of depending on multiple indicators, students learn how market structure, volatility, institutional liquidity and Gann geometry work together to identify high-probability trading opportunities. The framework combines EMA 24, ATR 24, W.D. Gann 45° angle analysis, advanced price action, Smart Money Concepts (SMC) and ICT concepts — and these tools work together to validate our proprietary trading models: PR, PC, EPR, EPC, GPR and GPC.
+Instead of depending on multiple indicators, students learn how market structure, volatility, institutional liquidity and Gann geometry work together to identify high-probability trading opportunities. The framework combines EMA 24, ATR 24, W.D. Gann 45° angle analysis, advanced price action, Smart Money Concepts (SMC) and ICT concepts — and these tools work together to validate our proprietary trading models: DPR, DPC, EPR, EPC, GPR and GPC.
 
 This program moves beyond "what a chart shows" into "how to build a repeatable process": structured entries and exits, EMA-24-based trend reading, ATR-informed risk sizing, and regular live sessions where strategy is applied to real, moving markets rather than static screenshots.
 
