@@ -10,7 +10,7 @@ import TrainerGallery from "./TrainerGallery.astro";
         photos instead of one. Falls back to nothing if the photo folder is
         empty, which is why the caption row moved inside the gallery. */}
     <div class="relative order-2 lg:order-1" data-reveal>
-      <TrainerGallery bare autoplay={4000} height="clamp(14rem, 26vw, 20rem)" />
+      <TrainerGallery bare variant="single" autoplay={4500} />
     </div>
 
     <div class="order-1 flex flex-col lg:order-2" data-reveal>

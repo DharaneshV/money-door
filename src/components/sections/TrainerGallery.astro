@@ -20,8 +20,13 @@ interface Props {
   autoplay?: number;
   /** Shared frame height. The narrower embedded variant wants a smaller one. */
   height?: string;
+  /**
+   * "strip"  — several photos side by side, each sized to its own ratio.
+   * "single" — one photo at a time filling the width, for a narrow column.
+   */
+  variant?: "strip" | "single";
 }
-const { bare = false, autoplay = 0, height } = Astro.props;
+const { bare = false, autoplay = 0, height, variant = "strip" } = Astro.props;
 
 const files = import.meta.glob<{ default: ImageMetadata }>(
   "../../assets/team/expo/*.{jpg,jpeg,png,webp,avif}",
@@ -63,7 +68,7 @@ const photos = Object.entries(files)
   photos.length > 0 &&
     (bare ? (
       <div
-        class="tgal"
+        class:list={["tgal", `tgal--${variant}`]}
         data-tgal
         data-tgal-autoplay={autoplay || undefined}
         style={height ? `--tgal-h:${height}` : undefined}
@@ -79,6 +84,17 @@ const photos = Object.entries(files)
           {photos.map((p) => (
             <figure class="tgal__item" style={`--ar:${p.ar.toFixed(4)}`}>
               <div class="tgal__frame">
+                {variant === "single" && (
+                  <Image
+                    src={p.src}
+                    alt=""
+                    aria-hidden="true"
+                    widths={[64]}
+                    sizes="64px"
+                    loading="lazy"
+                    class="tgal__bg"
+                  />
+                )}
                 <Image
                   src={p.src}
                   alt={p.alt}
@@ -209,13 +225,20 @@ const photos = Object.entries(files)
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     overscroll-behavior-x: contain;
-    /* Bleed to the viewport edges on a phone so the strip reads as scrollable
-       rather than as a boxed-in row that happens to be cut off. */
-    padding-inline: max(1rem, calc((100vw - var(--container-wide, 80rem)) / 2));
-    margin-inline: calc(-1 * max(1rem, calc((100vw - var(--container-wide, 80rem)) / 2)));
     padding-block: 0.5rem 1.25rem;
     scrollbar-width: none;
   }
+  /* Bleed to the viewport edges so the strip reads as scrollable rather than
+     as a boxed-in row that happens to be cut off.
+     Scoped to the standalone variant on purpose: the offset is derived from
+     the VIEWPORT, so inside the half-width home-page column it dragged the
+     strip ~230px outside its container on both sides — off-screen on the left
+     and straight over the trainer copy on the right. */
+  .tgal--strip .tgal__viewport {
+    padding-inline: max(1rem, calc((100vw - var(--container-wide, 80rem)) / 2));
+    margin-inline: calc(-1 * max(1rem, calc((100vw - var(--container-wide, 80rem)) / 2)));
+  }
+
   .tgal__viewport::-webkit-scrollbar {
     display: none;
   }
@@ -275,6 +298,48 @@ const photos = Object.entries(files)
   .tgal__cap {
     margin-top: 0.85rem;
     max-width: min(82vw, 22rem);
+  }
+
+  /* ---- single-tile variant -------------------------------------------------
+     One photo fills the column and holds; the next slides in. Because the four
+     photos run from 1.33 to 0.54, a shared frame has to letterbox rather than
+     crop — so the gap is filled with a blurred, scaled copy of the same photo
+     instead of a flat panel. */
+  .tgal--single .tgal__item {
+    width: 100%;
+    scroll-snap-align: center;
+  }
+  .tgal--single .tgal__frame {
+    aspect-ratio: 4 / 3;
+    height: auto;
+    width: 100%;
+    max-width: none;
+  }
+  .tgal--single .tgal__frame :global(.tgal__img) {
+    position: relative;
+    z-index: 1;
+    object-fit: contain;
+  }
+  .tgal--single .tgal__frame :global(.tgal__bg) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    filter: blur(28px) saturate(1.25) brightness(0.55);
+    transform: scale(1.15);
+    z-index: 0;
+  }
+  .tgal--single .tgal__cap {
+    max-width: none;
+  }
+  /* The lift-and-zoom reads as a card affordance; a full-width slideshow frame
+     shouldn't move under the cursor. */
+  .tgal--single .tgal__item:hover .tgal__frame {
+    transform: none;
+  }
+  .tgal--single .tgal__item:hover .tgal__frame :global(.tgal__img) {
+    transform: none;
   }
   .tgal__cap-title {
     display: block;
