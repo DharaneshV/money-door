@@ -110,17 +110,22 @@ const iconPx = size === "sm" ? 16 : 18;
   }
 
   .socials--muted .socials__link {
-    color: color-mix(in srgb, var(--color-paper) 70%, transparent);
+    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
   }
   .socials--brand .socials__link {
     color: var(--brand);
     border-color: color-mix(in srgb, var(--brand) 40%, transparent);
   }
 
+  /* Brand colour is the reward for reaching for one, not the resting state.
+     Six saturated logos at full strength sat louder than anything else in the
+     footer; muted until hover keeps the row quiet and still identifiable.
+     The hover itself is blended toward the page rather than pure brand, since
+     full-strength red and blue against near-black is a harsh jump. */
   .socials__link:hover {
-    color: var(--brand);
-    border-color: color-mix(in srgb, var(--brand) 65%, transparent);
-    background: color-mix(in srgb, var(--brand) 14%, transparent);
+    color: color-mix(in srgb, var(--brand) 82%, var(--color-paper));
+    border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+    background: color-mix(in srgb, var(--brand) 9%, transparent);
     transform: translateY(-2px);
   }
   .socials__link:focus-visible {

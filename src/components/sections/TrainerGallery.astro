@@ -25,8 +25,14 @@ interface Props {
    * "single" — one photo at a time filling the width, for a narrow column.
    */
   variant?: "strip" | "single";
+  /**
+   * Filename stem to leave out. The Chief Trainer page already leads with the
+   * podium portrait, so repeating it in the strip directly below would show
+   * the same photo twice on one page.
+   */
+  exclude?: string;
 }
-const { bare = false, autoplay = 0, height, variant = "strip" } = Astro.props;
+const { bare = false, autoplay = 0, height, variant = "strip", exclude } = Astro.props;
 
 const files = import.meta.glob<{ default: ImageMetadata }>(
   "../../assets/team/expo/*.{jpg,jpeg,png,webp,avif}",
@@ -34,6 +40,9 @@ const files = import.meta.glob<{ default: ImageMetadata }>(
 );
 
 const CAPTIONS: Record<string, { title: string; place?: string }> = {
+  // Sorts first on filename, so the original portrait — the photo this section
+  // grew out of — still opens the sequence.
+  "00-forex-expo-dubai-podium": { title: "Forex Expo", place: "Dubai, 2023" },
   "01-money-expo": { title: "Money Expo", place: "India" },
   "02-forex-expo-broker-hall": { title: "Forex Expo", place: "Dubai" },
   "03-forex-expo-keynote": {
@@ -45,6 +54,7 @@ const CAPTIONS: Record<string, { title: string; place?: string }> = {
 
 const photos = Object.entries(files)
   .sort(([a], [b]) => a.localeCompare(b))
+  .filter(([path]) => !exclude || !path.includes(exclude))
   .map(([path, mod]) => {
     const stem = path.split("/").pop()!.replace(/\.[^.]+$/, "");
     const meta = CAPTIONS[stem];
