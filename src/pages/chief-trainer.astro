@@ -5,6 +5,7 @@ import Container from "../components/ui/Container.astro";
 import Button from "../components/ui/Button.astro";
 import Icon from "../components/ui/Icon.astro";
 import trainerPortrait from "../assets/team/venkatesh-m-portrait.jpg";
+import TrainerGallery from "../components/sections/TrainerGallery.astro";
 
 const credentials = [
   "18+ Years of Trading Experience",
@@ -85,6 +86,13 @@ const personSchema = {
       </div>
     </Container>
   </section>
+
+  {/* Renders only when photos exist in src/assets/team/expo/ — see the README
+      there. Sits after the credentials so the claims come first and the
+      photographs are the evidence, rather than the other way round. */}
+  {/* Renders its own section, or nothing at all when no photos are present —
+      see src/assets/team/expo/README.md. */}
+  <TrainerGallery />
 
   <section class="surface-gold py-section">
     <Container class="mx-auto max-w-3xl text-center" data-reveal>

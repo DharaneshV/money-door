@@ -1,0 +1,312 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Container from "../ui/Container.astro";
+
+// Horizontally scrollable photo strip for the Chief Trainer page.
+//
+// Images are picked up with `import.meta.glob` rather than being imported one
+// by one, so dropping a new photo into src/assets/team/expo/ puts it on the
+// page with no code change — and an empty folder simply renders nothing
+// instead of breaking the build on a missing import.
+//
+// Ordering is by filename, which is why the drop-in files are numbered.
+// Captions are matched on the filename stem; a photo without an entry still
+// shows, just without a caption, so an unnamed addition is never dropped.
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  "../../assets/team/expo/*.{jpg,jpeg,png,webp,avif}",
+  { eager: true }
+);
+
+const CAPTIONS: Record<string, { title: string; place?: string }> = {
+  "01-money-expo": { title: "Money Expo", place: "India" },
+  "02-forex-expo-broker-hall": { title: "Forex Expo", place: "Dubai" },
+  "03-forex-expo-keynote": {
+    title: "“Empowering Traders through Education and Excellence”",
+    place: "Forex Expo 2023, Dubai",
+  },
+  "04-money-expo-floor": { title: "Money Expo", place: "Exhibition floor" },
+};
+
+const photos = Object.entries(files)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([path, mod]) => {
+    const stem = path.split("/").pop()!.replace(/\.[^.]+$/, "");
+    const meta = CAPTIONS[stem];
+    return {
+      src: mod.default,
+      title: meta?.title,
+      place: meta?.place,
+      // Alt text has to stand on its own for a screen reader, so it never
+      // relies on the caption being present.
+      alt: meta
+        ? `Venkatesh M at ${meta.title}${meta.place ? `, ${meta.place}` : ""}`
+        : "Venkatesh M, Chief Trainer at Money Door FX Academy, at a trading industry event",
+    };
+  });
+---
+
+{
+  photos.length > 0 && (
+    <section class="surface-ink py-section">
+      <Container width="wide">
+    <div class="tgal" data-tgal>
+      {/* Heading lives inside the guard so an empty photo folder removes the
+          whole block — otherwise the page shipped a titled section with
+          nothing under it. */}
+      <div class="tgal__head" data-reveal>
+        <span class="eyebrow text-gold-500">On the Circuit</span>
+        <h2 class="tgal__title">At the Industry's Events</h2>
+        <p class="tgal__intro">
+          Speaking and representing Money Door FX Academy at Forex Expo Dubai and Money Expo.
+        </p>
+      </div>
+
+      <div class="tgal__viewport" data-tgal-track data-lenis-prevent tabindex="0" role="group" aria-label="Photos of Venkatesh M at trading industry events, scrollable">
+        {photos.map((p) => (
+          <figure class="tgal__item">
+            <div class="tgal__frame">
+              <Image
+                src={p.src}
+                alt={p.alt}
+                widths={[320, 520, 780]}
+                sizes="(max-width: 640px) 78vw, (max-width: 1024px) 42vw, 30vw"
+                loading="lazy"
+                class="tgal__img"
+              />
+            </div>
+            {p.title && (
+              <figcaption class="tgal__cap">
+                <span class="tgal__cap-title">{p.title}</span>
+                {p.place && <span class="tgal__cap-place">{p.place}</span>}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+
+      {/* Arrows are a convenience on top of native scrolling, not the only way
+          to move — the strip still works by drag, wheel, and keyboard alone. */}
+      <div class="tgal__nav">
+        <button type="button" class="tgal__btn" data-tgal-prev aria-label="Previous photos" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button type="button" class="tgal__btn" data-tgal-next aria-label="More photos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+      </Container>
+    </section>
+  )
+}
+
+<style>
+  .tgal {
+    position: relative;
+  }
+  .tgal__head {
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+  .tgal__title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-paper);
+  }
+  .tgal__intro {
+    margin-top: 0.75rem;
+    max-width: 42rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
+  }
+
+  .tgal__viewport {
+    display: flex;
+    gap: clamp(0.85rem, 1.8vw, 1.4rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
+    /* Bleed to the viewport edges on a phone so the strip reads as scrollable
+       rather than as a boxed-in row that happens to be cut off. */
+    padding-inline: max(1rem, calc((100vw - var(--container-wide, 80rem)) / 2));
+    margin-inline: calc(-1 * max(1rem, calc((100vw - var(--container-wide, 80rem)) / 2)));
+    padding-block: 0.5rem 1.25rem;
+    scrollbar-width: none;
+  }
+  .tgal__viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .tgal__viewport:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 4px;
+  }
+
+  .tgal__item {
+    flex: 0 0 auto;
+    width: min(78vw, 20rem);
+    scroll-snap-align: center;
+  }
+  @media (min-width: 640px) {
+    .tgal__item {
+      width: 20rem;
+      scroll-snap-align: start;
+    }
+  }
+
+  .tgal__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    /* Fixed ratio so a mix of portrait and landscape phone photos still lines
+       up as an even strip instead of a ragged edge. */
+    aspect-ratio: 3 / 4;
+    background: var(--color-ink-900);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 10%, transparent);
+    transition:
+      box-shadow 0.45s ease,
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tgal__item:hover .tgal__frame {
+    transform: translateY(-4px);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 42%, transparent),
+      0 22px 44px -26px rgb(0 0 0 / 0.9);
+  }
+  .tgal__frame :global(.tgal__img) {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tgal__item:hover .tgal__frame :global(.tgal__img) {
+    transform: scale(1.04);
+  }
+
+  .tgal__cap {
+    margin-top: 0.85rem;
+  }
+  .tgal__cap-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1.3;
+    color: var(--color-paper);
+  }
+  .tgal__cap-place {
+    margin-top: 0.2rem;
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-gold-500);
+  }
+
+  .tgal__nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+  }
+  .tgal__btn {
+    display: flex;
+    height: 2.75rem;
+    width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 20%, transparent);
+    color: var(--color-paper);
+    cursor: pointer;
+    transition:
+      color 0.3s ease,
+      box-shadow 0.3s ease,
+      background-color 0.3s ease,
+      opacity 0.3s ease;
+  }
+  .tgal__btn:hover:not(:disabled) {
+    color: var(--color-gold-400);
+    background: color-mix(in srgb, var(--color-gold-500) 14%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 55%, transparent);
+  }
+  .tgal__btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .tgal__btn:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tgal__viewport {
+      scroll-behavior: auto;
+    }
+    .tgal__frame,
+    .tgal__frame :global(.tgal__img),
+    .tgal__btn {
+      transition: none;
+    }
+    .tgal__item:hover .tgal__frame {
+      transform: none;
+    }
+    .tgal__item:hover .tgal__frame :global(.tgal__img) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Arrow buttons + disabled states. Re-initialised on every ClientRouter
+  // navigation, and guarded per element so a second run can't double-bind.
+  function initTrainerGallery() {
+    document.querySelectorAll<HTMLElement>("[data-tgal]").forEach((root) => {
+      if (root.dataset.tgalBound === "1") return;
+      root.dataset.tgalBound = "1";
+
+      const track = root.querySelector<HTMLElement>("[data-tgal-track]");
+      const prev = root.querySelector<HTMLButtonElement>("[data-tgal-prev]");
+      const next = root.querySelector<HTMLButtonElement>("[data-tgal-next]");
+      if (!track || !prev || !next) return;
+
+      // Scroll by roughly one card plus its gap, so a click always lands on a
+      // new photo rather than nudging the strip a few pixels.
+      const step = () => {
+        const item = track.querySelector<HTMLElement>(".tgal__item");
+        return item ? item.getBoundingClientRect().width + 20 : track.clientWidth * 0.8;
+      };
+
+      const sync = () => {
+        const max = track.scrollWidth - track.clientWidth;
+        // The strip bleeds to the viewport edge with padding-inline, and
+        // scroll-snap settles the first card against that padding rather than
+        // against 0 — so at rest scrollLeft sits at the padding value, not
+        // zero, and a plain `<= 2` check left the back arrow enabled with
+        // nothing behind it. Tolerance is the real padding plus a couple of
+        // pixels for sub-pixel layout.
+        const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+        prev.disabled = track.scrollLeft <= padLeft + 2;
+        next.disabled = track.scrollLeft >= max - 2;
+      };
+
+      prev.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
+      next.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+      track.addEventListener("scroll", sync, { passive: true });
+      window.addEventListener("resize", sync);
+      sync();
+    });
+  }
+
+  initTrainerGallery();
+  document.addEventListener("astro:page-load", initTrainerGallery);
+</script>
