@@ -4,16 +4,58 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/ui/Container.astro";
 import Button from "../components/ui/Button.astro";
 import Icon from "../components/ui/Icon.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
 import trainerPortrait from "../assets/team/venkatesh-m-portrait.jpg";
 import TrainerGallery from "../components/sections/TrainerGallery.astro";
 
+// Rebuilt in the site's own editorial language. The page had drifted onto
+// generic utility styling — `text-4xl font-bold` headings, centred `text-2xl`
+// section titles, plain bordered boxes — none of which appears anywhere else,
+// which is why it read as a weaker page than the ones either side of it.
+// Now: display type, numbered sections, the surface system, and count-ups.
 const credentials = [
-  "18+ Years of Trading Experience",
-  "Professional Gold (XAUUSD) & Forex Trader",
-  "Trained 2,500+ Students",
-  "Creator of the PR & PC Trading Methodology",
-  "Expert in Risk Management & Trading Psychology",
-  "Live Market Mentor",
+  {
+    n: "01",
+    icon: "clock" as const,
+    title: "18+ years in the markets",
+    body: "Forex, Commodities and Equities — through several full market cycles, not one favourable run.",
+  },
+  {
+    n: "02",
+    icon: "target" as const,
+    title: "Gold (XAU/USD) specialist",
+    body: "A deliberate focus on one instrument's behaviour rather than shallow coverage of many.",
+  },
+  {
+    n: "03",
+    icon: "users" as const,
+    title: "2,500+ students trained",
+    body: "Taught the same structured way to every intake, from complete beginners upward.",
+  },
+  {
+    n: "04",
+    icon: "layers" as const,
+    title: "Creator of PR & PC",
+    body: "The six-model framework — DPR, DPC, EPR, EPC, GPR and GPC — at the core of MDC2 and MDC3.",
+  },
+  {
+    n: "05",
+    icon: "shield-check" as const,
+    title: "Risk management & psychology",
+    body: "The two disciplines that decide whether any strategy survives contact with a live market.",
+  },
+  {
+    n: "06",
+    icon: "video" as const,
+    title: "Live market mentor",
+    body: "Weekly sessions applying the framework to real, moving markets rather than static screenshots.",
+  },
+];
+
+const stats = [
+  { to: 18, suffix: "+", label: "Years of trading experience" },
+  { to: 2500, suffix: "+", label: "Students trained" },
+  { to: 6, suffix: "", label: "Named strategy models" },
 ];
 
 const personSchema = {
@@ -31,93 +73,269 @@ const personSchema = {
   description="Venkatesh M, Chief Trainer of Money Door FX Academy — 18+ years of trading experience, creator of the PR & PC trading methodology, trained 2,500+ students."
   schema={personSchema}
 >
-  <section class="border-b border-paper/12 bg-ink-950 py-section">
-    <Container class="grid items-center gap-x-12 gap-y-10 lg:grid-cols-2">
-      <div
-        class="group mx-auto w-full max-w-xl overflow-hidden  border border-paper/12 lg:max-w-none"
-        data-reveal
-      >
-        <Image
-          src={trainerPortrait}
-          alt="Venkatesh M, Chief Trainer of Money Door FX Academy, speaking at Forex Expo Dubai 2023"
-          width={700}
-          height={541}
-          sizes="(min-width: 1024px) 45vw, (min-width: 640px) 80vw, 92vw"
-          class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-        />
+  {/* ---- Hero ---- */}
+  <section class="surface-ink overflow-hidden py-section">
+    <Container
+      width="wide"
+      class="grid items-center gap-x-[clamp(2rem,6vw,5rem)] gap-y-12 lg:grid-cols-[0.85fr_1.15fr]"
+    >
+      <div class="order-2 lg:order-1" data-reveal>
+        <div class="trainer-portrait">
+          <Image
+            src={trainerPortrait}
+            alt="Venkatesh M, Chief Trainer of Money Door FX Academy, speaking at Forex Expo Dubai 2023"
+            width={760}
+            height={588}
+            sizes="(min-width: 1024px) 40vw, 92vw"
+            class="trainer-portrait__img"
+          />
+        </div>
       </div>
-      <div class="flex flex-col gap-4" data-reveal>
-        <span class="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-gold-500">
-          Meet Your Chief Trainer
-        </span>
-        <h1 class="text-4xl font-bold sm:text-5xl">Venkatesh M</h1>
-        <p class="font-heading text-lg font-semibold text-gold-400">
-          Chief Trainer, Money Door FX Academy
+
+      <div class="order-1 flex flex-col lg:order-2" data-reveal>
+        <div class="mb-6 flex items-center gap-4">
+          <span class="section-index text-gold-500">01</span>
+          <span class="h-px w-10 bg-paper/25" aria-hidden="true"></span>
+          <span class="eyebrow text-gold-500">Meet Your Chief Trainer</span>
+        </div>
+
+        <h1
+          class="font-display text-[clamp(2.5rem,1.8rem+3vw,4.5rem)] font-medium leading-[1.05] tracking-[0.02em] text-paper"
+        >
+          Venkatesh M
+        </h1>
+        <p class="mt-4 font-heading text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">
+          Chief Trainer · Money Door FX Academy
         </p>
-        <p class="text-base leading-relaxed text-paper/70">
-          With over 18 years of trading experience across Forex, Commodities, Equities, and
+
+        <p class="mt-8 max-w-xl text-base leading-relaxed text-paper/65">
+          With over 18 years of trading experience across Forex, Commodities, Equities and
           financial markets, Venkatesh has helped thousands of aspiring traders understand market
           structure, improve discipline, and develop practical trading skills.
         </p>
-        <p class="text-base leading-relaxed text-paper/70">
-          His teaching philosophy focuses on simplifying complex market concepts into structured,
-          easy-to-follow learning that students can confidently apply in real market conditions.
+        <p class="mt-4 max-w-xl text-base leading-relaxed text-paper/65">
+          His teaching philosophy is to simplify complex market concepts into structured,
+          repeatable learning that students can apply with confidence in live conditions.
         </p>
-        <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+
+        {/* Numbers sit with the introduction rather than in a band of their own —
+            they are the claim the rest of the page then evidences. */}
+        <dl class="mt-10 grid grid-cols-3 gap-x-6 border-t border-paper/12 pt-8">
+          {
+            stats.map((s) => (
+              <div>
+                <dt class="font-display text-[clamp(1.75rem,1.3rem+1.8vw,2.75rem)] font-medium leading-none tabular-nums text-gold-500">
+                  <span data-count-to={s.to} data-count-suffix={s.suffix}>
+                    0
+                  </span>
+                </dt>
+                <dd class="mt-2 text-xs leading-snug text-paper/55">{s.label}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="mt-10 flex flex-col gap-3 sm:flex-row">
           <Button href="/courses/" arrow>Explore Courses</Button>
-          <Button href="/join/consultation/" variant="secondary">Book a Free 1-Hour Consultation</Button>
+          <Button href="/join/consultation/" variant="secondary">
+            Book a Free 1-Hour Consultation
+          </Button>
         </div>
       </div>
     </Container>
   </section>
 
+  {/* ---- Credentials ---- */}
   <section class="surface-ink-raised py-section">
-    <Container class="flex flex-col gap-10">
-      <h2 class="text-center text-2xl font-bold sm:text-3xl" data-reveal>Credentials &amp; Experience</h2>
-      <div class="mx-auto grid max-w-4xl gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+    <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
+      <SectionHeading
+        eyebrow="Track Record"
+        index="02"
+        title="Credentials & Experience"
+        subtitle="Eighteen years of market experience, and the specific disciplines that shape how the academy teaches."
+        align="left"
+      />
+      <div class="grid gap-[clamp(1rem,2vw,1.75rem)] sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
         {
           credentials.map((c) => (
-            <div class="card-lift flex items-start gap-3  border border-paper/12 bg-ink-950 p-5 hover:border-gold-500/40">
-              <Icon name="check-circle" class="mt-0.5 h-5 w-5 flex-none text-gold-500" />
-              <span class="text-sm text-paper/80">{c}</span>
-            </div>
+            <article class="cred">
+              <div class="cred__head">
+                <span class="cred__num" aria-hidden="true">
+                  {c.n}
+                </span>
+                <Icon name={c.icon} class="h-5 w-5 flex-none text-gold-500" />
+              </div>
+              <h3 class="cred__title">{c.title}</h3>
+              <p class="cred__body">{c.body}</p>
+            </article>
           ))
         }
       </div>
     </Container>
   </section>
 
-  {/* Renders only when photos exist in src/assets/team/expo/ — see the README
-      there. Sits after the credentials so the claims come first and the
-      photographs are the evidence, rather than the other way round. */}
   {/* Renders its own section, or nothing at all when no photos are present —
       see src/assets/team/expo/README.md. */}
   <TrainerGallery autoplay={5000} />
 
-  <section class="surface-gold py-section">
-    <Container class="mx-auto max-w-3xl text-center" data-reveal>
-      <Icon name="message-circle" class="mx-auto mb-4 h-10 w-10 text-gold-600" />
-      <blockquote class="font-heading text-2xl font-semibold leading-snug text-paper sm:text-3xl">
-        "Our goal is not just to teach trading — but to develop disciplined, consistent, and
-        independent traders."
-      </blockquote>
-      <p class="mt-4 text-sm font-medium text-paper/55">— Venkatesh M, Chief Trainer</p>
-    </Container>
-  </section>
-
+  {/* ---- Methodology ---- */}
   <section class="surface-ink py-section">
-    <Container class="flex flex-col gap-6 text-center" data-reveal>
-      <h2 class="text-2xl font-bold sm:text-3xl">The PR &amp; PC Methodology</h2>
-      <p class="mx-auto max-w-2xl text-base leading-relaxed text-paper/70">
-        Venkatesh developed the PR &amp; PC framework — Day Point of Reversal and Day Point of Continuation —
-        the structured, rule-based approach to reading Gold and Forex price action that sits at
-        the core of the MDC2 and MDC3 programs. Rather than relying on signals or guesswork, PR
-        &amp; PC give students a repeatable process for identifying and managing trading
-        opportunities.
-      </p>
-      <div>
-        <Button href="/gold-trading/" variant="secondary" arrow>Learn About Our Strategies</Button>
+    <Container
+      width="wide"
+      class="grid items-start gap-x-[clamp(2rem,6vw,5rem)] gap-y-10 lg:grid-cols-[0.9fr_1.1fr]"
+    >
+      <SectionHeading
+        eyebrow="The Framework"
+        index="03"
+        title="The PR & PC Methodology"
+        align="left"
+      />
+      <div data-reveal>
+        <p class="text-base leading-relaxed text-paper/70">
+          Venkatesh developed the PR &amp; PC framework — Day Point of Reversal and Day Point of
+          Continuation — the structured, rule-based approach to reading Gold and Forex price
+          action that sits at the core of the MDC2 and MDC3 programs.
+        </p>
+        <p class="mt-4 text-base leading-relaxed text-paper/70">
+          Rather than relying on signals or guesswork, it gives students a repeatable process for
+          identifying and managing trading opportunities — one decision-making method, taught the
+          same way to every student, that keeps working after the course ends.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          {
+            ["DPR", "DPC", "EPR", "EPC", "GPR", "GPC"].map((m) => (
+              <span class="model-chip">{m}</span>
+            ))
+          }
+        </div>
+        <div class="mt-9">
+          <Button href="/courses/mdc2/" variant="secondary" arrow>See the Full Framework</Button>
+        </div>
       </div>
     </Container>
   </section>
+
+  {/* ---- Quote ---- */}
+  <section class="surface-gold py-section">
+    <Container class="mx-auto max-w-3xl text-center" data-reveal>
+      <Icon name="message-circle" class="mx-auto mb-6 h-9 w-9 text-gold-500" />
+      <blockquote
+        class="font-display text-[clamp(1.5rem,1.2rem+1.6vw,2.4rem)] font-medium leading-[1.25] text-paper"
+      >
+        "Our goal is not just to teach trading — but to develop disciplined, consistent, and
+        independent traders."
+      </blockquote>
+      <p class="mt-6 eyebrow text-paper/50">Venkatesh M · Chief Trainer</p>
+    </Container>
+  </section>
 </BaseLayout>
+
+<style>
+  /* Gold hairline and a slow zoom, matching the treatment used on the other
+     portrait surfaces rather than the plain 1px box this page had. */
+  .trainer-portrait {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 22%, transparent);
+  }
+  .trainer-portrait__img {
+    display: block;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .trainer-portrait:hover .trainer-portrait__img {
+    transform: scale(1.04);
+  }
+
+  .cred {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    padding: clamp(1.4rem, 2.4vw, 1.9rem);
+    background-image: linear-gradient(180deg, var(--color-ink-900), var(--color-ink-950));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 9%, transparent);
+    transition:
+      box-shadow 0.45s ease,
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cred::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      var(--color-gold-500),
+      color-mix(in srgb, var(--color-gold-700) 35%, transparent)
+    );
+    transform: scaleY(0.3);
+    transform-origin: top;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cred:hover {
+    transform: translateY(-3px);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 32%, transparent);
+  }
+  .cred:hover::before {
+    transform: scaleY(1);
+  }
+  .cred__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .cred__num {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--color-gold-500) 55%, transparent);
+  }
+  .cred__title {
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.25rem);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-paper);
+  }
+  .cred__body {
+    margin-top: 0.6rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-paper) 58%, transparent);
+  }
+
+  .model-chip {
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--color-gold-500) 12%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 32%, transparent);
+    padding: 0.45rem 0.95rem;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-gold-300);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trainer-portrait__img,
+    .cred,
+    .cred::before {
+      transition: none;
+    }
+    .trainer-portrait:hover .trainer-portrait__img,
+    .cred:hover {
+      transform: none;
+    }
+    .cred::before {
+      transform: scaleY(1);
+    }
+  }
+</style>
