@@ -35,6 +35,9 @@ const photos = Object.entries(files)
     const meta = CAPTIONS[stem];
     return {
       src: mod.default,
+      // Natural ratio, so each tile is sized to its own photo instead of every
+      // photo being forced into one shape.
+      ar: mod.default.width / mod.default.height,
       title: meta?.title,
       place: meta?.place,
       // Alt text has to stand on its own for a screen reader, so it never
@@ -64,7 +67,7 @@ const photos = Object.entries(files)
 
       <div class="tgal__viewport" data-tgal-track data-lenis-prevent tabindex="0" role="group" aria-label="Photos of Venkatesh M at trading industry events, scrollable">
         {photos.map((p) => (
-          <figure class="tgal__item">
+          <figure class="tgal__item" style={`--ar:${p.ar.toFixed(4)}`}>
             <div class="tgal__frame">
               <Image
                 src={p.src}
@@ -150,14 +153,18 @@ const photos = Object.entries(files)
     outline-offset: 4px;
   }
 
+  /* Tiles are sized by each photo's own aspect ratio at a shared height, so a
+     wide shot gets a wide tile and a tall one a narrow tile. The previous fixed
+     3:4 frame forced everything into portrait, which centre-cropped the
+     landscape photos hard — the Money Expo shot lost both edges and the
+     keynote lost the FOREX EXPO banner. Because the frame now matches the
+     image exactly, `cover` crops nothing and no background shows through. */
   .tgal__item {
     flex: 0 0 auto;
-    width: min(78vw, 20rem);
     scroll-snap-align: center;
   }
   @media (min-width: 640px) {
     .tgal__item {
-      width: 20rem;
       scroll-snap-align: start;
     }
   }
@@ -166,9 +173,12 @@ const photos = Object.entries(files)
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-card);
-    /* Fixed ratio so a mix of portrait and landscape phone photos still lines
-       up as an even strip instead of a ragged edge. */
-    aspect-ratio: 3 / 4;
+    /* Height is shared across the strip so the row still lines up; width falls
+       out of the photo's own ratio. Capped so a very wide photo can't run past
+       the screen on a phone. */
+    aspect-ratio: var(--ar, 3 / 4);
+    height: clamp(15rem, 22vw, 22rem);
+    max-width: 82vw;
     background: var(--color-ink-900);
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 10%, transparent);
     transition:
@@ -193,6 +203,7 @@ const photos = Object.entries(files)
 
   .tgal__cap {
     margin-top: 0.85rem;
+    max-width: min(82vw, 22rem);
   }
   .tgal__cap-title {
     display: block;

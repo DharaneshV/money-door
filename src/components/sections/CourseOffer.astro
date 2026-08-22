@@ -21,6 +21,8 @@ interface Props {
   currency?: string;
   priceLabel?: string;
   bonuses?: Bonus[];
+  /** e.g. "Most Popular" — shown beside the fee label on the recommended tier. */
+  badge?: string;
   ctaHref?: string;
 }
 const {
@@ -30,6 +32,7 @@ const {
   currency = "USD",
   priceLabel,
   bonuses = [],
+  badge,
   ctaHref = `/join/${code.toLowerCase()}/`,
 } = Astro.props;
 
@@ -39,7 +42,10 @@ const hasConditional = bonuses.some((b) => b.conditional);
 
 <div class="offer" data-reveal>
   <div class="offer__price">
-    <span class="eyebrow text-gold-500">Enrolment fee</span>
+    <div class="offer__label">
+      <span class="eyebrow text-gold-500">Enrolment fee</span>
+      {badge && <span class="offer__popular">{badge}</span>}
+    </div>
     <div class="offer__figures">
       {pv.was && <span class="offer__was">{pv.was}</span>}
       <span class="offer__now">{pv.now}</span>
@@ -116,6 +122,27 @@ const hasConditional = bonuses.some((b) => b.conditional);
       ),
       linear-gradient(180deg, var(--color-ink-900), var(--color-ink-950));
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 28%, transparent);
+  }
+  /* The recommended tier is marked here as well as on the cards and the
+     comparison table — this block is where the decision actually gets made,
+     and it was the one place the marker was missing. */
+  .offer__label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .offer__popular {
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    padding: 0.2rem 0.6rem;
+    font-family: var(--font-heading);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-950);
+    white-space: nowrap;
   }
   .offer__figures {
     display: flex;

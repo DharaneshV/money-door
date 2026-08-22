@@ -31,6 +31,7 @@ const {
   priceLabel,
   bonuses,
   buildsOn,
+  badge,
 } = program.data;
 const priceDisplay = formatPrice(price, currency);
 
@@ -68,6 +69,7 @@ const courseSchema = {
         currency={currency}
         priceLabel={priceLabel}
         bonuses={bonuses}
+        badge={badge}
       />
     </Container>
   </section>

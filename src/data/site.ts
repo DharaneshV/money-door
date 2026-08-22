@@ -40,7 +40,7 @@ export const contact = {
   whatsappMessage:
     "Hi Money Door FX Academy, I'd like to know more about your courses.",
   // TODO: swap to a branded support@ inbox once the domain + Zoho/Workspace mail is set up.
-  email: "moneydoorchennai@gmail.com",
+  email: "moneydooronline@gmail.com",
   // Short form, for tight spots like the footer column.
   addressLine: "Spencer Plaza, Anna Salai, Chennai 600002",
   // Full postal address, as the client supplied it.
@@ -54,8 +54,6 @@ export const contact = {
     country: "India",
   },
   addressFull: "Phase-II, 7th Floor, Spencer Plaza Mall, 714-A, Anna Salai, Chennai, Tamil Nadu 600002",
-  // Shown next to the address so nobody turns up after closing.
-  hours: "Open daily · Closes 6 pm",
   mapsHref:
     "https://www.google.com/maps/search/?api=1&query=" +
     encodeURIComponent("Spencer Plaza Mall, 714-A, Anna Salai, Chennai, Tamil Nadu 600002"),

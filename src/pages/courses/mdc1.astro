@@ -28,6 +28,7 @@ const {
   listPrice,
   currency,
   bonuses,
+  badge,
 } = program.data;
 
 // Offers/price is deliberately omitted: schema.org expects ISO-4217 currency codes
@@ -64,6 +65,7 @@ const courseSchema = {
         currency={currency}
         priceLabel={priceLabel}
         bonuses={bonuses}
+        badge={badge}
       />
     </Container>
   </section>
