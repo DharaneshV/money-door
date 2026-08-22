@@ -13,6 +13,16 @@ import Container from "../ui/Container.astro";
 // Ordering is by filename, which is why the drop-in files are numbered.
 // Captions are matched on the filename stem; a photo without an entry still
 // shows, just without a caption, so an unnamed addition is never dropped.
+interface Props {
+  /** Render just the strip, without its own <section>/heading — for embedding. */
+  bare?: boolean;
+  /** Milliseconds each photo rests before advancing. 0 disables autoplay. */
+  autoplay?: number;
+  /** Shared frame height. The narrower embedded variant wants a smaller one. */
+  height?: string;
+}
+const { bare = false, autoplay = 0, height } = Astro.props;
+
 const files = import.meta.glob<{ default: ImageMetadata }>(
   "../../assets/team/expo/*.{jpg,jpeg,png,webp,avif}",
   { eager: true }
@@ -50,62 +60,123 @@ const photos = Object.entries(files)
 ---
 
 {
-  photos.length > 0 && (
-    <section class="surface-ink py-section">
-      <Container width="wide">
-    <div class="tgal" data-tgal>
-      {/* Heading lives inside the guard so an empty photo folder removes the
-          whole block — otherwise the page shipped a titled section with
-          nothing under it. */}
-      <div class="tgal__head" data-reveal>
-        <span class="eyebrow text-gold-500">On the Circuit</span>
-        <h2 class="tgal__title">At the Industry's Events</h2>
-        <p class="tgal__intro">
-          Speaking and representing Money Door FX Academy at Forex Expo Dubai and Money Expo.
-        </p>
-      </div>
+  photos.length > 0 &&
+    (bare ? (
+      <div
+        class="tgal"
+        data-tgal
+        data-tgal-autoplay={autoplay || undefined}
+        style={height ? `--tgal-h:${height}` : undefined}
+      >
+        <div
+          class="tgal__viewport"
+          data-tgal-track
+          data-lenis-prevent
+          tabindex="0"
+          role="group"
+          aria-label="Photos of Venkatesh M at trading industry events, scrollable"
+        >
+          {photos.map((p) => (
+            <figure class="tgal__item" style={`--ar:${p.ar.toFixed(4)}`}>
+              <div class="tgal__frame">
+                <Image
+                  src={p.src}
+                  alt={p.alt}
+                  widths={[320, 520, 780]}
+                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 42vw, 30vw"
+                  loading="lazy"
+                  class="tgal__img"
+                />
+              </div>
+              {p.title && (
+                <figcaption class="tgal__cap">
+                  <span class="tgal__cap-title">{p.title}</span>
+                  {p.place && <span class="tgal__cap-place">{p.place}</span>}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
 
-      <div class="tgal__viewport" data-tgal-track data-lenis-prevent tabindex="0" role="group" aria-label="Photos of Venkatesh M at trading industry events, scrollable">
-        {photos.map((p) => (
-          <figure class="tgal__item" style={`--ar:${p.ar.toFixed(4)}`}>
-            <div class="tgal__frame">
-              <Image
-                src={p.src}
-                alt={p.alt}
-                widths={[320, 520, 780]}
-                sizes="(max-width: 640px) 78vw, (max-width: 1024px) 42vw, 30vw"
-                loading="lazy"
-                class="tgal__img"
-              />
-            </div>
-            {p.title && (
-              <figcaption class="tgal__cap">
-                <span class="tgal__cap-title">{p.title}</span>
-                {p.place && <span class="tgal__cap-place">{p.place}</span>}
-              </figcaption>
-            )}
-          </figure>
-        ))}
+        {/* Arrows are a convenience on top of native scrolling and autoplay,
+            not the only way to move — drag, wheel and keyboard all still work. */}
+        <div class="tgal__nav">
+          <button type="button" class="tgal__btn" data-tgal-prev aria-label="Previous photos" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="tgal__btn" data-tgal-next aria-label="More photos">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
+    ) : (
+      <section class="surface-ink py-section">
+        <Container width="wide">
+          <div class="tgal__head" data-reveal>
+            <span class="eyebrow text-gold-500">On the Circuit</span>
+            <h2 class="tgal__title">At the Industry's Events</h2>
+            <p class="tgal__intro">
+              Speaking and representing Money Door FX Academy at Forex Expo Dubai and Money Expo.
+            </p>
+          </div>
+          <div
+        class="tgal"
+        data-tgal
+        data-tgal-autoplay={autoplay || undefined}
+        style={height ? `--tgal-h:${height}` : undefined}
+      >
+        <div
+          class="tgal__viewport"
+          data-tgal-track
+          data-lenis-prevent
+          tabindex="0"
+          role="group"
+          aria-label="Photos of Venkatesh M at trading industry events, scrollable"
+        >
+          {photos.map((p) => (
+            <figure class="tgal__item" style={`--ar:${p.ar.toFixed(4)}`}>
+              <div class="tgal__frame">
+                <Image
+                  src={p.src}
+                  alt={p.alt}
+                  widths={[320, 520, 780]}
+                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 42vw, 30vw"
+                  loading="lazy"
+                  class="tgal__img"
+                />
+              </div>
+              {p.title && (
+                <figcaption class="tgal__cap">
+                  <span class="tgal__cap-title">{p.title}</span>
+                  {p.place && <span class="tgal__cap-place">{p.place}</span>}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
 
-      {/* Arrows are a convenience on top of native scrolling, not the only way
-          to move — the strip still works by drag, wheel, and keyboard alone. */}
-      <div class="tgal__nav">
-        <button type="button" class="tgal__btn" data-tgal-prev aria-label="Previous photos" disabled>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-        <button type="button" class="tgal__btn" data-tgal-next aria-label="More photos">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
+        {/* Arrows are a convenience on top of native scrolling and autoplay,
+            not the only way to move — drag, wheel and keyboard all still work. */}
+        <div class="tgal__nav">
+          <button type="button" class="tgal__btn" data-tgal-prev aria-label="Previous photos" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="tgal__btn" data-tgal-next aria-label="More photos">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-      </Container>
-    </section>
-  )
+        </Container>
+      </section>
+    ))
 }
 
 <style>
@@ -177,7 +248,7 @@ const photos = Object.entries(files)
        out of the photo's own ratio. Capped so a very wide photo can't run past
        the screen on a phone. */
     aspect-ratio: var(--ar, 3 / 4);
-    height: clamp(15rem, 22vw, 22rem);
+    height: var(--tgal-h, clamp(15rem, 22vw, 22rem));
     max-width: 82vw;
     background: var(--color-ink-900);
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 10%, transparent);
@@ -315,6 +386,73 @@ const photos = Object.entries(files)
       track.addEventListener("scroll", sync, { passive: true });
       window.addEventListener("resize", sync);
       sync();
+
+      // ---- Autoplay ---------------------------------------------------------
+      // Advance one photo, rest, repeat, looping back at the end.
+      const delay = Number(root.dataset.tgalAutoplay || 0);
+      if (!delay) return;
+
+      // Motion that starts on its own and never stops is precisely what the
+      // reduced-motion preference exists to prevent, so this stays off there
+      // — the strip is still fully usable by drag, wheel, arrows and keyboard.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      let timer: ReturnType<typeof setInterval> | null = null;
+      let paused = false;
+
+      const advance = () => {
+        if (paused) return;
+        const max = track.scrollWidth - track.clientWidth;
+        if (track.scrollLeft >= max - 2) track.scrollTo({ left: 0, behavior: "smooth" });
+        else track.scrollBy({ left: step(), behavior: "smooth" });
+      };
+
+      const play = () => {
+        if (!timer) timer = setInterval(advance, delay);
+      };
+      const halt = () => {
+        if (timer) clearInterval(timer);
+        timer = null;
+      };
+
+      // Never move the strip out from under someone who is reading or touching
+      // it. Pointer and focus resume on leave; a touch is treated as intent to
+      // browse manually and stops autoplay for good on that page view.
+      root.addEventListener("pointerenter", () => (paused = true));
+      root.addEventListener("pointerleave", () => (paused = false));
+      root.addEventListener("focusin", () => (paused = true));
+      root.addEventListener("focusout", () => (paused = false));
+      root.addEventListener("touchstart", () => { paused = true; halt(); }, { passive: true });
+
+      // Only run while on screen — otherwise every gallery on the site would
+      // tick forever in the background, and a viewer scrolling back would find
+      // it somewhere they never left it.
+      let io: IntersectionObserver | null = null;
+      if ("IntersectionObserver" in window) {
+        io = new IntersectionObserver(
+          ([entry]) => (entry.isIntersecting ? play() : halt()),
+          { threshold: 0.35 }
+        );
+        io.observe(root);
+      } else {
+        play();
+      }
+
+      // A background tab shouldn't advance either.
+      document.addEventListener("visibilitychange", () =>
+        document.hidden ? halt() : undefined
+      );
+
+      // ClientRouter swaps the DOM without a reload, so without this the timer
+      // and the observer would keep running against a detached node.
+      document.addEventListener(
+        "astro:before-swap",
+        () => {
+          halt();
+          io?.disconnect();
+        },
+        { once: true }
+      );
     });
   }
 

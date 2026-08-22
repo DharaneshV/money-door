@@ -1,26 +1,16 @@
 ---
-import { Image } from "astro:assets";
 import Container from "../ui/Container.astro";
-import trainerPhoto from "../../assets/team/venkatesh-m-portrait.jpg";
+import TrainerGallery from "./TrainerGallery.astro";
 ---
 
 <section class="overflow-hidden bg-ink-950 py-section">
   <Container class="grid items-center gap-x-[clamp(2rem,6vw,6rem)] gap-y-12 lg:grid-cols-2">
+    {/* The single static portrait that used to sit here is now the first frame
+        of a self-advancing strip — same column, but it shows all four event
+        photos instead of one. Falls back to nothing if the photo folder is
+        empty, which is why the caption row moved inside the gallery. */}
     <div class="relative order-2 lg:order-1" data-reveal>
-      <div class="img-reveal relative aspect-[4/3] w-full">
-        <Image
-          src={trainerPhoto}
-          alt="Venkatesh M, Chief Trainer of Money Door FX Academy, speaking at Forex Expo Dubai 2023"
-          width={900}
-          height={694}
-          sizes="(min-width: 1024px) 48vw, 92vw"
-          class="h-full w-full object-cover"
-        />
-      </div>
-      <div class="mt-4 flex items-center justify-between gap-4">
-        <span class="eyebrow text-paper/40">Forex Expo Dubai 2023</span>
-        <span class="eyebrow text-paper/40">Speaker &amp; Chief Trainer</span>
-      </div>
+      <TrainerGallery bare autoplay={4000} height="clamp(14rem, 26vw, 20rem)" />
     </div>
 
     <div class="order-1 flex flex-col lg:order-2" data-reveal>
