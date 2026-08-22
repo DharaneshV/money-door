@@ -26,6 +26,7 @@ const rows = programs
     return {
       code: d.code,
       name: d.name,
+      badge: d.badge,
       href: `/courses/${d.code.toLowerCase()}/`,
       listPrice: d.listPrice ? formatPrice(d.listPrice, d.currency) : "—",
       price: d.priceLabel ?? formatPrice(d.price, d.currency),
@@ -60,7 +61,10 @@ const COLS = [
           <tr>
             <th scope="row">
               <a href={r.href} class="cmp__prog">
-                <span class="cmp__code">{r.code}</span>
+                <span class="cmp__code">
+                  {r.code}
+                  {r.badge && <span class="cmp__badge">{r.badge}</span>}
+                </span>
                 <span class="cmp__name">{r.name}</span>
               </a>
             </th>
@@ -81,7 +85,10 @@ const COLS = [
       rows.map((r) => (
         <article class="cmp__card">
           <a href={r.href} class="cmp__card-head">
-            <span class="cmp__code">{r.code}</span>
+            <span class="cmp__code">
+              {r.code}
+              {r.badge && <span class="cmp__badge">{r.badge}</span>}
+            </span>
             <span class="cmp__name">{r.name}</span>
           </a>
           <dl class="cmp__dl">
@@ -117,6 +124,20 @@ const COLS = [
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-gold-500);
+  }
+  /* Marks the recommended default. Inline with the code so it reads as part of
+     the program's identity rather than as a floating decoration. */
+  .cmp__badge {
+    margin-left: 0.5rem;
+    display: inline-block;
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    padding: 0.15rem 0.5rem;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-ink-950);
+    vertical-align: middle;
   }
   .cmp__name {
     display: block;

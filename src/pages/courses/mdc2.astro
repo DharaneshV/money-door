@@ -30,6 +30,7 @@ const {
   listPrice,
   priceLabel,
   bonuses,
+  buildsOn,
 } = program.data;
 const priceDisplay = formatPrice(price, currency);
 
@@ -116,8 +117,8 @@ const courseSchema = {
           <SectionHeading
             eyebrow="Exclusive Money Door Strategies"
             index="02"
-            title="PR &amp; PC"
-            subtitle="The six models that sit under PR &amp; PC. EMA 24, ATR 24, W.D. Gann 45° angle analysis, advanced price action, Smart Money Concepts and ICT concepts work together to validate each of them."
+            title="PR & PC"
+            subtitle="The six models that sit under PR & PC. EMA 24, ATR 24, W.D. Gann 45° angle analysis, advanced price action, Smart Money Concepts and ICT concepts work together to validate each of them."
             align="left"
           />
           <StrategyModelGrid models={strategyModels} />
@@ -130,7 +131,18 @@ const courseSchema = {
     curriculum && (
       <section class="surface-ink py-section">
         <Container width="wide" class="flex flex-col gap-[clamp(2.5rem,5vw,4rem)]">
-          <SectionHeading eyebrow="Technical Mastery" index="03" title="Beyond PR &amp; PC" align="left" />
+          <SectionHeading eyebrow="Technical Mastery" index="03" title="Beyond PR & PC" align="left" />
+          {buildsOn && (
+            <div class="builds-on">
+              <span class="builds-on__tick" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span><strong>{buildsOn}</strong> is included, then this program goes further:</span>
+            </div>
+          )}
           <CurriculumGrid sections={curriculum} />
           <RiskDisclaimer />
         </Container>

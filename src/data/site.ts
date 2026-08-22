@@ -41,7 +41,24 @@ export const contact = {
     "Hi Money Door FX Academy, I'd like to know more about your courses.",
   // TODO: swap to a branded support@ inbox once the domain + Zoho/Workspace mail is set up.
   email: "moneydoorchennai@gmail.com",
-  addressLine: "Chennai, Tamil Nadu, India",
+  // Short form, for tight spots like the footer column.
+  addressLine: "Spencer Plaza, Anna Salai, Chennai 600002",
+  // Full postal address, as the client supplied it.
+  address: {
+    name: "Spencer Plaza",
+    line1: "Phase-II, 7th Floor, Spencer Plaza Mall",
+    line2: "714-A, Anna Salai",
+    city: "Chennai",
+    region: "Tamil Nadu",
+    postalCode: "600002",
+    country: "India",
+  },
+  addressFull: "Phase-II, 7th Floor, Spencer Plaza Mall, 714-A, Anna Salai, Chennai, Tamil Nadu 600002",
+  // Shown next to the address so nobody turns up after closing.
+  hours: "Open daily · Closes 6 pm",
+  mapsHref:
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent("Spencer Plaza Mall, 714-A, Anna Salai, Chennai, Tamil Nadu 600002"),
 } as const;
 
 export const whatsappHref = `https://wa.me/${contact.primaryPhoneE164}?text=${encodeURIComponent(
@@ -76,7 +93,7 @@ export const socials = [
 export type NavLink = {
   label: string;
   href: string;
-  children?: { label: string; href: string; description?: string }[];
+  children?: { label: string; href: string; description?: string; badge?: string }[];
 };
 
 // Resolved structure — matches the client's requested top-nav order (2026-08-08):
@@ -109,6 +126,7 @@ export const primaryNav: NavLink[] = [
         label: "MDC2 — Professional Trader",
         href: "/courses/mdc2/",
         description: "6 months · Intermediate",
+        badge: "Most Popular",
       },
       {
         label: "MDC3 — Elite Master Trader",

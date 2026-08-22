@@ -67,11 +67,19 @@ const statesJson = JSON.stringify(statesByCountry);
 
   <form id="register-form" class="flex flex-col gap-4" novalidate>
     {/* Honeypot. Bots fill every field in the DOM; a person never sees this.
-        Kept out of the accessibility tree and out of tab order. */}
+        Kept out of the accessibility tree and out of tab order.
+        Named `mdfx_ref` rather than anything address-shaped — "company",
+        "website" and "url" are textbook autofill-profile fields in Chrome,
+        Safari, LastPass, 1Password and Dashlane, all of which ignore
+        `autocomplete="off"` by design. A visitor with a saved "Company" value
+        could have had it silently written into this field on page load,
+        which flips isBot() true: they saw the success panel, but nothing was
+        ever stored or emailed — indistinguishable from a broken form for
+        anyone reporting it before the record was checked. */}
     <div class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
       <label>
-        Company
-        <input type="text" name="company" tabindex="-1" autocomplete="off" />
+        Leave this field blank
+        <input type="text" name="mdfx_ref" tabindex="-1" autocomplete="off" />
       </label>
     </div>
 
@@ -243,7 +251,7 @@ const statesJson = JSON.stringify(statesByCountry);
     </div>
 
     {turnstileSiteKey && (
-      <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="dark"></div>
+      <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="dark" data-callback="mdfxTurnstileOk"></div>
     )}
 
     <p id="register-error" class="hidden text-sm leading-relaxed text-market-down" role="alert"></p>
@@ -571,16 +579,45 @@ const statesJson = JSON.stringify(statesByCountry);
       }
     }
 
+    // Captured once at init, not hardcoded to "Join Now" — the per-program
+    // pages (/join/mdc2/, etc.) render a custom label like "Enrol in MDC2 —
+    // $300", and setBusy() was overwriting it back to the generic default on
+    // every submit attempt, so a validation error on one of those pages
+    // permanently lost the price-specific button text for that page view.
+    const idleLabel = submitLabel.textContent;
     function setBusy(busy) {
       submit.disabled = busy;
       submit.setAttribute("aria-busy", String(busy));
-      submitLabel.textContent = busy ? "Joining…" : "Join Now";
+      submitLabel.textContent = busy ? "Joining…" : idleLabel;
     }
+
+    const turnstileConfigured = !!document.querySelector(".cf-turnstile[data-sitekey]");
+    // Turnstile calls this once it has a token. Not required for the guard
+    // above to work (it re-reads the hidden input directly), but keeps a
+    // console-visible signal during setup/debugging.
+    window.mdfxTurnstileOk = () => {};
 
     /* ---- Submit --------------------------------------------------------- */
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors();
+
+      // If the Turnstile widget is configured but hasn't produced a token —
+      // script blocked by an ad blocker, still loading, or a site-key/secret-key
+      // mismatch on the Cloudflare dashboard meaning the widget never renders —
+      // the old code posted anyway and only found out from a vague server
+      // error after the visitor had filled the whole form. Checking here turns
+      // that into an immediate, specific, retryable message.
+      if (turnstileConfigured) {
+        const token = form.querySelector('[name="cf-turnstile-response"]')?.value;
+        if (!token) {
+          formError.textContent =
+            "The security check hasn't finished loading yet. Please wait a moment and try again — if this keeps happening, disable any ad blocker for this site.";
+          formError.classList.remove("hidden");
+          return;
+        }
+      }
+
       setBusy(true);
 
       const fd = new FormData(form);
@@ -596,8 +633,8 @@ const statesJson = JSON.stringify(statesByCountry);
         state: state.trim(),
         city: String(fd.get("city") || "").trim(),
         consent: fd.get("consent") === "yes",
-        company: String(fd.get("company") || ""),
         turnstileToken: String(fd.get("cf-turnstile-response") || ""),
+        mdfx_ref: String(fd.get("mdfx_ref") || ""),
       };
 
       try {

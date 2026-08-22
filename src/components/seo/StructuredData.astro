@@ -16,8 +16,10 @@ const organization = {
   description: siteConfig.description,
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Chennai",
-    addressRegion: "Tamil Nadu",
+    streetAddress: `${contact.address.line1}, ${contact.address.line2}`,
+    addressLocality: contact.address.city,
+    addressRegion: contact.address.region,
+    postalCode: contact.address.postalCode,
     addressCountry: "IN",
   },
   contactPoint: {

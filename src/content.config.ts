@@ -25,6 +25,16 @@ const programs = defineCollection({
     mentorship: z.string().optional(),
     format: z.string().optional(),
     level: z.string().optional(),
+    // What this program already contains from the tiers below it. The MDC path
+    // is cumulative, but nothing on the page said so — which left the flagship
+    // MDC2 looking like it taught less than the entry-level MDC1, since MDC1
+    // itemises its beginner material while MDC2 folded all of it into a single
+    // "foundation package" line.
+    buildsOn: z.string().optional(),
+    // Optional highlight ribbon, e.g. "Most Popular". Set on one program only
+    // — the whole point is that it marks a single recommended default, and two
+    // badges cancel each other out.
+    badge: z.string().optional(),
     // One-word position in the MDC progression — Learn → Apply → Master.
     // Gives visitors a reason to read all three as a path rather than three
     // unrelated products.

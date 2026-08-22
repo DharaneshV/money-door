@@ -18,6 +18,8 @@ mentorship: "Weekly live-market sessions and regular trade reviews"
 format: "Group + live market"
 level: "Intermediate"
 stage: "Apply"
+badge: "Most Popular"
+buildsOn: "Everything in MDC1"
 outcome: "By the end of MDC2, you'll have a documented trading plan built around Money Door's PR & PC methodology, and the practice reps to apply it with discipline in live market conditions."
 
 idealForList:
@@ -27,19 +29,44 @@ idealForList:
   - "Traders wanting a consistent, repeatable process"
 
 curriculum:
-  - title: "Technical Analysis Mastery"
+  # Reorganised, not expanded. "Technical Analysis Mastery" previously held
+  # eleven unrelated items in one block, which made the flagship program look
+  # thinner than MDC1's five blocks of beginner material — the opposite of the
+  # truth. Same topics, grouped by what they actually are, plus the prop firm
+  # training that was already part of MDC2 but was never listed here.
+  - title: "The Money Door Framework"
     items:
+      - "EMA 24 trend reading"
+      - "ATR 24 volatility and risk sizing"
+      - "W.D. Gann 45° angle analysis"
+      - "Advanced price action"
+      - "Smart Money Concepts (SMC)"
+      - "ICT concepts"
       - "Multi-layer confirmation"
+  - title: "Institutional Market Structure"
+    items:
       - "Institutional market structure"
       - "Liquidity concepts"
       - "Order blocks"
       - "Fair value gaps"
       - "Break of structure"
       - "Change of character"
+  - title: "Market Timing & Instruments"
+    items:
       - "Market timing"
       - "Session analysis"
-      - "Gold trading"
-      - "Forex trading"
+      - "Gold (XAU/USD) trading"
+      - "Forex majors"
+  - title: "Prop Firm Training"
+    items:
+      - "How prop firm models work"
+      - "Two-step evaluations end to end"
+      - "Evaluation rules and objectives"
+      - "Risk management for funded accounts"
+      - "Trading within drawdown limits"
+      - "Account protection"
+      - "Strategy execution under evaluation conditions"
+      - "The common mistakes that end evaluations"
   - title: "Live Market Learning"
     items:
       - "Real-time chart analysis"

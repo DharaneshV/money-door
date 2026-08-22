@@ -16,7 +16,8 @@ export type RegisterInput = {
   state: string;
   city: string;
   consent: boolean;
-  company: string;
+  /** Honeypot — see RegisterForm.astro for why it isn't named anything autofill-shaped. */
+  mdfx_ref: string;
   turnstileToken: string;
 };
 
@@ -126,5 +127,5 @@ export function validate(raw: Partial<RegisterInput>): ValidationResult {
 
 /** True when the honeypot was filled, i.e. the submission is almost certainly a bot. */
 export function isBot(raw: Partial<RegisterInput>): boolean {
-  return clean(raw.company).length > 0;
+  return clean(raw.mdfx_ref).length > 0;
 }

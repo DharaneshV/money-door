@@ -56,7 +56,20 @@ export function clientIp(request: Request): string {
 export async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
   if (!secret) return true;
-  if (!token) return false;
+  if (!token) {
+    // The most common real-world cause: PUBLIC_TURNSTILE_SITE_KEY is unset,
+    // wrong, or wasn't present at build time (Astro inlines PUBLIC_* env vars
+    // at build, so adding it in Vercel without a redeploy has no effect) — the
+    // widget then never renders, no token is ever produced, and every
+    // legitimate submission fails with a vague "Verification failed" that is
+    // otherwise indistinguishable from an actual bot being blocked or a real
+    // Cloudflare rejection. Logged so that distinction is visible without
+    // guesswork the next time someone reports the form as broken.
+    console.error("TURNSTILE_NO_TOKEN", {
+      hint: "Secret key is set but no token arrived — check PUBLIC_TURNSTILE_SITE_KEY is set for this environment AND the project was redeployed after adding it.",
+    });
+    return false;
+  }
 
   try {
     const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
@@ -64,11 +77,15 @@ export async function verifyTurnstile(token: string, ip: string): Promise<boolea
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ secret, response: token, remoteip: ip }),
     });
-    const data = (await res.json()) as { success?: boolean };
+    const data = (await res.json()) as { success?: boolean; "error-codes"?: string[] };
+    if (data.success !== true) {
+      console.error("TURNSTILE_REJECTED", { errorCodes: data["error-codes"] });
+    }
     return data.success === true;
-  } catch {
+  } catch (err) {
     // A Cloudflare outage shouldn't take registrations down with it. The
     // honeypot and rate limiter still apply.
+    console.error("TURNSTILE_FETCH_FAILED", err instanceof Error ? err.message : String(err));
     return true;
   }
 }

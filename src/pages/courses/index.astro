@@ -116,7 +116,7 @@ const howItWorks = [
                 <div class="flex items-center justify-between gap-3">
                   <span class="section-index text-gold-400">{d.code}</span>
                   {featured ? (
-                    <span class="program-card__ribbon">Most chosen</span>
+                    <span class="program-card__ribbon">{d.badge ?? "Most Popular"}</span>
                   ) : (
                     d.stage && <span class="program-card__stage">{d.stage}</span>
                   )}

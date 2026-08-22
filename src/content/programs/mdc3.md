@@ -18,6 +18,7 @@ mentorship: "One-to-one mentorship with personal performance reviews"
 format: "One-to-one"
 level: "Advanced"
 stage: "Master"
+buildsOn: "Everything in MDC1 and MDC2"
 outcome: "MDC3 is designed to leave you with a repeatable, disciplined process you can run independently — including the specific preparation needed for funded-account (prop firm) evaluations."
 
 idealForList:
@@ -111,16 +112,16 @@ included:
     description: "Stay connected with fellow traders, receive updates, and continue learning after completing the program."
 comparison:
   copyTradingFee: "$100 FREE"
-  fundedAccount: "$10,000*"
+  fundedAccount: "$10,000 one-step*"
   propFirmTraining: "Advanced"
 
 bonuses:
   - title: "Money Door Copy Trading Strategy account fee"
     value: "$100 FREE"
     description: "The $100 account activation fee for the Money Door Copy Trading Strategy is waived as part of the MDC3 enrolment offer."
-  - title: "$10,000 funded account"
+  - title: "$10,000 one-step funded account"
     value: "Included FREE"
-    description: "Eligible MDC3 students receive access to a $10,000 funded-account programme at no additional course charge."
+    description: "Eligible MDC3 students receive access to a $10,000 one-step funded-account programme at no additional course charge — a single evaluation phase rather than the two-step route in MDC2."
     conditional: true
   - title: "Advanced & personalised training"
     value: "Included"

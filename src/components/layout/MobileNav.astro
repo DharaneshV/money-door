@@ -36,9 +36,10 @@ import Button from "../ui/Button.astro";
                   .map((child) => (
                   <a
                     href={child.href}
-                    class="block px-3 py-3 text-sm text-paper/70 transition-colors hover:text-gold-300"
+                    class="flex items-center gap-2 px-3 py-3 text-sm text-paper/70 transition-colors hover:text-gold-300"
                   >
                     {child.label}
+                    {child.badge && <span class="nav-badge">{child.badge}</span>}
                   </a>
                 ))}
               </div>

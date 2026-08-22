@@ -30,6 +30,7 @@ const {
   listPrice,
   priceLabel,
   bonuses,
+  buildsOn,
 } = program.data;
 const priceDisplay = formatPrice(price, currency);
 
@@ -126,7 +127,7 @@ const courseSchema = {
           <SectionHeading
             eyebrow="Money Door Strategy Framework"
             index="02"
-            title="PR &amp; PC, at Elite Depth"
+            title="PR & PC, at Elite Depth"
             align="left"
           />
           <StrategyModelGrid models={strategyModels} />
@@ -145,6 +146,17 @@ const courseSchema = {
             title="What Sets MDC3 Apart"
             align="left"
           />
+          {buildsOn && (
+            <div class="builds-on">
+              <span class="builds-on__tick" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span><strong>{buildsOn}</strong> is included, then this program goes further:</span>
+            </div>
+          )}
           <CurriculumGrid sections={curriculum} />
         </Container>
       </section>

@@ -466,6 +466,54 @@
      more field to tab past. */
   /* Shown at the top of a dedicated enrolment form so the visitor can see which
      program they are signing up for without scrolling back to the heading. */
+  /* "Most Popular" marker beside a nav item. Gold fill on dark text so it
+     reads as an endorsement rather than as another muted label. */
+  .nav-badge {
+    flex: none;
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    padding: 0.12rem 0.45rem;
+    font-family: var(--font-heading);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-950);
+    white-space: nowrap;
+  }
+
+  /* "Everything in MDC1 is included, then this goes further" — makes the
+     cumulative MDC ladder visible. Without it the flagship MDC2 read as a
+     smaller course than the entry-level MDC1, because MDC1 itemises its
+     beginner material while MDC2 folds all of it into one line. */
+  .builds-on {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-gold-500) 9%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 28%, transparent);
+    padding: 0.95rem 1.25rem;
+    font-size: 0.925rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-paper) 78%, transparent);
+  }
+  .builds-on strong {
+    font-weight: 600;
+    color: var(--color-gold-300);
+  }
+  .builds-on__tick {
+    display: flex;
+    height: 1.75rem;
+    width: 1.75rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    color: var(--color-ink-950);
+  }
+
   .interest-banner {
     border-radius: var(--radius-card);
     background: color-mix(in srgb, var(--color-gold-500) 10%, transparent);

@@ -67,8 +67,13 @@ it ages out. Set this up before launch.
 1. Create a Google Sheet with these headers in row 1:
 
    ```
-   submittedAt | fullName | email | phone | city | state | countryName | countryCode | ip | userAgent
+   submittedAt | interest | fullName | email | phone | city | state | countryName | countryCode | ip | userAgent
    ```
+
+   `interest` is which form the visitor submitted — "MDC1 — Foundation
+   Trader", "MDC2 — Professional Trader", "MDC3 — Elite Master Trader" or
+   "Free 1-hour consultation" — so leads can be sorted without opening each
+   row.
 
 2. **Extensions → Apps Script**, and replace the contents with:
 
@@ -77,7 +82,7 @@ it ages out. Set this up before launch.
      const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
      const d = JSON.parse(e.postData.contents);
      sheet.appendRow([
-       d.submittedAt, d.fullName, d.email, d.phone, d.city,
+       d.submittedAt, d.interest, d.fullName, d.email, d.phone, d.city,
        d.state, d.countryName, d.countryCode, d.ip, d.userAgent,
      ]);
      return ContentService
@@ -108,7 +113,12 @@ A public form collecting phone numbers gets scraped within days.
 The widget renders and is verified only when both are set, so previews keep
 working without them. Two other guards are always active regardless:
 
-- a **honeypot** field named `company` — filled by bots, invisible to people
+- a **honeypot** field — filled by bots, invisible to people. Deliberately
+  not named anything address-shaped ("company", "website", "url"): those are
+  recognised profile fields in Chrome, Safari and most password managers,
+  which ignore `autocomplete="off"` and can silently autofill them for a real
+  visitor — which would make a genuine registration look like a bot and
+  vanish with no error shown.
 - **per-IP rate limiting** — 5 submissions per 10 minutes
 
 ### Rate limiting caveat
@@ -126,9 +136,9 @@ npm run dev
 
 curl -X POST http://localhost:4321/api/register \
   -H "Content-Type: application/json" \
-  -d '{"fullName":"Test User","email":"you@example.com","phone":"+91 9000000000",
+  -d '{"interest":"MDC1","fullName":"Test User","email":"you@example.com","phone":"+91 9000000000",
        "country":"IN","state":"Tamil Nadu","city":"Chennai","consent":true,
-       "company":"","turnstileToken":""}'
+       "mdfx_ref":"","turnstileToken":""}'
 # -> {"ok":true}
 ```
 

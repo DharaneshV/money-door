@@ -74,8 +74,9 @@ const isActive = (href: string) =>
                     href={child.href}
                     class="block px-4 py-3 transition-colors hover:bg-gold-500/8"
                   >
-                    <span class="block font-heading text-sm font-medium text-paper/90">
+                    <span class="flex items-center gap-2 font-heading text-sm font-medium text-paper/90">
                       {child.label}
+                      {child.badge && <span class="nav-badge">{child.badge}</span>}
                     </span>
                     {child.description && (
                       <span class="eyebrow mt-1.5 block text-paper/35">{child.description}</span>
