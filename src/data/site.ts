@@ -8,7 +8,7 @@ export const siteConfig = {
   description:
     "Professional Gold (XAU/USD) & Forex trading education. Structured courses, live market mentorship, and disciplined risk management from a Chief Trainer with 18+ years of experience.",
   // TODO: confirm the final purchased domain and update this + astro.config.mjs `site`.
-  // Candidates from the client's own materials: moneydoorfx.com, moneydoorfxacademy.com
+  // Confirmed by the client 2026-08-23. Also set as SITE_URL in astro.config.mjs.
   url: "https://moneydoorfxacademy.com",
   locale: "en_IN",
 } as const;
@@ -45,7 +45,9 @@ export const contact = {
   addressLine: "Spencer Plaza, Anna Salai, Chennai 600002",
   // Full postal address, as the client supplied it.
   address: {
-    name: "Spencer Plaza",
+    // No standalone `name` any more: it duplicated the mall name that already
+    // appears in line1, so the block read "Spencer Plaza / Phase-II, 7th Floor,
+    // Spencer Plaza Mall".
     line1: "Phase-II, 7th Floor, Spencer Plaza Mall",
     line2: "714-A, Anna Salai",
     city: "Chennai",
@@ -419,7 +421,7 @@ export const partners: Partner[] = [
 ];
 
 export const riskDisclaimerShort =
-  "Trading in financial markets involves substantial risk and may not be suitable for every individual. Money Door FX Academy provides educational content only and does not offer investment advice, portfolio management, or guarantees of profits. Past performance does not guarantee future results.";
+  "Trading in financial markets involves substantial risk and may not be suitable for every individual. Money Door FX Academy provides educational content only and does not offer investment advice, portfolio management, or guarantees of profits. Past performance does not guarantee future results. By accessing and using this website, you acknowledge and agree to our Disclaimer and Terms & Conditions.";
 
 // Compact one-liner for inline banners on trading-related pages — the full
 // paragraph above lives in the footer and on /risk-disclaimer/.

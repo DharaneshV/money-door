@@ -71,13 +71,14 @@ const whatsappIconPath =
       <a href={`tel:+${contact.primaryPhoneE164}`} class="text-sm text-paper/60 hover:text-gold-300 max-sm:flex max-sm:min-h-11 max-sm:items-center">
         {contact.primaryPhoneDisplay}
       </a>
-      {/* break-all so the long address wraps inside the narrow footer column
-          instead of being clipped at the edge. */}
+      {/* The address is longer than this column is wide, so it has to wrap.
+          `break-all` broke it mid-word ("gmail.co / m"); a <wbr> after the "@"
+          gives the browser the one break point a reader expects instead. */}
       <a
         href={`mailto:${contact.email}`}
-        class="break-all text-sm text-paper/60 transition-colors hover:text-gold-300 max-sm:flex max-sm:min-h-11 max-sm:items-center"
+        class="text-sm text-paper/60 transition-colors hover:text-gold-300 max-sm:flex max-sm:min-h-11 max-sm:items-center"
       >
-        {contact.email}
+        {contact.email.split("@")[0]}@<wbr />{contact.email.split("@")[1]}
       </a>
       <a
         href={contact.mapsHref}
@@ -85,7 +86,6 @@ const whatsappIconPath =
         rel="noopener noreferrer"
         class="text-sm text-paper/60 transition-colors hover:text-gold-300"
       >
-        {contact.address.name}<br />
         {contact.address.line1}<br />
         {contact.address.line2}<br />
         {contact.address.city}, {contact.address.region} {contact.address.postalCode}
@@ -96,14 +96,16 @@ const whatsappIconPath =
         rel="noopener noreferrer"
         class="text-sm font-medium text-gold-400 transition-colors hover:text-gold-300 max-sm:flex max-sm:min-h-11 max-sm:items-center"
       >
-        Join our WhatsApp Channel →
+        Join our WhatsApp Channel&nbsp;→
       </a>
     </div>
   </Container>
 
   <div class="border-t border-paper/12">
     <Container class="py-6">
-      <p class="text-xs leading-relaxed text-paper/45">{riskDisclaimerShort}</p>
+      <p class="text-xs leading-relaxed text-paper/45">
+        <strong class="font-semibold text-paper/70">Risk Disclaimer:</strong> {riskDisclaimerShort}
+      </p>
     </Container>
   </div>
 
