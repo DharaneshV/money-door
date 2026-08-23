@@ -19,8 +19,16 @@ const files = import.meta.glob<{ default: ImageMetadata }>(
   "../../assets/testimonials/*.{jpg,jpeg,png,webp,avif}",
   { eager: true }
 );
-const match = photo
-  ? Object.entries(files).find(([path]) => path.endsWith(`/${photo}`))?.[1].default
+// Matched on the filename stem, ignoring the extension: a photo saved as
+// `.jpeg` while the frontmatter says `.jpg` is the same picture, and an exact
+// string match would silently fall back to initials instead — which is exactly
+// what happened the first time these two arrived.
+const stem = photo?.replace(/\.[^.]+$/, "").toLowerCase();
+const match = stem
+  ? Object.entries(files).find(([path]) => {
+      const file = path.split("/").pop()!.replace(/\.[^.]+$/, "").toLowerCase();
+      return file === stem;
+    })?.[1].default
   : undefined;
 
 const initials = studentName
