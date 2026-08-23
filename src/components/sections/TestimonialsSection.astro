@@ -8,6 +8,11 @@ import TestimonialCard from "../cards/TestimonialCard.astro";
 // student testimonials are added to src/content/testimonials, this renders
 // an honest empty state instead of fabricated names/quotes.
 const testimonials = (await getCollection("testimonials", ({ data }) => data.published)).slice(0, 6);
+
+// The grid below takes its column count from the number of published reviews:
+// a fixed three-column grid left an empty third of the row while only two are
+// live. Cards are boxed now rather than borderless, so the wide editorial
+// gutter that used to separate them is no longer doing any work either.
 ---
 
 <section class="surface-gold py-section">
@@ -21,7 +26,14 @@ const testimonials = (await getCollection("testimonials", ({ data }) => data.pub
 
     {
       testimonials.length > 0 ? (
-        <div class="grid gap-x-[clamp(2rem,5vw,4rem)] gap-y-12 md:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+        <div
+          class:list={[
+            "grid gap-[clamp(1rem,2vw,1.75rem)]",
+            testimonials.length === 1 ? "max-w-2xl" : "md:grid-cols-2",
+            testimonials.length >= 3 && "lg:grid-cols-3",
+          ]}
+          data-reveal-stagger
+        >
           {testimonials.map((t) => (
             <TestimonialCard {...t.data} />
           ))}

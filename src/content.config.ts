@@ -141,6 +141,15 @@ const testimonials = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/testimonials" }),
   schema: z.object({
     studentName: z.string(),
+    /** e.g. "Part time trader" — how the student describes themselves. */
+    role: z.string().optional(),
+    /**
+     * Filename inside src/assets/testimonials/, e.g. "ashwant-subbiah.jpg".
+     * Left unset (or pointing at a file that isn't there yet) the card falls
+     * back to the student's initials, so a testimonial is never held back
+     * waiting on a photo.
+     */
+    photo: z.string().optional(),
     quote: z.string(),
     rating: z.number().min(1).max(5).default(5),
     // Gate — keep false until the client sends real student reviews. See plan's

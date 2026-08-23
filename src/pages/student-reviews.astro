@@ -25,7 +25,13 @@ const testimonials = await getCollection("testimonials", ({ data }) => data.publ
     <Container>
       {
         testimonials.length > 0 ? (
-          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            class:list={[
+              "grid gap-[clamp(1rem,2vw,1.75rem)]",
+              testimonials.length === 1 ? "max-w-2xl" : "sm:grid-cols-2",
+              testimonials.length >= 3 && "lg:grid-cols-3",
+            ]}
+          >
             {testimonials.map((t) => (
               <TestimonialCard {...t.data} />
             ))}
