@@ -40,7 +40,7 @@ export const contact = {
   whatsappMessage:
     "Hi Money Door FX Academy, I'd like to know more about your courses.",
   // TODO: swap to a branded support@ inbox once the domain + Zoho/Workspace mail is set up.
-  email: "moneydooronline@gmail.com",
+  email: "moneydoorfxacademy@gmai.com",
   // Short form, for tight spots like the footer column.
   addressLine: "Spencer Plaza, Anna Salai, Chennai 600002",
   // Full postal address, as the client supplied it.
@@ -260,25 +260,25 @@ export const partnerGroups: {
   slug: string;
   blurb: string;
 }[] = [
-  {
-    label: "CFD Brokers",
-    slug: "cfd-brokers",
-    blurb:
-      "Brokers offering Gold, FX majors and other CFD instruments through MT4, MT5 and their own platforms. Where a live trading account is actually opened.",
-  },
-  {
-    label: "Prop Firms",
-    slug: "prop-firms",
-    blurb:
-      "Proprietary trading firms running paid evaluations. Pass one and you trade the firm's capital under its risk rules — the environment our MDC3 funded-account training prepares for.",
-  },
-  {
-    label: "Crypto Exchanges",
-    slug: "crypto-exchanges",
-    blurb:
-      "Exchanges for spot and derivatives trading in digital assets. A different asset class and a different regulatory picture from the Gold and Forex markets our courses teach.",
-  },
-];
+    {
+      label: "CFD Brokers",
+      slug: "cfd-brokers",
+      blurb:
+        "Brokers offering Gold, FX majors and other CFD instruments through MT4, MT5 and their own platforms. Where a live trading account is actually opened.",
+    },
+    {
+      label: "Prop Firms",
+      slug: "prop-firms",
+      blurb:
+        "Proprietary trading firms running paid evaluations. Pass one and you trade the firm's capital under its risk rules — the environment our MDC3 funded-account training prepares for.",
+    },
+    {
+      label: "Crypto Exchanges",
+      slug: "crypto-exchanges",
+      blurb:
+        "Exchanges for spot and derivatives trading in digital assets. A different asset class and a different regulatory picture from the Gold and Forex markets our courses teach.",
+    },
+  ];
 
 export type Partner = {
   name: string;

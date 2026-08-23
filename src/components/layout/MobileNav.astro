@@ -36,10 +36,17 @@ import Button from "../ui/Button.astro";
                   .map((child) => (
                   <a
                     href={child.href}
-                    class="flex items-center gap-2 px-3 py-3 text-sm text-paper/70 transition-colors hover:text-gold-300"
+                    class="block px-3 py-3 text-sm text-paper/70 transition-colors hover:text-gold-300"
                   >
+                    {/* Not flex: a flex row centres the badge across the whole
+                        cross axis, so once a long label like "MDC2 —
+                        Professional Trader" wrapped to two lines the badge sat
+                        on top of the second line instead of beside the first.
+                        inline-block keeps it in normal text flow — it moves to
+                        the next line as a unit if it doesn't fit, but can
+                        never sit on top of wrapped text. */}
                     {child.label}
-                    {child.badge && <span class="nav-badge">{child.badge}</span>}
+                    {child.badge && <span class="nav-badge nav-badge--inline">{child.badge}</span>}
                   </a>
                 ))}
               </div>

@@ -481,6 +481,17 @@
     color: var(--color-ink-950);
     white-space: nowrap;
   }
+  /* Used beside a label that can wrap onto two lines (a nav dropdown item).
+     inline-block instead of the flex-row layout above: flex centres the badge
+     across the whole cross axis of its row, so once the label wrapped the
+     badge landed on top of the second line rather than beside the first. As
+     an inline-block it is just another word in the flow — it moves to the
+     next line as a unit if it doesn't fit, but can never overlap the text. */
+  .nav-badge--inline {
+    display: inline-block;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
 
   /* "Everything in MDC1 is included, then this goes further" — makes the
      cumulative MDC ladder visible. Without it the flagship MDC2 read as a
