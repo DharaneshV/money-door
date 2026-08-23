@@ -21,8 +21,19 @@ const whatsappIconPath =
 ---
 
 <footer class="border-t border-paper/12 bg-ink-950">
-  <Container class="grid grid-cols-2 gap-x-8 gap-y-10 py-16 lg:grid-cols-6">
-    <div class="col-span-2 flex flex-col gap-4 lg:col-span-2">
+  {/* Explicit track widths rather than equal columns. The five blocks hold very
+      different content — a strapline, one-word links, "MDC2 — Professional
+      Trader", and an email plus a postal address — so an equal grid always
+      starved one of them: at 6 equal columns the contact details wrapped
+      short, and widening contact to 2 of 7 simply moved the problem onto the
+      Trading column. These fractions are sized to the longest line each block
+      actually contains. Applied from xl only: at 1024 five tracks squeeze
+      below the width the longest link needs, so below that the blocks fall
+      back to the two-up layout, which has room. */}
+  <Container
+    class="grid grid-cols-2 gap-x-8 gap-y-10 py-16 xl:grid-cols-[1.75fr_1fr_1.25fr_1fr_1.3fr]"
+  >
+    <div class="col-span-2 flex flex-col gap-4 xl:col-span-1">
       <a href="/" class="flex items-center gap-3">
         <Image src={logoMark} alt={siteConfig.name} width={44} height={44} class="rounded-full" />
         <span class="font-heading text-sm font-bold leading-tight">
@@ -39,7 +50,7 @@ const whatsappIconPath =
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Join our WhatsApp Channel"
-          class="flex h-11 w-11 items-center justify-center rounded-full border border-paper/12 text-paper/55 transition-colors hover:border-[#25D366]/45 hover:bg-[#25D366]/10 hover:text-[#25D366] sm:h-9 sm:w-9"
+          class="flex h-11 w-11 items-center justify-center rounded-full border border-paper/12 text-paper/55 transition-colors hover:border-[#25D366]/45 hover:bg-[#25D366]/10 hover:text-[#25D366] sm:h-[2.1rem] sm:w-[2.1rem]"
         >
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
             <path d={whatsappIconPath} />
@@ -66,7 +77,7 @@ const whatsappIconPath =
       ))
     }
 
-    <div class="col-span-2 flex flex-col gap-3 lg:col-span-1">
+    <div class="col-span-2 flex flex-col gap-3 xl:col-span-1">
       <h3 class="font-heading text-sm font-semibold text-paper">Contact Us</h3>
       <a href={`tel:+${contact.primaryPhoneE164}`} class="text-sm text-paper/60 hover:text-gold-300 max-sm:flex max-sm:min-h-11 max-sm:items-center">
         {contact.primaryPhoneDisplay}

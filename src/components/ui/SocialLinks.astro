@@ -78,7 +78,10 @@ const iconPx = size === "sm" ? 16 : 18;
   .socials {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.65rem;
+    /* Seven icons (six channels plus WhatsApp beside them) have to clear the
+       footer's brand column on one row; 0.65rem pushed the last one onto a
+       second line. */
+    gap: 0.5rem;
   }
   .socials__link {
     display: flex;
@@ -107,8 +110,8 @@ const iconPx = size === "sm" ? 16 : 18;
       width: 2.35rem;
     }
     .socials--sm .socials__link {
-      height: 2.25rem;
-      width: 2.25rem;
+      height: 2.1rem;
+      width: 2.1rem;
     }
   }
 
