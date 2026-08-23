@@ -7,6 +7,15 @@ import { countries, statesByCountry, priorityCountryCodes } from "../../data/geo
 // keep working before the Cloudflare keys exist.
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
+// Whether a confirmation email can actually be sent. Only the BOOLEAN reaches
+// the browser — never the key itself.
+//
+// Without this the success panel told every registrant to check their inbox
+// and look in spam for a confirmation that, with RESEND_API_KEY unset, is
+// never sent. Promising a student an email that cannot arrive is worse than
+// saying nothing: they wait, then assume the registration failed.
+const canEmail = Boolean(import.meta.env.RESEND_API_KEY);
+
 // One form, four entry points. `interest` is what distinguishes an MDC1
 // enrolment from an MDC3 one or a consultation booking: it is posted with the
 // submission, shown to the visitor so they can see what they are signing up
@@ -59,8 +68,11 @@ const statesJson = JSON.stringify(statesByCountry);
         You're registered
       </h3>
       <p class="max-w-md text-sm leading-relaxed text-paper/65">
-        Check your inbox — we've sent a confirmation with what happens next. If it isn't there in
-        a few minutes, look in your spam folder and mark it as safe so you don't miss our replies.
+        {
+          canEmail
+            ? "Check your inbox — we've sent a confirmation with what happens next. If it isn't there in a few minutes, look in your spam folder and mark it as safe so you don't miss our replies."
+            : "We've got your details and the team will contact you personally about the next intake. If you'd like to reach us sooner, message us on WhatsApp."
+        }
       </p>
     </div>
   </div>
