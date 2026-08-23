@@ -58,7 +58,42 @@ under **Project Settings → Environment Variables**.
 ⚠️ Never prefix a secret with `PUBLIC_`. Astro inlines every `PUBLIC_*` variable
 into the browser bundle, where anyone can read it.
 
-## 3. Storing registrations (Google Sheet)
+## 3. Storing registrations
+
+`REGISTRATIONS_WEBHOOK_URL` accepts any endpoint that takes a JSON POST.
+Two options — pick one.
+
+### Option A: Formspree (fastest, no sending domain needed)
+
+```
+REGISTRATIONS_WEBHOOK_URL=https://formspree.io/f/mqpzjvyd
+```
+
+That is the whole setup. Formspree stores every submission in its dashboard
+**and emails you**, which means registrations reach a real inbox before the
+Resend sending domain exists — the one thing currently blocking launch.
+
+The endpoint already sends the exact JSON shape Formspree expects, and
+`store.ts` adds the `Accept: application/json` header and a `_subject` line
+("New registration — MDC2 — Professional Trader — Jane Doe") when it detects a
+Formspree URL, so submissions are legible without opening them.
+
+Two caveats:
+
+- **The free tier is 50 submissions/month.** Above that Formspree stops
+  accepting, `persist()` reports the failure, and the visitor is asked to try
+  again — the lead is still written to the platform log, but check the plan
+  before a campaign.
+- **The record includes `ip` and `userAgent`.** Sending those to a third party
+  makes Formspree a data processor under the DPDP Act, so name it in
+  `/privacy-policy/` alongside Resend and Vercel. Drop the two fields from
+  `StoredRegistration` if you would rather not share them.
+
+Formspree does **not** replace the welcome email to the student — that is
+branded, sent from your domain, and still needs Resend (section 1). Formspree
+only covers the internal notification.
+
+### Option B: Google Sheet
 
 Until `REGISTRATIONS_WEBHOOK_URL` is set, registrations exist **only in the
 Vercel log**. That's a real backstop, but it isn't a list you can work from and
